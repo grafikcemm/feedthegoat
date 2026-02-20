@@ -31,23 +31,23 @@ export default function MotivationCards() {
     return (
         <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Aphorism */}
-            <div className="brutalist-card group relative overflow-hidden">
+            <div className="brutalist-card group relative overflow-hidden flex flex-col justify-center">
                 <div className="absolute top-0 left-0 w-1 h-full bg-accent-red" />
-                <p className="text-[10px] uppercase tracking-[0.25em] text-text-muted mb-3 pl-4">
-                    {quote.theme}
+                <p className="text-[10px] uppercase tracking-[0.25em] text-accent-red mb-3 pl-4 font-bold">
+                    KİMLİK İNŞASI ({quote.theme})
                 </p>
-                <p className="text-sm md:text-base leading-relaxed font-medium text-text pl-4">
+                <p className="text-sm md:text-base leading-relaxed font-bold text-text pl-4">
                     &ldquo;{quote.aphorism}&rdquo;
                 </p>
             </div>
 
             {/* Strategy */}
-            <div className="brutalist-card group relative overflow-hidden">
+            <div className="brutalist-card group relative overflow-hidden flex flex-col justify-center">
                 <div className="absolute top-0 left-0 w-1 h-full bg-accent-green" />
-                <p className="text-[10px] uppercase tracking-[0.25em] text-text-muted mb-3 pl-4">
+                <p className="text-[10px] uppercase tracking-[0.25em] text-accent-green mb-3 pl-4 font-bold">
                     STRATEJİ / AKSİYON
                 </p>
-                <p className="text-sm md:text-base leading-relaxed font-medium text-text pl-4">
+                <p className="text-sm md:text-base leading-relaxed font-bold text-text pl-4">
                     &ldquo;{quote.strategy}&rdquo;
                 </p>
             </div>
