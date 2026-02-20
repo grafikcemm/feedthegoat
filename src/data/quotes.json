@@ -1,0 +1,692 @@
+[
+  {
+    "id": 1,
+    "theme": "Müşteri ve Sınır Yönetimi",
+    "aphorism": "Müşterinin gece yarısı attığı mesaja cevap verdiğinde profesyonel değil, tasması başkasının elinde olan bir işçi oluyorsun.",
+    "strategy": "Mesai saatleri dışında iletişim kurma. Aciliyet onların problemidir, senin taviz alanın değil."
+  },
+  {
+    "id": 2,
+    "theme": "Erteleme ve AI Vizyonu",
+    "aphorism": "Yapay zeka uzmanı olup kendi zirveni yaratma hedefin, şu an yatakta kaydırdığın o anlamsız kısa videolarda eriyip gidiyor.",
+    "strategy": "Dopamin orucuna sadık kal. Derin odak (Deep Focus) bloklarını ihlal eden her şey senin gelecekteki servetine bir saldırıdır."
+  },
+  {
+    "id": 3,
+    "theme": "Sosyal Hiyerarşi ve İlişkiler",
+    "aphorism": "Kimseyi memnun etmek zorunda değilsin. 'İyi çocuk' sendromu seni sadece kullanışlı ve saygı duyulmayan bir aparat yapar.",
+    "strategy": "İnsanlar senin sınırlarına ya saygı duyar ya da hayatından çıkar. Kendi operasyonuna odaklan, onay arama."
+  },
+  {
+    "id": 4,
+    "theme": "Fiziksel Zırh",
+    "aphorism": "Zihinsel yorgunluğu bahane edip antrenmanı atlamak, zayıflığın bedensel itirafıdır. Fıtık veya ağrı, disiplinsizliğin kalkanı olamaz.",
+    "strategy": "Fiziksel zırhını inşa et. O antrenman yapılacak. Vücudun senin dünyayla arandaki tek geçilmez duvardır."
+  },
+  {
+    "id": 5,
+    "theme": "Beslenme ve İrade",
+    "aphorism": "Bir dilim şekerli gıdaya veya karbonhidrata yenik düşen bir iradenin, milyon dolarlık bir ajans (Bozma Creative) kurabileceğine inanmak ahmaklıktır.",
+    "strategy": "Sıfır karbonhidrat protokolü bir diyet değil, irade testidir. Kendi iştahına hükmedemeyen, masaya hükmedemez."
+  },
+  {
+    "id": 6,
+    "theme": "Tavizsizlik",
+    "aphorism": "Küçük bir istisnadan bir şey olmaz dediğin her an, nörokimyasal ödül sistemini (dopamin) ucuz hazlara satıyorsun.",
+    "strategy": "Siyah ve beyaz. Ya yapıldı ya yapılmadı. Hedeflerin %99'u tamamlanmışsa, gün başarısızdır."
+  },
+  {
+    "id": 7,
+    "theme": "Değer Algısı ve Ücretlendirme",
+    "aphorism": "Emeğini ucuza sattığın ve revizyonlara boyun eğdiğin sürece, sektörde her zaman yeri kolayca doldurulabilir bir piksel itici olarak kalacaksın.",
+    "strategy": "Fiyatını sen belirlersin. Bütçesi olmayan müşteri senin hedefin değildir. Kalite, toleranssızlıktan doğar."
+  },
+  {
+    "id": 8,
+    "theme": "Yalnızlık ve İzlasyon",
+    "aphorism": "Yalnızlık hissinden kaçmak için zehirli sosyal ortamlara sığınman, kendi potansiyelinden ne kadar korktuğunun kanıtıdır.",
+    "strategy": "İzolasyonu bir silah olarak kullan. Gelişim karanlıkta, yalnızken ve sessizken olur."
+  },
+  {
+    "id": 9,
+    "theme": "Duygusal Manipülasyon",
+    "aphorism": "Geçmişte manipüle edilmene izin verdin çünkü kaybetmekten korktun. Artık kaybedecek bir sahte kimliğin kalmadı.",
+    "strategy": "Manipülasyon seziyorsan masadan kalk. Pazarlık yok, açıklama yok. Sadece net bir ayrılış."
+  },
+  {
+    "id": 10,
+    "theme": "İngilizce ve Öğrenme",
+    "aphorism": "İngilizceyi ana dilin gibi çözmediğin her gün, küresel pastadan pay almayı reddedip yerel bir kuyuya kendi isteğinle hapsoluyorsun.",
+    "strategy": "1 saatlik İngilizce çalışması opsiyonel değildir. Bu senin küresel arenaya giriş biletindir."
+  },
+  {
+    "id": 11,
+    "theme": "Uyku ve Rutin",
+    "aphorism": "Sabah 06:00'da uyanamamanın sebebi yorgunluk değil, o gün inşa edeceğin hayata duyduğun inançsızlıktır.",
+    "strategy": "Alarm çaldığında düşünme. Sadece kalk. İlk zafer yorganı üzerinden atmaktır."
+  },
+  {
+    "id": 12,
+    "theme": "Finansal Disiplin",
+    "aphorism": "Kazandığından fazlasını anlık hazlar için harcamak, gelecekteki özgürlüğünü bugünün köleliğine ipotek etmektir.",
+    "strategy": "Gereksiz her harcama, sistemin içinde bir gün daha maaşlı kalmak demektir. Finansal olarak agresif bir savunma yap."
+  },
+  {
+    "id": 13,
+    "theme": "Odaklanma (Deep Work)",
+    "aphorism": "Çalışırken telefon bildirimlerine bakmak, zihnini dışarıdan gelen çöplere açık bir çöplük haline getirmektir.",
+    "strategy": "Çalışma bloklarında telefon tamamen kapalı. Sen bir cerrahsın ve masada kendi geleceğin yatıyor."
+  },
+  {
+    "id": 14,
+    "theme": "Kurban Psikolojisi",
+    "aphorism": "'Şartlar zor', 'zamanım yok', 'anlamıyorlar'. Bunlar kaybedenlerin kulübüne giriş şifreleridir. Kimsenin umurunda değilsin.",
+    "strategy": "Sorumluluğun %100'ünü al. Sonuçlardan sadece sen sorumlusun. Mazeret üretme, çözüm üret."
+  },
+  {
+    "id": 15,
+    "theme": "Gün Sonu Kapanışı",
+    "aphorism": "Gece yatağa hedeflerini tamamlamadan girdiğinde, bilinçaltına şu mesajı veriyorsun: 'Ben sözünün eri olmayan bir zayıfım.'",
+    "strategy": "Gece detoksunu yap ve tabloyu 6/6 olarak kapa. Ancak o zaman gerçek bir dinlenmeyi hak edersin."
+  },
+  {
+    "id": 16,
+    "theme": "Kariyer ve Dönüşüm",
+    "aphorism": "6 yıllık grafik tasarım tecrübeni, başkalarının vizyonuna kölelik yaparak harcamak statü değil, sınırları çizilmiş bir konfor alanıdır.",
+    "strategy": "Piksel itici (pixel-pusher) olmaktan çık, stratejik tasarımcı ve yapay zeka uzmanı kimliğine geç. Operasyonu değil, stratejiyi yönet."
+  },
+  {
+    "id": 17,
+    "theme": "AI ve Otomasyon (n8n)",
+    "aphorism": "Yapay zeka araçlarıyla kendi sistemini kurmayı ertelediğin her gün, yerini alacak olan algoritmaya ve rakiplerine zaman kazandırıyorsun.",
+    "strategy": "Vibe coding ve n8n ile kendi otomasyonlarını inşa et. Manuel yapılan her tekrarlı iş, zekana yapılmış bir hakarettir."
+  },
+  {
+    "id": 18,
+    "theme": "Girişimcilik (Bozma Creative)",
+    "aphorism": "Mevcut işinin sahte güvenliğine sığınıp Bozma Creative için kendi müşterini bulmadığın sürece, o ajans sadece zihninde bir hayal olarak çürüyecek.",
+    "strategy": "Kendi ajansının temelleri mesai sonrasında atılır. O soğuk aramayı yap, portfolyonu gönder ve avlanmaya başla."
+  },
+  {
+    "id": 19,
+    "theme": "Finansal Özgürlük ve Borçlar",
+    "aphorism": "Kredi kartı borçları ve krediler, seni sisteme ve sevmediğin işlere mecbur bırakan modern prangalardır. Anlık hazlar için özgürlüğünü satıyorsun.",
+    "strategy": "Finansal olarak agresif bir savunma yap. Sadece hayatta kalmak için harca, geri kalanı borç kapatmaya ve geleceğine yatır."
+  },
+  {
+    "id": 20,
+    "theme": "Eğitim ve Gerçeklik (Üniversite)",
+    "aphorism": "Üniversite diplomalarının seni kurtaracağını sanmak, eski dünyanın kurallarıyla yeni dünyada savaşmaya çalışmaktır. Piyasada sadece ne inşa edebildiğinle ölçülürsün.",
+    "strategy": "Akademik unvanlara değil, gerçek dünya yeteneklerine (UI/UX, AI, İngilizce) odaklan."
+  },
+  {
+    "id": 21,
+    "theme": "İçerik Üretimi (YouTube)",
+    "aphorism": "Kişisel YouTube kanalını başlatmak için 'mükemmel zamanı' beklemek, aslında başarısızlıktan ve eleştirilmekten korktuğunun süslü bir itirafıdır.",
+    "strategy": "Mükemmeliyetçilik kılık değiştirmiş korkudur. Kamerayı aç, kaydet ve yayınla. İlk videoların kötü olmak zorunda."
+  },
+  {
+    "id": 22,
+    "theme": "Sistem ve İtaat",
+    "aphorism": "Kendi yazdığın sisteme (Henry OS / Feed the Goat) itaat etmiyorsan, sadece dijital oyuncaklarla oynayan disiplinsiz bir çocuksun.",
+    "strategy": "Sistemi kur ve sistemin kölesi ol. Motivasyona veya duygulara yer yok, sadece tamamlanması gereken metrikler var."
+  },
+  {
+    "id": 23,
+    "theme": "Küresel Vizyon (İngilizce)",
+    "aphorism": "İngilizceyi bir silah gibi kullanamadığın sürece, yerel pazarın düşük bütçeli ve kaprisli müşterilerine katlanmaya mahkumsun.",
+    "strategy": "1 saatlik İngilizce pratiği, o dar coğrafyadan kaçış tünelini kazmaktır. Her gün kazmaya devam et."
+  },
+  {
+    "id": 24,
+    "theme": "Hayır Deme Sanatı",
+    "aphorism": "İnsanlara 'hayır' diyemediğin için çaldırdığın zamanlar, AI reklam kursuna veya kendi gelişimine ayırman gereken hayati saatlerdi.",
+    "strategy": "Senin zamanın ucuz değil. Başkalarının aciliyeti senin önceliğin olamaz. Kendi planını her şeyin üstünde tut."
+  },
+  {
+    "id": 25,
+    "theme": "Mental Beslenme (Okuma)",
+    "aphorism": "Günde 25 sayfa okumayı atladığında, zihnini beslemeyi reddedip onu sosyal medyanın zehirli kaosuna savunmasız bırakıyorsun.",
+    "strategy": "Bilgi senin cephanendir. O sayfalar okunmadan ve günlük yazılmadan bu sistem kapanmayacak."
+  },
+  {
+    "id": 26,
+    "theme": "Beslenme Disiplini",
+    "aphorism": "Sıfır karbonhidrat kuralını 'sadece bir öğünlük' bozmak, beynine şu mesajı verir: 'Ben kurallarımı çiğneyebilecek kadar zayıfım.'",
+    "strategy": "Masadan aç kalkmayı bilmek, hayatta daha fazlasını talep etmenin provasıdır. Biyolojini kontrol et."
+  },
+  {
+    "id": 27,
+    "theme": "Statü ve Hedefler (Peugeot 408)",
+    "aphorism": "Mevcut durumundan şikayet edip daha iyi bir araba veya hayat hayal etmek, bunun için gereken vahşi çalışmayı yapmadığın sürece sadece acınası bir fantezidir.",
+    "strategy": "Hedefin sadece metal bir yığın değil, o statüye kendi gücüyle ulaşan, tavizsiz ve saygı duyulan adam olmaktır."
+  },
+  {
+    "id": 28,
+    "theme": "Üretici vs Tüketici",
+    "aphorism": "Ekrana bakıp başkalarının ürettiği içerikleri kaydırırken, kendi krallığını inşa etme potansiyelini pikseller uğruna israf ediyorsun.",
+    "strategy": "Tüketici kimliğini öldür, üretici kimliğini dirilt. Sadece kendi hedeflerine hizmet eden verileri işle."
+  },
+  {
+    "id": 29,
+    "theme": "Satış ve Reddedilme",
+    "aphorism": "Müşteri bulmaktan veya fiyatını söylemekten çekiniyorsun çünkü reddedilmeyi kişisel algılıyorsun. Profesyoneller reddedilmeyi sadece bir veri olarak görür.",
+    "strategy": "Duyguları devreden çıkar. Satış, pazarlama ve büyüme sadece soğuk bir matematik oyunudur."
+  },
+  {
+    "id": 30,
+    "theme": "Gün Başlangıcı (06:00)",
+    "aphorism": "Sabah 06:00'da yatağın sıcaklığına yenildiğinde, o gün karşılaşacağın tüm zorluklara karşı ilk ve en önemli savaşı peşinen kaybetmiş olursun.",
+    "strategy": "Buz gibi bir iradeyle kalk. O ilk adımı atmak, günün geri kalanına hükmetmenin yegane anahtarıdır."
+  },
+  {
+    "id": 31,
+    "theme": "Kapanış ve Yüzleşme",
+    "aphorism": "Bugün 6 görevden 5'ini yapıp kendini başarılı sayarak uyursan, vasatlığın o sıcak ve konforlu kollarına geri dönüyorsun demektir.",
+    "strategy": "%99 başarısızlıktır. Hedef her zaman 6/6. Taviz yok, bahane yok."
+  },
+  {
+    "id": 32,
+    "theme": "Gece Rutini",
+    "aphorism": "Gece detoksunu atlayıp günü kaotik bir şekilde bitirmek, yarının stratejisini şansa bırakmak ve kontrolü kaybetmektir.",
+    "strategy": "Günü askeri bir disiplinle kapat. Yarının zaferi, bu gecenin kusursuz rutininden doğar."
+  },
+  {
+    "id": 33,
+    "theme": "Fiziksel Standartlar",
+    "aphorism": "Spor salonunda hissettiğin acı geçicidir, ancak kendi bedenine söz geçiremediğin için aynaya baktığında hissettiğin o derindeki utanç kalıcıdır.",
+    "strategy": "Fiziksel zırhını geliştirmek opsiyonel değil, psikolojik dayanıklılığın temel taşıdır."
+  },
+  {
+    "id": 34,
+    "theme": "Zamanın Değeri",
+    "aphorism": "Başarıya giden yolun uzunluğundan şikayet ediyorsun, ancak her gün saatlerini hiçbir getirisi olmayan anlamsız sohbetlerde eritiyorsun.",
+    "strategy": "Zamanın daralıyor. Her saniyeni, seni nihai hedefine ulaştıracak bir yatırım aracı gibi kullan."
+  },
+  {
+    "id": 35,
+    "theme": "Kimlik İnşası",
+    "aphorism": "Geçmişteki zayıf, onay arayan veya sınır çizemeyen versiyonun ölmeyi reddediyor. Ona her taviz verdiğinde, yeni kimliğini kendi ellerinle boğuyorsun.",
+    "strategy": "Geçmişi bir yük olarak değil, ne olmaman gerektiğini hatırlatan karanlık bir harita olarak kullan."
+  },
+  {
+    "id": 36,
+    "theme": "Onay Bağımlılığı (Approval Addiction)",
+    "aphorism": "Başkalarının senin hakkında ne düşündüğünü umursadığın her saniye, kendi krallığının anahtarlarını yoldan geçen yabancılara teslim ediyorsun.",
+    "strategy": "Kendi metriklerin dışında hiçbir değerlendirmeyi kabul etme. Dış dünyanın alkışı da yergisi de senin operasyonunu durduramaz."
+  },
+  {
+    "id": 37,
+    "theme": "Sınır İhlalleri (Boundary Violations)",
+    "aphorism": "İnsanların sana nasıl davranacağını, onlara verdiğin tavizler belirler. Çizgini net çekmediğin her an, istismara açık bir hedef tahtasısın.",
+    "strategy": "Sınırların esnemez betondan olmalı. Gerekirse 'kötü adam' ol, ama asla kullanışlı bir aparat olma."
+  },
+  {
+    "id": 38,
+    "theme": "İlişkiler ve Manipülasyon",
+    "aphorism": "Duygusal şantajlara boyun eğdiğinde, karşı tarafın saygısını değil, sadece geçici bir ateşkesi satın alırsın. Saygı, masadan kalkabilme gücüne duyulur.",
+    "strategy": "Manipülasyon kokusu aldığında tartışmaya girme. Geri adım atma. Sessizlik ve mesafen en büyük silahındır."
+  },
+  {
+    "id": 39,
+    "theme": "Yalnızlık Korkusu",
+    "aphorism": "Kalabalıklar içinde silik ve itaatkar bir figür olmaktansa, kendi inşa ettiğin izolasyonda bir tiran olmayı seçmelisin.",
+    "strategy": "İzolasyon bir ceza değil, antrenman sahasıdır. Etrafındaki gürültüyü sustur ve sadece kendi operasyonuna odaklan."
+  },
+  {
+    "id": 40,
+    "theme": "Kurtarıcı Sendromu (Savior Complex)",
+    "aphorism": "Başkalarının sorunlarını çözmeye çalışırken kendi hedeflerini enkaza çeviriyorsun. Sen bir rehabilitasyon merkezi değilsin.",
+    "strategy": "Kimseyi kurtarmak senin görevin değil. Kendi gemini yüzdür, boğulmak isteyenleri kendi kaderine bırak."
+  },
+  {
+    "id": 41,
+    "theme": "İyi Çocuk Sendromu (Nice Guy Syndrome)",
+    "aphorism": "'İyi adam' olmak, sınır çizememe korkunu ve cesaretsizliğini erdem gibi pazarlamaktır. Dünyanın iyi çocuklara değil, sınırları olan tehlikeli adamlara ihtiyacı var.",
+    "strategy": "İtaatkar nezaketi bırak. Saygılı ol, ama gerektiğinde tavizsiz bir duvara dönüşmekten çekinme."
+  },
+  {
+    "id": 42,
+    "theme": "Statü ve Karakter",
+    "aphorism": "Sahip olduğun araçlar veya kıyafetler senin nihai statünü belirlemez; zorluklar ve saygısızlıklar karşısında gösterdiğin soğukkanlılık belirler.",
+    "strategy": "Karakterin senin en pahalı mülkündür. Onu ucuz tartışmalarda ve gereksiz dramalarda harcama."
+  },
+  {
+    "id": 43,
+    "theme": "Duygusal Kontrol",
+    "aphorism": "Öfkeni veya üzüntünü dışa vurduğun her an, düşmanlarına senin üzerinde kullanabilecekleri bir kumanda paneli hediye edersin.",
+    "strategy": "Stoik bir kaya gibi ol. İçeride fırtınalar kopsa da dışarıya sadece soğuk bir hesaplayıcılık yansıt."
+  },
+  {
+    "id": 44,
+    "theme": "Geçmişle Yüzleşme",
+    "aphorism": "Geçmişteki hatalarınla, kilolarınla veya maruz kaldığın zorbalıklarla kendini tanımlamak, celladına aşık olmaktır.",
+    "strategy": "Geçmiş sadece seni daha acımasız yapması gereken bir veri setidir, bir kimlik değil. Alınacak dersi al ve dosyayı sonsuza dek kapat."
+  },
+  {
+    "id": 45,
+    "theme": "Odak Hırsızları (Energy Vampires)",
+    "aphorism": "Senin vizyonunla dalga geçen veya seni aşağı çeken insanları hayatında tutmak, zehir içip başkasının ölmesini beklemektir.",
+    "strategy": "Çevrendeki asalakları acımasızca buda. Seni yukarı çekmeyen herkes, hedeflerine vurulmuş bir prangadır."
+  },
+  {
+    "id": 46,
+    "theme": "Tartışmalar ve Enerji",
+    "aphorism": "Senin hedeflerini anlamayan insanlara açıklama yapmak, enerjini kara deliğe atmaktır. Anlamak zorunda değiller.",
+    "strategy": "Açıklama yapma, ikna etmeye çalışma. Sadece sonuçlarla konuş. Sessizce çalış ve bırak başarın onları sağır etsin."
+  },
+  {
+    "id": 47,
+    "theme": "Öz Değer ve Talep",
+    "aphorism": "Kendine biçtiğin değer, başkalarının sana ödeyeceği maksimum bedeldir. Kendi değerini düşürürsen, piyasa seni ezer geçer.",
+    "strategy": "Masaya ne koyduğunu bil ve bunun karşılığını eksiksiz talep et. İndirim yok, acıma yok."
+  },
+  {
+    "id": 48,
+    "theme": "Rahatlık Alanı (Comfort Zone)",
+    "aphorism": "Her şeyin kolay ve rahat hissettirdiği o an, aslında zihinsel ve fiziksel olarak çürümeye başladığın andır.",
+    "strategy": "Kendini bilerek zorluklara sok. Rutinin dışına çık, acıyı kucakla ve niyet kasını test et."
+  },
+  {
+    "id": 49,
+    "theme": "Sessizliğin Gücü",
+    "aphorism": "Planlarını ve hedeflerini dopamin uğruna sağa sola anlatmak, henüz doğmamış bir vizyonu sokak köpeklerinin önüne atmaktır.",
+    "strategy": "Gizlilik içinde hareket et. Başarın ortada görünene kadar bir hayalet gibi sessiz kal."
+  },
+  {
+    "id": 50,
+    "theme": "Mazeretlerin Reddi",
+    "aphorism": "Bel fıtığın, ağrıların veya gün içindeki yorgunluğun, disiplinsizliğini meşrulaştırmak için uydurduğun acınası ninnilerdir.",
+    "strategy": "Fiziksel engeller sadece strateji değiştirmeni gerektirir, hedeften vazgeçmeni değil. Bahaneleri yak."
+  },
+  {
+    "id": 51,
+    "theme": "Radikal Sorumluluk",
+    "aphorism": "Hayatında ters giden her şeyden dolayı başkalarını veya sistemi suçlamak, kurban rolünü oynamaktan gizli bir zevk aldığını gösterir.",
+    "strategy": "Kontrol sende. Başına gelen her şeyin %100 sorumluluğunu al. Kurban yok, sadece çözülmesi gereken bir problem var."
+  },
+  {
+    "id": 52,
+    "theme": "İhanet ve Beklentiler",
+    "aphorism": "Saygısızlığa uğradığında şaşırmak veya kırılmak, insan doğasını henüz anlayamadığının kanıtıdır.",
+    "strategy": "Kimseye körü körüne güvenme. Hayal kırıklığı, yanlış yere yatırım yapılmış beklentilerin sonucudur. Beklentiyi sıfırla."
+  },
+  {
+    "id": 53,
+    "theme": "Sosyal Medya ve Gerçeklik",
+    "aphorism": "Başkalarının sahte ve filtrelenmiş hayatlarına bakarak kendi gerçekliğini yargılamak, zihinsel bir intihardır.",
+    "strategy": "Algoritmaların senin efendin olmasına izin verme. Ekranı kapat ve kendi inşaat alanına geri dön."
+  },
+  {
+    "id": 54,
+    "theme": "Disiplinin Bedeli",
+    "aphorism": "Disiplinin bedeli gramla ölçülür, pişmanlığın bedeli tonla. Bugün o görevleri tamamlamazsan, yarın o ağırlığı utanç olarak taşıyacaksın.",
+    "strategy": "Anlık hazlara karşı körleş. Uzun vadeli hedefe kilitlen ve acıyı bir yatırım aracı olarak gör."
+  },
+  {
+    "id": 55,
+    "theme": "Kapanış ve Nihai Hedef",
+    "aphorism": "Her geçen saniye ölüme bir adım daha yaklaşıyorsun. Bu dünyadan silik, sıradan bir iz bırakarak gitmek doğana yapılabilecek en büyük ihanettir.",
+    "strategy": "Memento Mori. Bugün son gününmüş gibi acımasızca üret, yaşa ve kendi zirveni inşa et."
+  },
+  {
+    "id": 56,
+    "theme": "Bozma Creative ve İcraat",
+    "aphorism": "Bozma Creative'in logosunu tasarlamak seni ajans sahibi yapmaz. Masaya ödeme yapan bir müşteri getirene kadar sadece hayalperest bir işsizsin.",
+    "strategy": "Görsel tatmini bırak, satışa odaklan. Soğuk arama yap, portfolyo gönder. Kan akıtmadan krallık kurulmaz."
+  },
+  {
+    "id": 57,
+    "theme": "Finansal Saldırganlık",
+    "aphorism": "Kredi kartı asgarisini ödeyip bankaların modern kölesi olmaya devam ettiğin sürece, 'özgürlük' kelimesini ağzına almaya hakkın yok.",
+    "strategy": "Mevcut borçlar birer prangadır. Hayatta kalma moduna geç, gereksiz her harcamayı kes ve finansal kanamanı durdur."
+  },
+  {
+    "id": 58,
+    "theme": "AI ve Vibe Coding",
+    "aphorism": "Prompt yazmayı öğrenmek yetmez. Sistemleri n8n ile birbirine bağlayıp otomatize etmiyorsan, yapay zekanın efendisi değil, sadece yeni nesil bir amelesisin.",
+    "strategy": "Uyurken senin için çalışacak sistemler (Henry OS) inşa et. Manuel yapılan her iş, kendi zekana ihanettir."
+  },
+  {
+    "id": 59,
+    "theme": "Müşteri Dominasyonu",
+    "aphorism": "Müşterinin 'bunu biraz daha büyütelim' saçmalıklarına boyun eğdiğinde, uzmanlığını üç kuruşa satıp bir piksel iticiye dönüştüğünü kabul ediyorsun.",
+    "strategy": "Sen bir uygulayıcı değil, stratejistsin. Kararlarını savun, taviz verme. İtaat eden tasarımcıya statü verilmez."
+  },
+  {
+    "id": 60,
+    "theme": "Değer ve Fiyatlandırma",
+    "aphorism": "İşi almak için fiyat kırdığın an, kendi markanın (Bozma Creative) mezarını kazmaya başlarsın. Ucuz iş, ucuz ve saygısız müşteri getirir.",
+    "strategy": "Fiyatın senin filtre mekanizmandır. Bütçesi olmayan müşteri senin problemin değil. Pahalı ol ve o değere layık iş üret."
+  },
+  {
+    "id": 61,
+    "theme": "İş Etiği ve Hafta Sonları",
+    "aphorism": "Hafta sonu 'dinlenmeyi' hak ettiğini düşünüyorsan, ömrünün geri kalanını başkalarının zenginliği için pazartesi sendromu yaşayarak geçirmeye mahkumsun.",
+    "strategy": "Rakiplerin dinlenirken sen inşa etmelisin. Hedeflerine ulaşana kadar hafta sonu veya tatil diye bir kavram yok."
+  },
+  {
+    "id": 62,
+    "theme": "Mükemmeliyetçilik Felci",
+    "aphorism": "Kendini 'hazır hissetmeyi' beklemek, eylemsizliğini meşrulaştırmak için uydurduğun entelektüel bir kılıftır. Hiçbir zaman tam hazır olmayacaksın.",
+    "strategy": "Savaş alanına in. Kırık dökük de olsa sistemi canlıya al, yolda düzelt. Hız, mükemmellikten üstündür."
+  },
+  {
+    "id": 63,
+    "theme": "Fakirlik Zihniyeti",
+    "aphorism": "Zenginlik banka hesabında başlamaz; zamanını ve enerjini nereye harcadığınla başlar. Ucuz hazlara yatırım yapan bir zihniyet sadece fakirlik üretir.",
+    "strategy": "Her saatini bir yatırımcı gibi yönet. Bu aktivite bana para, güç veya statü getirmiyor diyorsan, hemen o işi bırak."
+  },
+  {
+    "id": 64,
+    "theme": "Kurtarıcıyı Beklemek",
+    "aphorism": "Kimse senin potansiyelini keşfetmek için kapını çalmayacak. Köşende oturup 'anlaşılmayı' beklemek, acizlerin stratejisidir.",
+    "strategy": "Sahneye zorla çık. Kapıları kır. Değerini dünyaya sen dayatacaksın, onlar sana lütfetmeyecek."
+  },
+  {
+    "id": 65,
+    "theme": "Acı ve Büyüme",
+    "aphorism": "Bir işi yaparken zorlandığında veya sıkıldığında kaçacak bir delik araman, beyninin hala zayıf bir çocuk gibi programlandığını gösterir.",
+    "strategy": "Acı, zayıflığın vücudu terk etme şeklidir. Sıkıldığın o an, tam olarak büyümenin başladığı saniyedir. Masada kal."
+  },
+  {
+    "id": 66,
+    "theme": "Vizyon vs. İcraat",
+    "aphorism": "Kafanın içindeki o milyon dolarlık yapay zeka ajansı fikirleri, klavyeye dokunup kod yazmadığın sürece halüsinasyondan ibarettir.",
+    "strategy": "Konuşmayı kes. Sadece icraat. Bugün o otomasyon bitecek, o portfolyo güncellenecek."
+  },
+  {
+    "id": 67,
+    "theme": "Reddedilme Korkusu (Cold Outreach)",
+    "aphorism": "Müşterilere mesaj atmaktan korkuyorsun çünkü 'hayır' cevabının senin değerini düşüreceğini sanıyorsun. Egon, cüzdanından daha büyük.",
+    "strategy": "Reddedilmek kişisel değildir, istatistiksel bir veridir. Ne kadar çok hayır alırsan, evet'e o kadar yaklaşırsın. Ateş etmeye devam et."
+  },
+  {
+    "id": 68,
+    "theme": "İş Dünyasında Merhamet",
+    "aphorism": "İş dünyasında merhamet veya 'iyi niyet' beklemek, kurtlar sofrasına vejetaryen olarak oturmaktır. Seni canlı canlı yerler.",
+    "strategy": "Profesyonellik soğuktur. Sözleşme yoksa iş yok. Peşinat yoksa mesai yok. Kendi çıkarlarını acımasızca koru."
+  },
+  {
+    "id": 69,
+    "theme": "Derin Odak (Deep Work)",
+    "aphorism": "Çalışırken sürekli arka planda bir video açmak veya müzik değiştirmek, zihninin sessizlikle ve gerçek derinlikle yüzleşmekten ne kadar korktuğunun kanıtıdır.",
+    "strategy": "Saf, kesintisiz izolasyon. Dikkat dağıtan her şeyi öldür. Zekanı ancak mutlak sessizlikte tam kapasite kullanabilirsin."
+  },
+  {
+    "id": 70,
+    "theme": "Yarı Zamanlı Çaba",
+    "aphorism": "Hedeflerine sadece 'havan yerinde olduğunda' mesai harcayarak, dünyayı fetheden adamlarla rekabet edebileceğini sanmak safdilliktir.",
+    "strategy": "Motivasyon amatörler içindir. Disiplin, canın hiç istemediğinde bile o masaya oturup kan ter içinde işi bitirmektir."
+  },
+  {
+    "id": 71,
+    "theme": "Portfolyo ve Geçmiş",
+    "aphorism": "Geçmişte yaptığın iyi işlerin arkasına saklanıp bugünün vasatlığını örtmeye çalışıyorsun. Dün kazandığın zafer, bugünün kirasını ödemez.",
+    "strategy": "Her gün sıfırdan başlıyorsun. Dün bitti. Bugün masaya ne koyduğun, kim olduğunu belirler."
+  },
+  {
+    "id": 72,
+    "theme": "Sorumluluk Alanı",
+    "aphorism": "Müşteri briefi eksik verdi diye başarısız bir iş çıkarmak senin suçundur. Otoriteyi eline alıp süreci yönetemeyen bir tasarımcı, sadece bir araçtır.",
+    "strategy": "Sürecin lideri sensin. Gerekli veriyi söküp al, kuralları sen koy. Mazeret değil, sonuç üret."
+  },
+  {
+    "id": 73,
+    "theme": "Ağ Oluşturma (Networking)",
+    "aphorism": "Odandan çıkmayıp vizyonsuz insanlarla aynı masada oturmaya devam ettiğin sürece, o masadaki en zeki adam olmanın verdiği sahte tatminle çürüyeceksin.",
+    "strategy": "Seni aptal hissettirecek odalara gir. Senden daha acımasız, daha başarılı insanlarla aynı havayı solu."
+  },
+  {
+    "id": 74,
+    "theme": "Sistem Köleliği",
+    "aphorism": "Maaşlı işindeki 'güvenli' konfor alanın, aslında potansiyelini her ay düzenli olarak satman karşılığında sana verilen bir sus payıdır.",
+    "strategy": "Mevcut işini sadece kendi ajansını (Bozma Creative) kurmak için bir finansman aracı olarak gör. Bağlılık yeminleri etme."
+  },
+  {
+    "id": 75,
+    "theme": "Gün Sonu / Ajans Hesabı",
+    "aphorism": "Günü bitirirken kendine şu soruyu sor: 'Bugün Bozma Creative'i gerçek bir şirket yapmak için hangi tuğlayı koydum?' Cevabın hiçlikse, koca bir günü çöpe attın.",
+    "strategy": "Kendi imparatorluğun için her gün en az bir somut eylem. O tuğla konmadan bu sistem kapanmayacak."
+  },
+  {
+    "id": 76,
+    "theme": "Akademik İllüzyon",
+    "aphorism": "İki üniversite okuman piyasada kimsenin umurunda değil. Müşteriler diplomana değil, onların sorunlarını çözecek o acımasız sistemleri kurup kuramadığına para öder.",
+    "strategy": "Okulu ve ödevleri erteleme veya başarısızlık bahanesi olarak kullanmayı bırak. Gerçek savaş, gerçek dünyada verdiğin o somut icraatlarla kazanılır."
+  },
+  {
+    "id": 77,
+    "theme": "İngilizce ve Küresel Arena",
+    "aphorism": "İngilizceyi ana dilin gibi konuşamadığın her saniye, kendini üçüncü dünya standartlarında bir kariyere ve vizyonsuz müşterilere mahkum ediyorsun.",
+    "strategy": "Yerel pazarın zehirli ve düşük bütçeli ekosisteminden kaçış biletin o 1 saatlik İngilizce çalışmasıdır. Bu çalışma opsiyonel değil, hayatidir."
+  },
+  {
+    "id": 78,
+    "theme": "Gündüz İşinin (Day Job) Sınırları",
+    "aphorism": "Tam zamanlı çalıştığın o dijital ajans senin sahibin değil, sadece şu anki vizyonunun sponsorudur. Onlara akşamlarını ve geleceğini satma.",
+    "strategy": "Saat 18:00'den sonra sen bir ajans çalışanı değil, kendi imparatorluğunu kuran bir mimarsın. Bu iki kimliği birbirine karıştırma."
+  },
+  {
+    "id": 79,
+    "theme": "Gelecekteki Sen ile Yüzleşme",
+    "aphorism": "2030 yılındaki hedeflerine ulaşamamış, hala başkalarının emirlerini uygulayan o acınası versiyonun şu an sana bakıp nefret ediyor.",
+    "strategy": "Gelecekteki o adama ihanet etme. Bugün ertelediğin her iş, onun boğazına dolanan bir iptir."
+  },
+  {
+    "id": 80,
+    "theme": "Statü ve Materyalizm",
+    "aphorism": "Mevcut standartlarınla yetinip çok daha üst düzey arabaların veya statülerin hayalini kurmak, o bedeli ödeyecek mesaiyi yapmadığın sürece sadece zihinsel bir mastürbasyondur.",
+    "strategy": "Hayal kurmayı bırak, matematiğe bak. O vizyonu hangi otomasyon, hangi yetenek ve hangi müşteri finanse edecek? Sadece üret."
+  },
+  {
+    "id": 81,
+    "theme": "İlişkiler ve Misyon",
+    "aphorism": "Kendi operasyonunu askıya alıp bir partnerin anlık ilgisine koştuğunda, saygı duyulan 'o adam' olmaktan çıkıp sadece itaatkar bir uyduya dönüşüyorsun.",
+    "strategy": "Önce misyon, sonra ilişki. Kendi belirlediği 6 metrik hedefine sadık kalamayan bir erkeğe kimse içgüdüsel olarak gerçek bir saygı duymaz."
+  },
+  {
+    "id": 82,
+    "theme": "Finansal Prangalar",
+    "aphorism": "Modern tüketim alışkanlıklarının ve 'sonra öde' tuzaklarının seni nasıl bir faiz kölesi yaptığını görmezden geliyorsun. Bu bir konfor değil, tuzaktır.",
+    "strategy": "Borç, gelecekteki özgür zamanını bugünden ucuza satmaktır. Finansal kanamanı durdur ve saldırgan bir şekilde o prangaları kır."
+  },
+  {
+    "id": 83,
+    "theme": "Fiziksel Konfor ve Bahane",
+    "aphorism": "Fiziksel yorgunlukları veya ağrıları zihinsel zayıflığına kalkan yapıyorsun. Acı bir gerçektir, ancak o masadan işi bitirmeden kalkmak senin seçtiğin bir zayıflıktır.",
+    "strategy": "Ergonomini çöz, sistemini kur ama mazeret üretme. Fiziksel sınırların bittiği yerde irade kası devreye girmelidir."
+  },
+  {
+    "id": 84,
+    "theme": "Kendi Sisteminle Yüzleşme",
+    "aphorism": "Kendi kodladığın veya tasarladığın sisteme yalan söylemek, aynaya bakıp kendi yüzüne tükürmekle aynı şeydir. Sistem senin zayıflıklarını unutmaz.",
+    "strategy": "Veri yalan söylemez. Gün sonunda o tablo 6/6 değilse, kendine verdiğin sözü tutmadığını en acı şekilde kabul et ve o utancı hisset."
+  },
+  {
+    "id": 85,
+    "theme": "Yapay Zeka (AI) Tüketiciliği",
+    "aphorism": "Yeni yapay zeka araçları hakkında saatlerce video izleyip hiçbir şey inşa etmemek, seni bir teknoloji lideri yapmaz; sadece dijital bir izleyici yapar.",
+    "strategy": "Tüketimi anında durdur. Bilgiyi aksiyona çevir. Öğrendiğin her konsepti Bozma Creative için bir silaha dönüştür."
+  },
+  {
+    "id": 86,
+    "theme": "Zaman Yönetimi",
+    "aphorism": "'Zamanım yok' yalanı, hedeflerinin senin için yeterince önemli olmadığının ve önceliklendirme yapmaktan aciz olduğunun en net kanıtıdır.",
+    "strategy": "Herkesin 24 saati var. Telefonun ekran süresine bak, o anlamsız kaydırmaları gör ve kendi yalanınla yüzleş."
+  },
+  {
+    "id": 87,
+    "theme": "İrade Kasının Yırtılması",
+    "aphorism": "Bugün beslenme protokolünü bozman, yarın projeyi ertelemenin ilk antrenmanıdır. Zayıflık bulaşıcı bir hastalıktır ve hızla yayılır.",
+    "strategy": "İrade, kullanıldıkça güçlenen bir kastır. Küçük tavizler büyük yıkımların habercisidir. Taviz verme."
+  },
+  {
+    "id": 88,
+    "theme": "Kurban Psikolojisi 2.0",
+    "aphorism": "Zor bir gün geçirdiğin için kendine 'ödül' olarak o ucuz dopamin kaynaklarını (şeker, erteleme) sunmak, kurban psikolojisinin en sinsi halidir.",
+    "strategy": "Sen bir evcil hayvan değilsin, ödül mamasına ihtiyacın yok. Gerçek ödül, o cehennem gibi güne rağmen disiplini bozmamaktır."
+  },
+  {
+    "id": 89,
+    "theme": "Yalnızlığın Gücü",
+    "aphorism": "Çevrendekiler senin vizyonunu anlamadığında kendini yalnız ve dışlanmış hissediyorsun. Sürüler halinde uçanlar güvercinlerdir.",
+    "strategy": "Anlaşılmayı bekleme. Bu yolculuk doğası gereği tek kişilik. Sessizliği ve anlaşılmamayı bir zırh gibi giy."
+  },
+  {
+    "id": 90,
+    "theme": "Müşteri vs Lider",
+    "aphorism": "Müşterinin mantıksız her revizyonuna evet demek, uzmanlığını ayaklar altına almaktır. Sen bir cerrahsın, hasta sana neşteri nasıl tutacağını söyleyemez.",
+    "strategy": "Masada her zaman liderliği al. Sınırları ihlal eden her talebi, soğuk, net ve profesyonel bir şekilde geri çevir."
+  },
+  {
+    "id": 91,
+    "theme": "Uyku ve Hak Ediş",
+    "aphorism": "Günün kritik görevlerini bitirmeden girdiğin o yatak, bir dinlenme yeri değil, vasatlığının ve başarısızlığının yumuşak bir mezarıdır.",
+    "strategy": "Uykuyu hak etmen gerekir. Tablo tamamen işaretlenmeden gözlerini kapatırsan, sabaha hedeflerinden bir adım daha uzaklaşmış bir adam olarak uyanırsın."
+  },
+  {
+    "id": 92,
+    "theme": "Dopamin Köleliği",
+    "aphorism": "Gerçek dünyada hiçbir zafer kazanmadan, sosyal medyadan ve bildirimlerden aldığın o ucuz dopaminle beynini başarılı olduğuna inandırıyorsun.",
+    "strategy": "O ucuz dopamin musluğunu tamamen kapat. Nörokimyanı sadece o 6 görevi bitirdiğinde salgılanacak şekilde yeniden programla."
+  },
+  {
+    "id": 93,
+    "theme": "Planlama Mastürbasyonu",
+    "aphorism": "Saatlerce plan yapmak, şemalar çizmek veya listeler oluşturmak; o planı kan ter içinde icra etmediğin sürece sadece zihinsel bir illüzyondur.",
+    "strategy": "Planlama aşaması bitti. Şimdi kan dökme zamanı. Sisteme değil, sadece günün sonunda işin bitip bitmediğine odaklan."
+  },
+  {
+    "id": 94,
+    "theme": "Başkalarının Başarısı",
+    "aphorism": "Eski tanıdıklarının veya rakiplerinin başarılarını izleyip içten içe bir eksiklik hissetmek, kendi inşana odaklanmadığının utanç verici bir kanıtıdır.",
+    "strategy": "Gözlerini kendi masana çevir. Onların ne yaptığı seni zerre kadar ilgilendirmez. Sen sadece kendi imparatorluğunu kurmakla mesulsün."
+  },
+  {
+    "id": 95,
+    "theme": "Memento Mori (Ölüm Farkındalığı)",
+    "aphorism": "Bu dünyada sana ayrılan sürenin ne kadar kaldığını bilmiyorsun ama sen o eşsiz süreyi hala 'yarın başlarım' diyerek gözünü kırpmadan çöpe atıyorsun.",
+    "strategy": "Zamanın doluyor. Etrafında iz bırakacak o yapıyı inşa etmeden ölmeyeceksin. Mazeretleri bırak ve hemen şimdi çalış."
+  },
+  {
+    "id": 96,
+    "theme": "Mutlak İrade ve Sonuç",
+    "aphorism": "'Elimden geleni yaptım' cümlesi, kaybedenlerin kendilerini rahatlatmak için uydurduğu küstahça bir yalandır. Sadece elde edilen sonuçlar gerçektir.",
+    "strategy": "Çabanı değil, metriklerini ölç. Gün sonunda o 6 düğmenin hepsi yeşil değilse, elinden geleni yapmadın demektir."
+  },
+  {
+    "id": 97,
+    "theme": "Sıfır Tolerans (Beslenme Metaphoru)",
+    "aphorism": "Sıfır karbonhidrat kuralı sadece biyolojik bir diyet değil; hayatındaki tüm zayıflıklara, mazeretlere ve ucuz insanlara karşı sıfır tolerans politikasının provasıdır.",
+    "strategy": "Masada taviz verme. Kan şekerini nasıl kontrol ediyorsan, hayatına giren insanları ve işleri de aynı soğukkanlılıkla kontrol et."
+  },
+  {
+    "id": 98,
+    "theme": "Bozma Creative ve Gerçeklik",
+    "aphorism": "Ajans kurmak sadece havalı bir isim bulmak değildir. Satış yapmadığın, reddedilmeyi göze almadığın her gün Bozma Creative sadece dijital bir hayaletten ibarettir.",
+    "strategy": "Logonla veya web sitenle oynamayı bırak. Piyasaya çık, soğuk arama yap, kan akıt ve o masaya gerçek bir müşteri getir."
+  },
+  {
+    "id": 99,
+    "theme": "Yapay Zeka (AI) Kaldıracı",
+    "aphorism": "n8n ve yapay zeka ajanlarını sadece izlemek, silah fuarında gezip silahsız savaşa gitmek gibidir. Rakiplerin o sistemleri kurarken sen hala manuel amelelik yapıyorsun.",
+    "strategy": "Vibe coding ile kendi ordunu yarat. Tekrar eden her işi otomatize et ve zekanı sadece strateji için kullan."
+  },
+  {
+    "id": 100,
+    "theme": "Gündüz İşinin (Day Job) Gerçekliği",
+    "aphorism": "Tam zamanlı ajans işindeki başarıların, aslında kendi imparatorluğunu kurmak için harcaman gereken enerjinin başkalarına peşkeş çekilmesidir.",
+    "strategy": "Mevcut işini sadece bir nakit akışı ve öğrenme sahası olarak gör. Sadakatini sadece kendi geleceğine sakla."
+  },
+  {
+    "id": 101,
+    "theme": "YouTube ve Dijital İz",
+    "aphorism": "Kamera karşısına geçmekten korktuğun için YouTube kanalını ertelemek, o çok güvendiğin 'kaliteli' fikirlerinin aslında eleştirilmeye dayanamayacak kadar kırılgan olduğunu gösterir.",
+    "strategy": "Egonu sustur. İlk videoların berbat olacak ve bu matematiğin bir parçası. Sadece kayda gir ve dijital ayak izini bırak."
+  },
+  {
+    "id": 102,
+    "theme": "6 Metrik Kuralı (Dinin)",
+    "aphorism": "Belirlediğin 6 günlük rutin senin yeni dinindir. Bir tanesini bile atladığında, kendi inanç sistemini yıkmış ve zayıflığa tapmış olursun.",
+    "strategy": "Günde 6 basit görev. Bu görevler senin dünyayla arandaki psikolojik duvardır. O duvarda çatlak açılmasına izin verme."
+  },
+  {
+    "id": 103,
+    "theme": "Maskülen Enerji ve Sınırlar",
+    "aphorism": "Başkalarının seni kullanmasına izin verdiğinde 'uyumlu' değil, 'omurgasız' olursun. Maskülen enerji, gerektiğinde masayı devirebilme kapasitesinden gelir.",
+    "strategy": "Sınırlarını ihlal eden müşteriye veya insana net bir 'hayır' de. Onların öfkesi, senin öz saygından daha değerli değil."
+  },
+  {
+    "id": 104,
+    "theme": "Erken Uyanış (06:00 Şoku)",
+    "aphorism": "06:00'da yatağın sıcaklığına yenilen bir bedenin, gün içinde karşılaşacağı finansal ve psikolojik krizleri yönetebileceğine inanması komedidir.",
+    "strategy": "Alarm senin ilk düşmanındır. Onu sustur ve kalk. Güne zaferle, yürüyüşle ve buz gibi bir gerçeklikle başla."
+  },
+  {
+    "id": 105,
+    "theme": "Dil Bariyeri (İngilizce)",
+    "aphorism": "İngilizce çalışmayı es geçtiğin her gün, kendi potansiyelini bilerek yerel bir kafese kilitleyip anahtarını okyanusa atıyorsun.",
+    "strategy": "1 saatlik çalışma bir lüks değil, hayatta kalma meselesidir. Küresel vizyona giden yol o kelimelerden geçiyor."
+  },
+  {
+    "id": 106,
+    "theme": "Zihinsel Beslenme (25 Sayfa)",
+    "aphorism": "Kitap okumaya zaman bulamayıp ekran kaydırmak, beynine her gün bilerek zehir enjekte etmektir. Kendi zihnini bir çöplüğe çeviriyorsun.",
+    "strategy": "O 25 sayfa okunacak. Bilgi, senin başkalarını ezip geçeceğin tek yasal silahtır."
+  },
+  {
+    "id": 107,
+    "theme": "Finansal Savaş (Peugeot 408 GT)",
+    "aphorism": "Hedefindeki araba veya statü, sadece maaşını bekleyerek ve asgari ödeme yaparak ulaşabileceğin şeyler değil. Finansal vasatlık, hedeflerini çürütür.",
+    "strategy": "Gelirini agresifçe artır (kendi müşterini bul) ve giderlerini acımasızca kes. Finansal savaşta savunma değil, sadece hücum kazandırır."
+  },
+  {
+    "id": 108,
+    "theme": "Fiziksel Zırh (Antrenman)",
+    "aphorism": "Ağırlıkların altına girmekten kaçtığında, aslında dünyadaki zorlukların ağırlığından kaçıyorsun. Bedeni zayıf olanın zihni de kolay kırılır.",
+    "strategy": "Kaslarını yırt ve yeniden inşa et. Takviyelerini al. Bedenini, kimsenin saygısızlık edemeyeceği biyolojik bir zırha dönüştür."
+  },
+  {
+    "id": 109,
+    "theme": "Gece Kapanışı (Detoks)",
+    "aphorism": "Günü plansız ve kaotik bitirmek, yarının savaş planını düşmanın eline teslim etmektir.",
+    "strategy": "Gece detoks çayını iç, günlüğünü yaz ve zihnini tamamen sıfırla. Kapanış ritüeli, bir sonraki günün fethidir."
+  },
+  {
+    "id": 110,
+    "theme": "Acının Tercihi",
+    "aphorism": "Disiplinin acısı ile pişmanlığın acısı arasında bir seçim yapmak zorundasın. Disiplin sadece bugün canını yakar, pişmanlık ise bir ömür boyu.",
+    "strategy": "Bugün o antrenmanı yap, o kodu yaz. Anlık acıyı kucakla ki, yıllar sonra aynada vasat bir adam görme acısını yaşama."
+  },
+  {
+    "id": 111,
+    "theme": "Tüketicilikten Üreticiliğe",
+    "aphorism": "Birilerinin ürettiği dijital içeriklerin bağımlısı olduğun sürece, o kişilerin zenginlik algoritmalarında sadece bir istatistik olacaksın.",
+    "strategy": "Sistemden çık. Sadece kendi sistemini, kodlarını ve tasarımlarını üretmek için ekran başına geç."
+  },
+  {
+    "id": 112,
+    "theme": "Karanlık Ayna (Dark Mirror)",
+    "aphorism": "Kendinden kaçabilirsin, yalanlar uydurabilirsin ama veri affetmez. Karanlık ayna sana gerçekte kim olduğunu tüm çıplaklığıyla gösterecek.",
+    "strategy": "Yüzleşmekten korkma. O aynada eksiklerini gördüğünde depresyona girme, öfkelen ve o öfkeyi yakıta çevir."
+  },
+  {
+    "id": 113,
+    "theme": "Duygusal İzolasyon",
+    "aphorism": "Drama, dedikodu ve duygusal krizler, fakir ve vizyonsuz zihinlerin eğlencesidir. Bu sirkte sana yer yok.",
+    "strategy": "Kendini duygusal olarak izole et. Çevrendeki gürültüye sağır ol. Senin tek gerçekliğin inşa ettiğin sistemdir."
+  },
+  {
+    "id": 114,
+    "theme": "Özgürlüğün Bedeli",
+    "aphorism": "Sistemden bağımsızlığını ilan etmek bedava değildir. Bedeli; uykusuzluk, yalnızlık, reddedilme ve tavizsiz bir disiplindir. Ödemeyeceksen hiç başlama.",
+    "strategy": "Kölelik konforludur, özgürlük ise acılı. O bedeli her gün, her saat eksiksiz olarak öde."
+  },
+  {
+    "id": 115,
+    "theme": "Nihai Yüzleşme (Hesaplaşma)",
+    "aphorism": "Bu gece uyumadan önce kendine tek bir soru sor: 'Bugün varlığımla geleceğimi mi inşa ettim, yoksa sadece zaman mı öldürdüm?'",
+    "strategy": "Günü bitir. Eğer 6/6 yaptıysan huzurla uyu. Yapmadıysan, kendi ihanetinin utancıyla yarını fethetmek için plan yap."
+  }
+]

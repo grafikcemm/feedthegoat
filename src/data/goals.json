@@ -1,0 +1,56 @@
+[
+    {
+        "title": "Kişisel Gelişim Hedeflerim",
+        "affirmation": "Sınırları geçilmez, kendi operasyonuna odaklanmış, 'hayır' diyebilen ve duygusal illüzyonlardan arınmış bir zırh inşa ediyorsun. Statü saygıdan, saygı toleranssızlıktan doğar.",
+        "items": [
+            "Dijital portfolyona önem ver, kişisel markanı güçlendir",
+            "Her gün %1 daha iyi ol",
+            "Yetkinlik geliştirecek kurslara/etkinliklere katıl",
+            "Enerjini çalanlara HAYIR demeyi öğren",
+            "Sistem kurmayı öğren (Delegasyon-Optimizasyon)",
+            "Dışarıdan yemeyi, geç kalkmayı, çocuk gibi davranmayı bırak"
+        ]
+    },
+    {
+        "title": "Kişisel Teknik Hedeflerim",
+        "affirmation": "Piksel itici bir amele olmaktan çıkıp, veriyle, satışla ve psikolojiyle masayı domine eden tehlikeli bir stratejiste dönüşüyorsun.",
+        "items": [
+            "Python, HTML temelleri",
+            "Dijital & Finansal Okuryazarlık",
+            "Girişkenlik öğren",
+            "Growth Marketing & Pricing/Monetization Psychology",
+            "Database (Airtable/Supabase) mantığı",
+            "Vibe Marketing & Storytelling/Copywriting",
+            "Marka İletişimi, Satış & İkna Psikolojisi",
+            "Veri Okuryazarlığı (Analytics)",
+            "Uyum Sağlama & Diksiyon Eğitimi"
+        ]
+    },
+    {
+        "title": "Sene İçinde Hedeflerim",
+        "affirmation": "Bozma Creative bir hayal değil, bir imparatorluktur. Müşteri bekleyen kurban rolünü öldürüp, avlanan bir ajans sahibine evriliyorsun.",
+        "items": [
+            "Illustrator ve After Effects kurslarını bitir",
+            "Baskı teknikleri ve terimlerini öğren",
+            "Yapay zeka (SaaS - AI Agent) terimlerini öğren",
+            "Kişisel Youtube kanalını kur ve uzmanlığını sat",
+            "Bozma Creative ajans hesabını faaliyete geçir",
+            "AI ile Youtube/Tiktok/IG kısa videoları (Yan hesap)",
+            "Müşteri bulma konusuna adım at (Cold Outreach)",
+            "Indesign kursları ve UI/UX kavramlarını detaylı araştır"
+        ]
+    },
+    {
+        "title": "Temel ve 'Süper Güç' Edinimi (İlk 3 Ay)",
+        "affirmation": "Küresel arenaya giriş biletin ve uyurken senin için çalışacak dijital ordunun inşası. Bu 3 ay, geri kalan hayatının fragmanıdır.",
+        "items": [
+            "İngilizce",
+            "UI/UX Tasarımları (Figma, Relume, Magician, Framer, Webflow)",
+            "Motion Design",
+            "Python, HTML Temelleri",
+            "AI Ajanları (AI Agents) Mimarisi",
+            "Vibe Coding",
+            "N8N Otomasyonları (API, Webhook, Bolt.new, Apify, Apollo.io, Instantly.ai)"
+        ]
+    }
+]
