@@ -32,7 +32,7 @@ export const dailyTasks = [
     { id: "task-3", label: "Vitaminlerin tamamını iç", icon: "💊" },
     { id: "task-4", label: "Antrenmanını yap", icon: "🏋️" },
     { id: "task-5", label: "25 sayfa kitap oku", icon: "📖" },
-    { id: "task-6", label: "🧠 DERİN ODAKLANMA (1 SAAT)", icon: "🧠" },
+    { id: "task-6", label: "DİŞLERİNİ FIRÇALA", icon: "🪥" },
     { id: "task-7", label: "HER AKŞAM 1 SAAT İNGİLİZCE ÇALIŞ", icon: "🌐" },
     { id: "task-8", label: "📵 EKRAN SÜRESİ KISITLAMASI", icon: "📵" },
     { id: "task-9", label: "3L SU TÜKETİMİ", icon: "💧" },

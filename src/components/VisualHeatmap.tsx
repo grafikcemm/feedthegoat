@@ -46,8 +46,11 @@ export default function VisualHeatmap({ refreshKey = 0 }: VisualHeatmapProps) {
                 }
 
                 setDays(past30Days);
-            } catch (error) {
-                console.error("Error fetching heatmap:", error);
+            } catch (err: any) {
+                // If it's a table missing error or similar, it might be an empty object in console.
+                if (err?.code !== "PGRST116") {
+                    console.error("Error fetching heatmap:", err.message || err);
+                }
             } finally {
                 setMounted(true);
             }

@@ -11,6 +11,7 @@ import RamadanTracker from "@/components/RamadanTracker";
 import PerformanceMetrics from "@/components/PerformanceMetrics";
 import VisualHeatmap from "@/components/VisualHeatmap";
 import AggressiveAlert from "@/components/AggressiveAlert";
+import ActiveTasks from "@/components/ActiveTasks";
 import { dailyTasks } from "@/data/mock";
 
 export default function Home() {
@@ -109,6 +110,9 @@ export default function Home() {
 
           {/* Daily Tracker */}
           <DailyTracker completed={completed} onToggle={toggleTask} />
+
+          {/* Active Tasks (Dynamic from DB) */}
+          <ActiveTasks />
 
           {/* Ramadan Operations Center */}
           <RamadanTracker />
