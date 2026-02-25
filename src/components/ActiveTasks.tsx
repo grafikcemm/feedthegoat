@@ -7,6 +7,7 @@ type ActiveTask = {
     id: string;
     title: string;
     is_completed: boolean;
+    is_urgent?: boolean;
     created_at: string;
 };
 
@@ -21,7 +22,7 @@ export default function ActiveTasks() {
             const { data, error } = await supabase
                 .from("active_tasks")
                 .select("*")
-                .order("created_at", { ascending: true });
+                .order("created_at", { ascending: false });
 
             if (error) {
                 // Ignore PGRST116 (missing table) for initial UI load before they run SQL
@@ -74,6 +75,25 @@ export default function ActiveTasks() {
             console.error("Error toggling task:", err);
             // Revert if failed
             setTasks(tasks.map(t => t.id === id ? { ...t, is_completed: currentStatus } : t));
+        }
+    };
+
+    const toggleUrgency = async (id: string, currentStatus: boolean, e: React.MouseEvent) => {
+        e.stopPropagation();
+        // Optimistic UI update
+        setTasks(tasks.map(t => t.id === id ? { ...t, is_urgent: !currentStatus } : t));
+
+        try {
+            const { error } = await supabase
+                .from("active_tasks")
+                .update({ is_urgent: !currentStatus })
+                .eq("id", id);
+
+            if (error) throw error;
+        } catch (err) {
+            console.error("Error toggling urgency:", err);
+            // Revert if failed
+            setTasks(tasks.map(t => t.id === id ? { ...t, is_urgent: currentStatus } : t));
         }
     };
 
@@ -140,7 +160,7 @@ export default function ActiveTasks() {
                                 onClick={() => toggleTask(task.id, task.is_completed)}
                                 className={`
                                     flex items-center gap-3 p-3 brutalist-border cursor-pointer transition-all duration-200 group
-                                    ${task.is_completed ? "bg-surface opacity-50 border-border" : "bg-transparent hover:border-text-muted"}
+                                    ${task.is_completed ? "bg-surface opacity-50 border-border" : (task.is_urgent ? "border-accent-green glow-green bg-accent-green/5" : "bg-transparent hover:border-text-muted")}
                                 `}
                             >
                                 {/* Custom Checkbox */}
@@ -159,6 +179,17 @@ export default function ActiveTasks() {
                                 >
                                     {task.title}
                                 </span>
+
+                                {/* Urgency Button */}
+                                {!task.is_completed && (
+                                    <button
+                                        onClick={(e) => toggleUrgency(task.id, !!task.is_urgent, e)}
+                                        className={`opacity-0 group-hover:opacity-100 transition-all p-1 mr-2 ${task.is_urgent ? "text-accent-green opacity-100" : "text-text-muted hover:text-accent-green"}`}
+                                        title="Acil/Önemli İşaretle"
+                                    >
+                                        ★
+                                    </button>
+                                )}
 
                                 {/* Delete Button */}
                                 <button

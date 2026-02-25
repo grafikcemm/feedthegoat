@@ -4,15 +4,14 @@ import { useState, useCallback, useEffect } from "react";
 import { supabase } from "@/utils/supabase";
 import MotivationCards from "@/components/MotivationCards";
 import DailyTracker from "@/components/DailyTracker";
+import WeeklyTracker from "@/components/WeeklyTracker";
 import GoalsDashboard from "@/components/GoalsDashboard";
 import EndDayButton from "@/components/EndDayButton";
 import DarkMirrorModal from "@/components/DarkMirrorModal";
-import RamadanTracker from "@/components/RamadanTracker";
 import PerformanceMetrics from "@/components/PerformanceMetrics";
-import VisualHeatmap from "@/components/VisualHeatmap";
 import AggressiveAlert from "@/components/AggressiveAlert";
 import ActiveTasks from "@/components/ActiveTasks";
-import { dailyTasks } from "@/data/mock";
+import { dailyTasks, weeklyTasks } from "@/data/mock";
 
 export default function Home() {
   /* ── State ────────────────────────────────────────────── */
@@ -20,8 +19,10 @@ export default function Home() {
   const [mirrorOpen, setMirrorOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
-  const done = Object.values(completed).filter(Boolean).length;
-  const allComplete = done === dailyTasks.length;
+  // We consider a day complete if all daily tasks are done
+  // Weekly tasks have a separate progress bar but share the same state object
+  const doneDaily = dailyTasks.filter(t => completed[t.id]).length;
+  const allComplete = doneDaily === dailyTasks.length;
 
   /* ── Initial Data Fetch ───────────────────────────────── */
   useEffect(() => {
@@ -96,14 +97,13 @@ export default function Home() {
           <MotivationCards />
 
           {/* Aggressive Time-based Alert */}
-          <AggressiveAlert doneCount={done} totalCount={dailyTasks.length} />
+          <AggressiveAlert doneCount={doneDaily} totalCount={dailyTasks.length} />
 
           {/* Divider */}
           <div className="h-px bg-border" />
 
-          {/* Performance & Nöroplastisite */}
-          <PerformanceMetrics doneCount={done} totalCount={dailyTasks.length} refreshKey={refreshKey} />
-          <VisualHeatmap refreshKey={refreshKey} />
+          {/* Performance */}
+          <PerformanceMetrics doneCount={doneDaily} totalCount={dailyTasks.length} refreshKey={refreshKey} />
 
           {/* Divider */}
           <div className="h-px bg-border" />
@@ -111,16 +111,16 @@ export default function Home() {
           {/* Daily Tracker */}
           <DailyTracker completed={completed} onToggle={toggleTask} />
 
+          {/* Weekly Tracker */}
+          <WeeklyTracker completed={completed} onToggle={toggleTask} />
+
           {/* Active Tasks (Dynamic from DB) */}
           <ActiveTasks />
-
-          {/* Ramadan Operations Center */}
-          <RamadanTracker />
 
           {/* End Day Button */}
           <EndDayButton
             allComplete={allComplete}
-            doneCount={done}
+            doneCount={doneDaily}
             totalCount={dailyTasks.length}
             completedTasks={completed}
             onFail={openMirror}

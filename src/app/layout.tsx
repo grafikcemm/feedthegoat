@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="tr" className="dark">
+    <html lang="tr">
       <body className={`${jetbrains.variable} font-mono antialiased`}>
         {children}
       </body>

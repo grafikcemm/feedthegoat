@@ -1,56 +1,54 @@
 [
     {
-        "title": "Kişisel Gelişim Hedeflerim",
-        "affirmation": "Sınırları geçilmez, kendi operasyonuna odaklanmış, 'hayır' diyebilen ve duygusal illüzyonlardan arınmış bir zırh inşa ediyorsun. Statü saygıdan, saygı toleranssızlıktan doğar.",
-        "items": [
-            "Dijital portfolyona önem ver, kişisel markanı güçlendir",
-            "Her gün %1 daha iyi ol",
-            "Yetkinlik geliştirecek kurslara/etkinliklere katıl",
-            "Enerjini çalanlara HAYIR demeyi öğren",
-            "Sistem kurmayı öğren (Delegasyon-Optimizasyon)",
-            "Dışarıdan yemeyi, geç kalkmayı, çocuk gibi davranmayı bırak"
-        ]
-    },
-    {
-        "title": "Kişisel Teknik Hedeflerim",
-        "affirmation": "Piksel itici bir amele olmaktan çıkıp, veriyle, satışla ve psikolojiyle masayı domine eden tehlikeli bir stratejiste dönüşüyorsun.",
-        "items": [
-            "Python, HTML temelleri",
-            "Dijital & Finansal Okuryazarlık",
-            "Girişkenlik öğren",
-            "Growth Marketing & Pricing/Monetization Psychology",
-            "Database (Airtable/Supabase) mantığı",
-            "Vibe Marketing & Storytelling/Copywriting",
-            "Marka İletişimi, Satış & İkna Psikolojisi",
-            "Veri Okuryazarlığı (Analytics)",
-            "Uyum Sağlama & Diksiyon Eğitimi"
-        ]
-    },
-    {
-        "title": "Sene İçinde Hedeflerim",
-        "affirmation": "Bozma Creative bir hayal değil, bir imparatorluktur. Müşteri bekleyen kurban rolünü öldürüp, avlanan bir ajans sahibine evriliyorsun.",
-        "items": [
-            "Illustrator ve After Effects kurslarını bitir",
-            "Baskı teknikleri ve terimlerini öğren",
-            "Yapay zeka (SaaS - AI Agent) terimlerini öğren",
-            "Kişisel Youtube kanalını kur ve uzmanlığını sat",
-            "Bozma Creative ajans hesabını faaliyete geçir",
-            "AI ile Youtube/Tiktok/IG kısa videoları (Yan hesap)",
-            "Müşteri bulma konusuna adım at (Cold Outreach)",
-            "Indesign kursları ve UI/UX kavramlarını detaylı araştır"
-        ]
-    },
-    {
-        "title": "Temel ve 'Süper Güç' Edinimi (İlk 3 Ay)",
+        "title": "1. TEMEL VE SÜPER GÜÇ EDİNİMİ (İLK 3 AY)",
         "affirmation": "Küresel arenaya giriş biletin ve uyurken senin için çalışacak dijital ordunun inşası. Bu 3 ay, geri kalan hayatının fragmanıdır.",
         "items": [
-            "İngilizce",
-            "UI/UX Tasarımları (Figma, Relume, Magician, Framer, Webflow)",
-            "Motion Design",
-            "Python, HTML Temelleri",
-            "AI Ajanları (AI Agents) Mimarisi",
-            "Vibe Coding",
-            "N8N Otomasyonları (API, Webhook, Bolt.new, Apify, Apollo.io, Instantly.ai)"
+            "İngilizce (Günlük 1 saat + haftalık konuşma pratiği — italki/Cambly)",
+            "UI/UX Tasarımları (Figma, Relume, Framer, Lovable, Bolt.new) + Google UX Design Certificate başlat",
+            "Prompt Engineering — Stratejik Seviye (System prompt mimarisi, chain-of-thought, çok adımlı orkestrasyon)",
+            "Vibe Coding + Cursor IDE + Clean Code Prensipleri",
+            "JavaScript Temelleri + Python Basics (2-3 haftalık yoğun sprint)",
+            "AI Ajanları (AI Agents) Mimarisi — n8n üzerinden kavramsal + pratik",
+            "N8N Otomasyonları (API, Webhook, Apify, Apollo.io, Instantly.ai)",
+            "Motion Design (After Effects temel kurs)"
+        ]
+    },
+    {
+        "title": "2. KİŞİSEL TEKNİK HEDEFLERİM",
+        "affirmation": "Piksel itici bir amele olmaktan çıkıp, veriyle, satışla ve psikolojiyle masayı domine eden tehlikeli bir stratejiste dönüşüyorsun.",
+        "items": [
+            "Dijital & Finansal Okuryazarlık",
+            "Girişkenlik öğren",
+            "Growth Marketing & Value-Based Pricing Sistematiği (Chris Do metodolojisi, 3-tier paket yapısı)",
+            "Database Mantığı (Supabase)",
+            "Vibe Marketing & Storytelling/Copywriting",
+            "Marka İletişimi, Satış & İkna Psikolojisi",
+            "Veri Okuryazarlığı (GA4 + Meta Ads Reporting + Supabase Queries)",
+            "AI Content Multiplier Sistemi (OpusClip + ElevenLabs + HeyGen)",
+            "Zevk/Kürasyon/Yargı Geliştirme (Günlük 30dk referans inceleme — Behance, Awwwards, Are.na)",
+            "AI Deneyim Tasarımı (Conversational UX, güven kalıpları, AI arayüz tasarımı)"
+        ]
+    },
+    {
+        "title": "3. SENE İÇİNDE: BECERİ & ÜRETİM",
+        "affirmation": "Bozma Creative bir hayal değil, bir imparatorluktur. Müşteri bekleyen kurban rolünü öldürüp, avlanan bir ajans sahibine evriliyorsun.",
+        "items": [
+            "After Effects (Motion Design) kursunu bitir",
+            "AI Agent Workflow'ları Kur ve Hizmet Olarak Sat (n8n — AaaS modeli)",
+            "UI/UX Design System Oluştur (Figma)",
+            "Yapay zeka (SaaS — AI Agent) terimlerini ve mimarisini uygulama seviyesine taşı",
+            "HubSpot Inbound Marketing + GA4 sertifikalarını al (ücretsiz)"
+        ]
+    },
+    {
+        "title": "4. SENE İÇİNDE: MONETİZASYON & BÜYÜME",
+        "affirmation": "Bozma Creative bir hayal değil, bir imparatorluktur. Müşteri bekleyen kurban rolünü öldürüp, avlanan bir ajans sahibine evriliyorsun.",
+        "items": [
+            "Bozma Creative ajans hesabını faaliyete geçir",
+            "AI ile YouTube/TikTok/IG kısa videoları (OpusClip ile content multiplier)",
+            "İlk dijital ürünü sat (Figma/Framer şablonu veya N8N workflow — Gumroad)",
+            "Müşteri bulma — Cold Outreach sistemi kur (Apollo + Instantly + n8n)",
+            "AEO/GEO Farkındalığı (Not al, 2027'de uygula)"
         ]
     }
 ]
