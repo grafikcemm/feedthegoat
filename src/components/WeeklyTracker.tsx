@@ -12,7 +12,7 @@ export default function WeeklyTracker({
     onToggle,
 }: WeeklyTrackerProps) {
     const total = weeklyTasks.length;
-    const done = Object.values(completed).filter(Boolean).length;
+    const done = weeklyTasks.filter(task => completed[task.id]).length;
     const pct = Math.round((done / total) * 100);
 
     return (

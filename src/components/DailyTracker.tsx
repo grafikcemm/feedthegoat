@@ -12,7 +12,7 @@ export default function DailyTracker({
     onToggle,
 }: DailyTrackerProps) {
     const total = dailyTasks.length;
-    const done = Object.values(completed).filter(Boolean).length;
+    const done = dailyTasks.filter(task => completed[task.id]).length;
     const pct = Math.round((done / total) * 100);
 
     return (
