@@ -93,10 +93,12 @@ export default function DailyTracker({
                                 </span>
                             </div>
 
-                            {/* Streak Counter */}
-                            <div className={`text-[10px] font-bold uppercase tracking-wider flex-shrink-0 mt-0.5 whitespace-nowrap ${isOn ? "text-accent-green" : "text-accent-red"}`}>
-                                🔥 0 gün
-                            </div>
+                            {/* Streak Counter — only show when > 0 */}
+                            {isOn && (
+                                <div className="text-[10px] font-bold uppercase tracking-wider flex-shrink-0 mt-0.5 whitespace-nowrap text-accent-green">
+                                    ✓
+                                </div>
+                            )}
                         </button>
                     );
                 })}

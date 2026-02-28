@@ -54,7 +54,7 @@ export default function WarFund() {
     };
 
     return (
-        <section className="mt-8 mb-8">
+        <section>
             <div className="flex items-center justify-between mb-4 mt-6">
                 <h2 className="text-xs uppercase tracking-[0.25em] text-text-muted">
                     Savaş Fonu

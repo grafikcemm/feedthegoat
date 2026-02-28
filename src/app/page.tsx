@@ -8,7 +8,7 @@ import WeeklyTracker from "@/components/WeeklyTracker";
 import GoalsDashboard from "@/components/GoalsDashboard";
 import EndDayButton from "@/components/EndDayButton";
 import DarkMirrorModal from "@/components/DarkMirrorModal";
-import PerformanceMetrics from "@/components/PerformanceMetrics";
+
 import AggressiveAlert from "@/components/AggressiveAlert";
 import ActiveTasks from "@/components/ActiveTasks";
 import WarFund from "@/components/WarFund";
@@ -18,14 +18,22 @@ import SkillTree from "@/components/SkillTree";
 import ContentArsenal from "@/components/ContentArsenal";
 import { dailyTasks, weeklyTasks } from "@/data/mock";
 
+type Tab = "SAVAS" | "BUYUME" | "SISTEM";
+
+const TABS: { key: Tab; label: string; icon: string }[] = [
+  { key: "SAVAS", label: "YÖNETİM", icon: "🎯" },
+  { key: "BUYUME", label: "BÜYÜME", icon: "📈" },
+  { key: "SISTEM", label: "SİSTEM", icon: "🏦" },
+];
+
 export default function Home() {
   /* ── State ────────────────────────────────────────────── */
   const [completed, setCompleted] = useState<Record<string, boolean>>({});
   const [mirrorOpen, setMirrorOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [activeTab, setActiveTab] = useState<Tab>("SAVAS");
 
   // We consider a day complete if all daily tasks are done
-  // Weekly tasks have a separate progress bar but share the same state object
   const doneDaily = dailyTasks.filter(t => completed[t.id]).length;
   const allComplete = doneDaily === dailyTasks.length;
 
@@ -41,7 +49,6 @@ export default function Home() {
           .single();
 
         if (!error && data && data.checked_tasks) {
-          // Restore checked tasks
           setCompleted(data.checked_tasks);
         }
       } catch (err) {
@@ -96,83 +103,102 @@ export default function Home() {
           </p>
         </header>
 
-        {/* ── Main Grid ──────────────────────────────────── */}
-        <main className="px-4 md:px-8 py-6 space-y-8 max-w-6xl mx-auto">
-          {/* Motivation */}
-          <MotivationCards />
+        {/* ── Tab Navigation ─────────────────────────────── */}
+        <nav className="px-4 md:px-8 pt-4 pb-2 max-w-6xl mx-auto">
+          <div className="flex gap-0 border border-border">
+            {TABS.map((tab) => {
+              const isActive = activeTab === tab.key;
+              return (
+                <button
+                  key={tab.key}
+                  onClick={() => setActiveTab(tab.key)}
+                  className={`
+                    flex-1 py-3 px-4 text-[11px] uppercase tracking-[0.25em] font-bold
+                    transition-all duration-200 flex items-center justify-center gap-2
+                    ${isActive
+                      ? "bg-text text-bg border-text"
+                      : "bg-surface text-text-muted hover:bg-surface-hover hover:text-text border-r border-border last:border-r-0"
+                    }
+                  `}
+                >
+                  <span className="text-base">{tab.icon}</span>
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+        </nav>
 
-          {/* Aggressive Time-based Alert */}
-          <AggressiveAlert doneCount={doneDaily} totalCount={dailyTasks.length} />
+        {/* ── Main Content ──────────────────────────────── */}
+        <main className="px-4 md:px-8 py-6 space-y-6 max-w-6xl mx-auto">
 
-          {/* Divider */}
-          <div className="h-px bg-border" />
+          {/* ── TAB: YÖNETİM ────────────────────────────── */}
+          {activeTab === "SAVAS" && (
+            <>
+              {/* Compact Motivation — only in YÖNETİM */}
+              <MotivationCards />
 
-          {/* Performance */}
-          <PerformanceMetrics doneCount={doneDaily} totalCount={dailyTasks.length} refreshKey={refreshKey} />
+              {/* Bilgi Cephaneliği — compact at top */}
+              <TheArsenal />
 
-          {/* Divider */}
-          <div className="h-px bg-border" />
+              {/* Aggressive Time-based Alert */}
+              <AggressiveAlert doneCount={doneDaily} totalCount={dailyTasks.length} />
 
-          {/* NEW: Skill Tree */}
-          <SkillTree />
+              {/* Daily Tracker */}
+              <DailyTracker completed={completed} onToggle={toggleTask} />
 
-          {/* Divider */}
-          <div className="h-px bg-border" />
+              {/* Weekly Tracker */}
+              <WeeklyTracker completed={completed} onToggle={toggleTask} />
 
-          {/* The Arsenal */}
-          <TheArsenal />
+              <div className="h-px bg-border" />
 
-          {/* Divider */}
-          <div className="h-px bg-border" />
+              {/* Active Tasks (Dynamic from DB) */}
+              <ActiveTasks />
 
-          {/* Daily Tracker */}
-          <DailyTracker completed={completed} onToggle={toggleTask} />
+              <div className="h-px bg-border" />
 
-          {/* Weekly Tracker */}
-          <WeeklyTracker completed={completed} onToggle={toggleTask} />
+              {/* End Day Button */}
+              <EndDayButton
+                allComplete={allComplete}
+                doneCount={doneDaily}
+                totalCount={dailyTasks.length}
+                completedTasks={completed}
+                onFail={openMirror}
+                onSuccess={triggerRefresh}
+              />
+            </>
+          )}
 
-          {/* Divider */}
-          <div className="h-px bg-border" />
+          {/* ── TAB: BÜYÜME ───────────────────────────── */}
+          {activeTab === "BUYUME" && (
+            <>
+              {/* Skill Tree */}
+              <SkillTree />
 
-          {/* War Fund */}
-          <WarFund />
+              <div className="h-px bg-border" />
 
-          {/* Divider */}
-          <div className="h-px bg-border" />
+              {/* Goals */}
+              <GoalsDashboard />
 
-          {/* Goals */}
-          <GoalsDashboard />
+              <div className="h-px bg-border" />
 
+              {/* Content Arsenal */}
+              <ContentArsenal />
+            </>
+          )}
 
-          <div className="h-px bg-border" />
+          {/* ── TAB: SİSTEM ───────────────────────────── */}
+          {activeTab === "SISTEM" && (
+            <>
+              {/* War Fund */}
+              <WarFund />
 
-          {/* NEW: Content Arsenal */}
-          <ContentArsenal />
+              <div className="h-px bg-border" />
 
-          {/* Divider */}
-          <div className="h-px bg-border" />
-
-          {/* Active Tasks (Dynamic from DB) */}
-          <ActiveTasks />
-
-          {/* Divider */}
-          <div className="h-px bg-border" />
-
-          {/* Rules / Manifesto */}
-          <TheManifesto />
-
-          {/* Divider */}
-          <div className="h-px bg-border" />
-
-          {/* End Day Button */}
-          <EndDayButton
-            allComplete={allComplete}
-            doneCount={doneDaily}
-            totalCount={dailyTasks.length}
-            completedTasks={completed}
-            onFail={openMirror}
-            onSuccess={triggerRefresh}
-          />
+              {/* Rules / Manifesto */}
+              <TheManifesto />
+            </>
+          )}
 
           {/* Footer */}
           <footer className="pt-6 pb-8 text-center">

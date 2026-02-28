@@ -32,7 +32,6 @@ const DEFAULT_SKILLS: Skill[] = [
 
 export default function SkillTree() {
     const [skills, setSkills] = useState<Skill[]>(DEFAULT_SKILLS);
-    const [isExpanded, setIsExpanded] = useState(false);
 
     const toggleLevel = (id: string) => {
         setSkills(prev => prev.map(s => {
@@ -47,50 +46,42 @@ export default function SkillTree() {
     const total = skills.length;
 
     return (
-        <section className="mb-8 mt-8">
-            <div
-                className="flex items-center justify-between border border-border bg-surface/10 p-3 brutalist-card cursor-pointer hover:bg-surface/30 transition-colors"
-                onClick={() => setIsExpanded(!isExpanded)}
-            >
-                <div className="flex items-center gap-2">
-                    <span className="text-text-muted text-xs font-mono">{isExpanded ? '▼' : '▶'}</span>
-                    <h2 className="text-xs uppercase tracking-[0.25em] text-text-muted">
-                        Skill Tree — Seviye Haritan
-                    </h2>
-                </div>
+        <section>
+            <div className="flex items-center justify-between mb-3">
+                <h2 className="text-xs uppercase tracking-[0.25em] text-text-muted">
+                    Skill Tree — Seviye Haritan
+                </h2>
                 <span className="text-[10px] font-bold uppercase tracking-widest text-text-muted">
                     <span className={sellingCount > 0 ? "text-cyan-400" : ""}>{sellingCount}</span>/{total} Satılabilir
                 </span>
             </div>
 
-            {isExpanded && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4">
-                    {skills.map(s => {
-                        const l = LEVEL_MAP[s.level];
-                        const isSelling = s.level === "Selling";
-                        return (
-                            <button
-                                key={s.id}
-                                onClick={() => toggleLevel(s.id)}
-                                className={`w-full text-left brutalist-card p-2 flex justify-between items-center transition-all duration-300 ${isSelling
-                                    ? "border-cyan-400 bg-cyan-400/10 shadow-[0_0_10px_rgba(34,211,238,0.15)]"
-                                    : "border-border hover:bg-surface-hover hover:border-text-muted bg-surface/20"
-                                    }`}
-                            >
-                                <span className={`text-[10px] md:text-xs font-bold uppercase tracking-wider truncate mr-2 ${isSelling ? "text-cyan-400" : "text-text"}`} title={s.name}>
-                                    {s.name}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {skills.map(s => {
+                    const l = LEVEL_MAP[s.level];
+                    const isSelling = s.level === "Selling";
+                    return (
+                        <button
+                            key={s.id}
+                            onClick={() => toggleLevel(s.id)}
+                            className={`w-full text-left brutalist-card p-2 flex justify-between items-center transition-all duration-300 ${isSelling
+                                ? "border-cyan-400 bg-cyan-400/10 shadow-[0_0_10px_rgba(34,211,238,0.15)]"
+                                : "border-border hover:bg-surface-hover hover:border-text-muted bg-surface/20"
+                                }`}
+                        >
+                            <span className={`text-[10px] md:text-xs font-bold uppercase tracking-wider truncate mr-2 ${isSelling ? "text-cyan-400" : "text-text"}`} title={s.name}>
+                                {s.name}
+                            </span>
+                            <div className="flex items-center gap-1 shrink-0">
+                                <span className={`text-[9px] hidden sm:inline uppercase tracking-widest font-bold ${l.color}`}>
+                                    {l.label}
                                 </span>
-                                <div className="flex items-center gap-1 shrink-0">
-                                    <span className={`text-[9px] hidden sm:inline uppercase tracking-widest font-bold ${l.color}`}>
-                                        {l.label}
-                                    </span>
-                                    <span className="text-sm">{l.icon}</span>
-                                </div>
-                            </button>
-                        )
-                    })}
-                </div>
-            )}
+                                <span className="text-sm">{l.icon}</span>
+                            </div>
+                        </button>
+                    )
+                })}
+            </div>
         </section>
     );
 }
