@@ -28,13 +28,13 @@ export const motivations: DailyMotivation[] = [
 
 export const dailyTasks = [
     { id: "task-1", label: "06:00 Uyanış & Yüze Buz Sürme", icon: "🧊" },
-    { id: "task-2", label: "Her gün koşu bandı 25 dakika", icon: "🚶‍♂️" },
     { id: "task-3", label: "Vitaminlerin tamamını iç", icon: "💊" },
-    { id: "task-4", label: "Pazartesi - Salı - Perşembe - Cuma antrenmana git", icon: "🏋️" },
     { id: "task-5", label: "25 sayfa kitap oku", icon: "📖" },
-    { id: "task-6", label: "DİŞLERİNİ FIRÇALA & LİSTERİNE GARGARA", icon: "🪥" },
-    { id: "task-7", label: "HER AKŞAM 1 SAAT İNGİLİZCE ÇALIŞ", icon: "🌐" },
-    { id: "task-8", label: "3L SU TÜKETİMİ", icon: "💧" },
+    { id: "task-7", label: "Her Akşam 1 Saat İngilizce Çalış", icon: "🌐" },
+    { id: "task-8", label: "3L Su Tüketimi", icon: "💧" },
+    { id: "task-new", label: "Salon günleri: Gym / Dinlenme günleri: 25dk Koşu Bandı", icon: "🏃‍♂️" },
+    { id: "task-ref", label: "Günlük referans inceleme (Behance/Pinterest)", icon: "👁️" },
+    { id: "task-tw", label: "Her gün Twitter haber paylaşımı", icon: "🐦" },
 ];
 
 export const weeklyTasks = [

@@ -92,6 +92,11 @@ export default function DailyTracker({
                                     {task.label}
                                 </span>
                             </div>
+
+                            {/* Streak Counter */}
+                            <div className={`text-[10px] font-bold uppercase tracking-wider flex-shrink-0 mt-0.5 whitespace-nowrap ${isOn ? "text-accent-green" : "text-accent-red"}`}>
+                                🔥 0 gün
+                            </div>
                         </button>
                     );
                 })}

@@ -32,6 +32,8 @@ export default function TheArsenal() {
     const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
     const [feedback, setFeedback] = useState("");
 
+
+
     const handleVerify = () => {
         if (actionPlan.trim().length < 10) {
             setStatus("error");
@@ -51,37 +53,39 @@ export default function TheArsenal() {
         }
     };
 
+
+
     return (
-        <section className="mt-8 mb-8">
-            <div className="flex items-center justify-between mb-4 mt-6">
+        <section className="mt-8 mb-4">
+            <div className="flex items-center justify-between mb-2 mt-4">
                 <h2 className="text-xs uppercase tracking-[0.25em] text-text-muted">
                     Bilgi Cephaneliği (Günün Mühimmatı)
                 </h2>
             </div>
-            <p className="text-xs text-text-muted mb-4 uppercase tracking-wider">
+            <p className="text-[10px] text-text-muted mb-2 uppercase tracking-wider">
                 Ham bilgi ağırlıktır, uygulanan bilgi silahtır. Sadece dinleyip geçme, anla ve uygula.
             </p>
 
-            <div className={`brutalist-card p-6 transition-all duration-300 ${status === "success" ? "border-accent-green/30 bg-accent-green/5"
+            <div className={`brutalist-card p-4 transition-all duration-300 ${status === "success" ? "border-accent-green/30 bg-accent-green/5"
                 : status === "error" ? "border-accent-red/30 bg-accent-red/5"
                     : "border-border bg-surface/20"
                 }`}>
 
-                <div className="flex justify-between items-start mb-4">
+                <div className="flex justify-between items-start mb-2">
                     <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-1 bg-accent-amber/20 text-accent-amber">
                         GÜNLÜK PODCAST
                     </span>
                     {status === "success" && (
-                        <span className="text-accent-green text-xs font-bold tracking-widest uppercase">✓ Absorbe Edildi</span>
+                        <span className="text-accent-green text-[10px] font-bold tracking-widest uppercase">✓ Absorbe Edildi</span>
                     )}
                 </div>
 
-                <h3 className="text-lg md:text-xl font-bold tracking-wide uppercase text-text mb-6">
+                <h3 className="text-sm md:text-base font-bold tracking-wide uppercase text-text mb-3">
                     {todaysPodcast.title}
                 </h3>
 
                 {status !== "success" ? (
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         <div>
                             <label className="text-xs uppercase tracking-widest text-text-muted block mb-2 font-bold">
                                 Ne Anladın ve Nasıl Uygulayacaksın?
@@ -93,7 +97,7 @@ export default function TheArsenal() {
                                     if (status === "error") setStatus("idle");
                                 }}
                                 placeholder="Buraya yaz. Kendini kandırma. Gerçek aksiyon adımı ne?"
-                                className={`w-full bg-background border p-3 text-sm text-text focus:outline-none transition-colors min-h-[100px] resize-none ${status === "error" ? "border-accent-red focus:border-accent-red" : "border-border focus:border-text-muted"
+                                className={`w-full bg-background border p-2 text-xs text-text focus:outline-none transition-colors min-h-[60px] resize-none ${status === "error" ? "border-accent-red focus:border-accent-red" : "border-border focus:border-text-muted"
                                     }`}
                             />
                         </div>
@@ -108,7 +112,7 @@ export default function TheArsenal() {
                         <button
                             onClick={handleVerify}
                             disabled={actionPlan.trim().length === 0}
-                            className={`w-full py-3 text-xs uppercase tracking-widest font-bold transition-all ${actionPlan.trim().length > 0
+                            className={`w-full py-2 text-[10px] uppercase tracking-widest font-bold transition-all ${actionPlan.trim().length > 0
                                 ? "bg-text text-black hover:bg-text-muted"
                                 : "bg-surface text-text-muted cursor-not-allowed border border-border"
                                 }`}
@@ -127,6 +131,8 @@ export default function TheArsenal() {
                     </div>
                 )}
             </div>
+
+
         </section>
     );
 }

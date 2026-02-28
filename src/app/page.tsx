@@ -12,17 +12,16 @@ import PerformanceMetrics from "@/components/PerformanceMetrics";
 import AggressiveAlert from "@/components/AggressiveAlert";
 import ActiveTasks from "@/components/ActiveTasks";
 import WarFund from "@/components/WarFund";
-import CommunicationSimulator from "@/components/CommunicationSimulator";
 import TheArsenal from "@/components/TheArsenal";
-import ShadowJournalModal from "@/components/ShadowJournalModal";
 import TheManifesto from "@/components/TheManifesto";
+import SkillTree from "@/components/SkillTree";
+import ContentArsenal from "@/components/ContentArsenal";
 import { dailyTasks, weeklyTasks } from "@/data/mock";
 
 export default function Home() {
   /* ── State ────────────────────────────────────────────── */
   const [completed, setCompleted] = useState<Record<string, boolean>>({});
   const [mirrorOpen, setMirrorOpen] = useState(false);
-  const [shadowOpen, setShadowOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
   // We consider a day complete if all daily tasks are done
@@ -67,9 +66,6 @@ export default function Home() {
     triggerRefresh();
   }, [triggerRefresh]);
 
-  const openShadow = useCallback(() => setShadowOpen(true), []);
-  const closeShadow = useCallback(() => setShadowOpen(false), []);
-
   /* ── Today's date display ─────────────────────────────── */
   const todayDate = new Date();
   const dateStrTR = todayDate.toLocaleDateString("tr-TR", {
@@ -83,9 +79,6 @@ export default function Home() {
     <>
       {/* Dark Mirror Overlay */}
       <DarkMirrorModal open={mirrorOpen} onClose={closeMirror} />
-
-      {/* Shadow Journal Overlay */}
-      <ShadowJournalModal open={shadowOpen} onClose={closeShadow} />
 
       <div className="min-h-screen">
         {/* ── Header ─────────────────────────────────────── */}
@@ -120,6 +113,12 @@ export default function Home() {
           {/* Divider */}
           <div className="h-px bg-border" />
 
+          {/* NEW: Skill Tree */}
+          <SkillTree />
+
+          {/* Divider */}
+          <div className="h-px bg-border" />
+
           {/* The Arsenal */}
           <TheArsenal />
 
@@ -132,18 +131,38 @@ export default function Home() {
           {/* Weekly Tracker */}
           <WeeklyTracker completed={completed} onToggle={toggleTask} />
 
+          {/* Divider */}
+          <div className="h-px bg-border" />
+
+          {/* War Fund */}
+          <WarFund />
+
+          {/* Divider */}
+          <div className="h-px bg-border" />
+
+          {/* Goals */}
+          <GoalsDashboard />
+
+
+          <div className="h-px bg-border" />
+
+          {/* NEW: Content Arsenal */}
+          <ContentArsenal />
+
+          {/* Divider */}
+          <div className="h-px bg-border" />
+
           {/* Active Tasks (Dynamic from DB) */}
           <ActiveTasks />
 
-          {/* Shadow Journal Trigger */}
-          <section className="mt-8 mb-4">
-            <button
-              onClick={openShadow}
-              className="w-full brutalist-button bg-surface border-border text-text hover:bg-text hover:text-black uppercase tracking-[0.3em] font-bold py-4"
-            >
-              Gölge Günlüğü&apos;nü Aç
-            </button>
-          </section>
+          {/* Divider */}
+          <div className="h-px bg-border" />
+
+          {/* Rules / Manifesto */}
+          <TheManifesto />
+
+          {/* Divider */}
+          <div className="h-px bg-border" />
 
           {/* End Day Button */}
           <EndDayButton
@@ -154,30 +173,6 @@ export default function Home() {
             onFail={openMirror}
             onSuccess={triggerRefresh}
           />
-
-          {/* Divider */}
-          <div className="h-px bg-border" />
-
-          {/* War Fund */}
-          <WarFund />
-
-          {/* Divider */}
-          <div className="h-px bg-border" />
-
-          {/* Communication Simulator */}
-          <CommunicationSimulator />
-
-          {/* Divider */}
-          <div className="h-px bg-border" />
-
-          {/* Goals */}
-          <GoalsDashboard />
-
-          {/* Divider */}
-          <div className="h-px bg-border" />
-
-          {/* Rules / Manifesto */}
-          <TheManifesto />
 
           {/* Footer */}
           <footer className="pt-6 pb-8 text-center">
