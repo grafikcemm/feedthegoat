@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 type Level = "NotStarted" | "Learning" | "Applying" | "Selling";
 
@@ -32,6 +32,27 @@ const DEFAULT_SKILLS: Skill[] = [
 
 export default function SkillTree() {
     const [skills, setSkills] = useState<Skill[]>(DEFAULT_SKILLS);
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    // Initial Load
+    useEffect(() => {
+        const saved = localStorage.getItem("goat-skills-v1");
+        if (saved) {
+            try {
+                setSkills(JSON.parse(saved));
+            } catch (e) {
+                console.error("Failed to parse SkillTree data");
+            }
+        }
+        setIsLoaded(true);
+    }, []);
+
+    // Save on Change
+    useEffect(() => {
+        if (isLoaded) {
+            localStorage.setItem("goat-skills-v1", JSON.stringify(skills));
+        }
+    }, [skills, isLoaded]);
 
     const toggleLevel = (id: string) => {
         setSkills(prev => prev.map(s => {
@@ -44,6 +65,8 @@ export default function SkillTree() {
 
     const sellingCount = useMemo(() => skills.filter(s => s.level === "Selling").length, [skills]);
     const total = skills.length;
+
+    if (!isLoaded) return null;
 
     return (
         <section>

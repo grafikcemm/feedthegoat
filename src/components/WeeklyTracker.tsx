@@ -18,9 +18,9 @@ export default function WeeklyTracker({
     return (
         <section>
             {/* Section Header */}
-            <div className="flex items-center justify-between mb-4 mt-6">
-                <h2 className="text-xs uppercase tracking-[0.25em] text-text-muted">
-                    Haftalık Takip
+            <div className="flex items-center justify-between mb-6 mt-8">
+                <h2 className="text-xs font-bold uppercase tracking-[0.25em] text-text">
+                    HAFTALIK TAKİP
                 </h2>
                 <span className="text-xs font-bold tabular-nums">
                     <span className={done === total ? "text-accent-green" : "text-text"}>
@@ -60,8 +60,8 @@ export default function WeeklyTracker({
                             key={task.id}
                             onClick={() => onToggle(task.id)}
                             className={`
-                                brutalist-card flex flex-1 items-start gap-3 text-left
-                                transition-all duration-200 cursor-pointer h-full
+                                brutalist-card flex flex-1 items-center gap-3 text-left
+                                transition-all duration-200 cursor-pointer p-4 h-full min-h-[44px]
                                 ${cardClasses}
                             `}
                         >
@@ -76,11 +76,10 @@ export default function WeeklyTracker({
                                 {isOn ? "✓" : ""}
                             </div>
 
-                            {/* Label */}
-                            <div className="flex-1 min-w-0">
-                                <span className="text-lg mr-2">{task.icon}</span>
+                            <div className="flex-1 min-w-0 flex items-center">
+                                <span className="text-xl mr-3">{task.icon}</span>
                                 <span
-                                    className={`text-xs uppercase tracking-wide leading-snug ${labelClasses}`}
+                                    className={`text-[12px] uppercase tracking-wide leading-snug font-bold ${labelClasses}`}
                                 >
                                     {task.label}
                                 </span>

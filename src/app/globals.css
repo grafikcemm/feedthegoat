@@ -1,15 +1,16 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-bg: #f5f5f5;
-  --color-surface: #ffffff;
-  --color-surface-hover: #f9f9f9;
-  --color-border: #e5e5e5;
-  --color-text: #111111;
+  --color-bg: #0d0d0d;
+  --color-surface: #161616;
+  --color-surface-hover: #1e1e1e;
+  /* Adjust hover state to be slightly lighter than surface */
+  --color-border: #1e1e1e;
+  --color-text: #ffffff;
   --color-text-muted: #666666;
-  --color-accent-red: #e31818;
-  --color-accent-green: #00ba45;
-  --color-accent-amber: #d99000;
+  --color-accent-red: #ff3b3b;
+  --color-accent-green: #00ff88;
+  --color-accent-amber: #ffb800;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
@@ -27,9 +28,17 @@ body {
 }
 
 /* ── Scrollbar ─────────────────────────────────────────────── */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--color-bg); }
-::-webkit-scrollbar-thumb { background: var(--color-border); }
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+}
 
 /* ── Selection ─────────────────────────────────────────────── */
 ::selection {
@@ -53,7 +62,11 @@ body {
 }
 
 .glow-red {
-  box-shadow: 0 0 12px rgba(255, 32, 32, 0.15);
+  box-shadow: 0 0 12px rgba(255, 59, 59, 0.15);
+}
+
+.glow-amber {
+  box-shadow: 0 0 12px rgba(255, 184, 0, 0.15);
 }
 
 /* Progress bar animation */
@@ -63,9 +76,17 @@ body {
 
 /* Pulse current time block */
 @keyframes pulse-border {
-  0%, 100% { border-color: var(--color-accent-green); }
-  50% { border-color: var(--color-border); }
+
+  0%,
+  100% {
+    border-color: var(--color-accent-green);
+  }
+
+  50% {
+    border-color: var(--color-border);
+  }
 }
+
 .pulse-active {
   animation: pulse-border 2s ease-in-out infinite;
 }

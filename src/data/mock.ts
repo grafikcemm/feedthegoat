@@ -27,14 +27,12 @@ export const motivations: DailyMotivation[] = [
 ];
 
 export const dailyTasks = [
-    { id: "task-1", label: "06:00 Uyanış & Yüze Buz Sürme", icon: "🧊" },
-    { id: "task-3", label: "Vitaminlerin tamamını iç", icon: "💊" },
-    { id: "task-5", label: "25 sayfa kitap oku", icon: "📖" },
-    { id: "task-7", label: "Her Akşam 1 Saat İngilizce Çalış", icon: "🌐" },
-    { id: "task-8", label: "3L Su Tüketimi", icon: "💧" },
-    { id: "task-new", label: "Salon günleri: Gym / Dinlenme günleri: 25dk Koşu Bandı", icon: "🏃‍♂️" },
-    { id: "task-ref", label: "Günlük referans inceleme (Behance/Pinterest)", icon: "👁️" },
-    { id: "task-tw", label: "Her gün Twitter haber paylaşımı", icon: "🐦" },
+    { id: "task-1", label: "06:00 Uyanış & Yüze Buz Sürme", icon: "🧊", layer: "asla_kirma" },
+    { id: "task-3", label: "Vitaminlerin tamamını iç", icon: "💊", layer: "asla_kirma" },
+    { id: "task-8", label: "3L Su Tüketimi", icon: "💧", layer: "asla_kirma" },
+    { id: "task-tw", label: "Her gün Twitter haber paylaşımı", icon: "🐦", layer: "enerjin_varsa" },
+    { id: "task-5", label: "20 sayfa kitap oku", icon: "📖", layer: "enerjin_varsa" },
+    { id: "task-gym", label: "Spor (Gym)", icon: "💪", layer: "gym" },
 ];
 
 export const weeklyTasks = [

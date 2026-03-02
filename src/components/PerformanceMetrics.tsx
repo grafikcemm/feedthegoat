@@ -1,15 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { dailyTasks } from "@/data/mock";
 
 export interface PerformanceMetricsProps {
-    doneCount: number;
-    totalCount: number;
+    completed: Record<string, boolean>;
     refreshKey?: number;
 }
 
-export default function PerformanceMetrics({ doneCount, totalCount, refreshKey }: PerformanceMetricsProps) {
-    const pointsPerTask = 10;
+export default function PerformanceMetrics({ completed, refreshKey }: PerformanceMetricsProps) {
     const [bonusDopamine, setBonusDopamine] = useState(0);
 
     useEffect(() => {
@@ -25,14 +24,43 @@ export default function PerformanceMetrics({ doneCount, totalCount, refreshKey }
         return () => window.removeEventListener("dopamineUpdated", checkBonus);
     }, [refreshKey]);
 
-    const maxScore = totalCount * pointsPerTask;
-    // Cap score percentage visually at 100%, but show the raw total to the user.
-    const currentScore = doneCount * pointsPerTask + bonusDopamine;
-    const scorePct = Math.min(100, Math.round((currentScore / maxScore) * 100));
+    // Hesaplama mantığı (%60 Kırmızı, %40 Sarı)
+    // Asla Kırma: 3 Görev, her biri %20 = %60 max
+    // Enerjin Varsa: 2 Görev, her biri %20 = %40 max
+    // Gym barı etkilemiyor.
+
+    // Güvenlik açısından mock data uzunluklarını kullanmak yerine, görev başına %20 statik olarak kullanıcıdan istendi.
+    // Ancak dinamik hesaplamak için: 
+    const aslaKirmaCount = dailyTasks.filter(t => t.layer === "asla_kirma").length; // Expected: 3
+    const enerjinVarsaCount = dailyTasks.filter(t => t.layer === "enerjin_varsa").length; // Expected: 2
+
+    const doneAslaKirma = dailyTasks.filter(t => t.layer === "asla_kirma" && completed[t.id]).length;
+    const doneEnerjinVarsa = dailyTasks.filter(t => t.layer === "enerjin_varsa" && completed[t.id]).length;
+
+    const aslaKirmaPercentage = aslaKirmaCount > 0 ? (doneAslaKirma / aslaKirmaCount) * 60 : 0;
+    const enerjinVarsaPercentage = enerjinVarsaCount > 0 ? (doneEnerjinVarsa / enerjinVarsaCount) * 40 : 0;
+
+    const baseScore = aslaKirmaPercentage + enerjinVarsaPercentage;
+    const totalScore = Math.min(100, Math.round(baseScore + bonusDopamine));
+
+    // Durum Etiketi
+    let statusLabel = "Devam Et";
+    let statusColor = "text-accent-red";
+    let barColor = "bg-accent-red glow-red";
+
+    if (totalScore >= 100) {
+        statusLabel = "Mükemmel Gün";
+        statusColor = "text-accent-green";
+        barColor = "bg-accent-green glow-green";
+    } else if (totalScore >= 60) {
+        statusLabel = "İyi Gün";
+        statusColor = "text-accent-amber";
+        barColor = "bg-accent-amber glow-amber";
+    }
 
     return (
-        <section className="mb-8">
-            <h2 className="text-xs uppercase tracking-[0.25em] text-text-muted mb-4">
+        <section className="mb-0">
+            <h2 className="text-[10px] font-bold uppercase tracking-[0.25em] text-text-muted mb-4">
                 PERFORMANS METRİKLERİ
             </h2>
 
@@ -41,24 +69,22 @@ export default function PerformanceMetrics({ doneCount, totalCount, refreshKey }
                 <div className="brutalist-card border-t-2 border-text/20">
                     <div className="flex justify-between items-end mb-4">
                         <div>
-                            <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-text">
-                                DOPAMİN SKORU
+                            <p className="text-[11px] uppercase tracking-[0.2em] font-bold text-text">
+                                DOPAMİN BARI
                             </p>
-                            {bonusDopamine > 0 && (
-                                <p className="text-[9px] uppercase tracking-widest text-accent-green font-bold mt-1">
-                                    +{bonusDopamine} BONUS (Alt Görevler)
-                                </p>
-                            )}
+                            <p className={`text-[10px] uppercase tracking-widest font-bold mt-1 ${statusColor}`}>
+                                Durum: {statusLabel}
+                            </p>
                         </div>
-                        <p className="text-xl tabular-nums font-bold leading-none">
-                            {currentScore.toFixed(0)} <span className="text-text-muted text-sm">/ {maxScore}</span>
+                        <p className={`text-2xl tabular-nums font-bold leading-none ${statusColor}`}>
+                            %{totalScore.toFixed(0)}
                         </p>
                     </div>
 
                     <div className="w-full h-3 bg-surface brutalist-border overflow-hidden">
                         <div
-                            className="h-full progress-fill transition-all duration-500 ease-out bg-accent-green glow-green"
-                            style={{ width: `${scorePct}%` }}
+                            className={`h-full progress-fill transition-all duration-500 ease-out ${barColor}`}
+                            style={{ width: `${totalScore}%` }}
                         />
                     </div>
                 </div>
@@ -66,3 +92,4 @@ export default function PerformanceMetrics({ doneCount, totalCount, refreshKey }
         </section>
     );
 }
+

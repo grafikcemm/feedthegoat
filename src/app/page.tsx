@@ -8,6 +8,8 @@ import WeeklyTracker from "@/components/WeeklyTracker";
 import GoalsDashboard from "@/components/GoalsDashboard";
 import EndDayButton from "@/components/EndDayButton";
 import DarkMirrorModal from "@/components/DarkMirrorModal";
+import VitaminTracker from "@/components/VitaminTracker";
+import PerformanceMetrics from "@/components/PerformanceMetrics";
 
 import AggressiveAlert from "@/components/AggressiveAlert";
 import ActiveTasks from "@/components/ActiveTasks";
@@ -91,7 +93,7 @@ export default function Home() {
         {/* ── Header ─────────────────────────────────────── */}
         <header className="brutalist-border border-t-0 border-x-0 px-4 md:px-8 py-5 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
           <div>
-            <h1 className="text-lg md:text-xl font-bold uppercase tracking-[0.3em] text-text">
+            <h1 className="text-2xl md:text-4xl font-bold uppercase tracking-[0.3em] text-text">
               FEED THE GOAT<span className="text-accent-red">.</span>
             </h1>
             <p className="text-[10px] uppercase tracking-[0.2em] text-text-muted mt-1">
@@ -144,6 +146,12 @@ export default function Home() {
               {/* Aggressive Time-based Alert */}
               <AggressiveAlert doneCount={doneDaily} totalCount={dailyTasks.length} />
 
+              {/* Dopamine Bar */}
+              <PerformanceMetrics completed={completed} refreshKey={refreshKey} />
+
+              {/* Vitamin Tracker */}
+              <VitaminTracker />
+
               {/* Daily Tracker */}
               <DailyTracker completed={completed} onToggle={toggleTask} />
 
@@ -155,7 +163,12 @@ export default function Home() {
               {/* Active Tasks (Dynamic from DB) */}
               <ActiveTasks />
 
-              <div className="h-px bg-border" />
+              <div className="h-px bg-border my-6" />
+
+              {/* Bilgi Cephaneliği (Content Arsenal) */}
+              <ContentArsenal />
+
+              <div className="h-px bg-border my-6" />
 
               {/* End Day Button */}
               <EndDayButton
@@ -179,11 +192,6 @@ export default function Home() {
 
               {/* Goals */}
               <GoalsDashboard />
-
-              <div className="h-px bg-border" />
-
-              {/* Content Arsenal */}
-              <ContentArsenal />
             </>
           )}
 

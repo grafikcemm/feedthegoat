@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 type FinRecord = {
     id: string;
@@ -25,6 +25,27 @@ export default function WarFund() {
     const [newLabel, setNewLabel] = useState("");
     const [newAmount, setNewAmount] = useState("");
     const [newType, setNewType] = useState<"income" | "expense">("income");
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    // Initial Load
+    useEffect(() => {
+        const saved = localStorage.getItem("goat-warfund-v1");
+        if (saved) {
+            try {
+                setRecords(JSON.parse(saved));
+            } catch (e) {
+                console.error("Failed to parse WarFund data", e);
+            }
+        }
+        setIsLoaded(true);
+    }, []);
+
+    // Save on Change
+    useEffect(() => {
+        if (isLoaded) {
+            localStorage.setItem("goat-warfund-v1", JSON.stringify(records));
+        }
+    }, [records, isLoaded]);
 
     const incomes = useMemo(() => records.filter(r => r.type === "income"), [records]);
     const expenses = useMemo(() => records.filter(r => r.type === "expense"), [records]);
@@ -52,6 +73,8 @@ export default function WarFund() {
     const handleDelete = (id: string) => {
         setRecords(records.filter(r => r.id !== id));
     };
+
+    if (!isLoaded) return null;
 
     return (
         <section>
