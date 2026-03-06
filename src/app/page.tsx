@@ -18,7 +18,11 @@ import TheArsenal from "@/components/TheArsenal";
 import TheManifesto from "@/components/TheManifesto";
 import SkillTree from "@/components/SkillTree";
 import ContentArsenal from "@/components/ContentArsenal";
-import { dailyTasks, weeklyTasks } from "@/data/mock";
+import QuadrantDashboard from "@/components/QuadrantDashboard";
+import CrossQuadrantAlerts from "@/components/CrossQuadrantAlerts";
+import StreakCounter from "@/components/StreakCounter";
+import { dailyTasks } from "@/data/mock";
+import type { Quadrant } from "@/components/QuadrantDashboard";
 
 type Tab = "SAVAS" | "BUYUME" | "SISTEM";
 
@@ -34,6 +38,7 @@ export default function Home() {
   const [mirrorOpen, setMirrorOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [activeTab, setActiveTab] = useState<Tab>("SAVAS");
+  const [activeQuadrantFilter, setActiveQuadrantFilter] = useState<Quadrant | null>(null);
 
   // We consider a day complete if all daily tasks are done
   const doneDaily = dailyTasks.filter(t => completed[t.id]).length;
@@ -75,6 +80,10 @@ export default function Home() {
     triggerRefresh();
   }, [triggerRefresh]);
 
+  const handleQuadrantClick = useCallback((q: Quadrant | null) => {
+    setActiveQuadrantFilter(q);
+  }, []);
+
   /* ── Today's date display ─────────────────────────────── */
   const todayDate = new Date();
   const dateStrTR = todayDate.toLocaleDateString("tr-TR", {
@@ -97,7 +106,7 @@ export default function Home() {
               FEED THE GOAT<span className="text-accent-red">.</span>
             </h1>
             <p className="text-[10px] uppercase tracking-[0.2em] text-text-muted mt-1">
-              Disiplin Paneli
+              Disiplin Paneli — HUMAN 3.0
             </p>
           </div>
           <p className="text-[10px] uppercase tracking-[0.15em] text-text-muted tabular-nums">
@@ -137,6 +146,16 @@ export default function Home() {
           {/* ── TAB: YÖNETİM ────────────────────────────── */}
           {activeTab === "SAVAS" && (
             <>
+              {/* HUMAN 3.0 Quadrant Dashboard */}
+              <QuadrantDashboard
+                activeQuadrantFilter={activeQuadrantFilter}
+                onQuadrantClick={handleQuadrantClick}
+              />
+
+              {/* Cross-Quadrant Alerts */}
+              <CrossQuadrantAlerts />
+
+
               {/* Compact Motivation — only in YÖNETİM */}
               <MotivationCards />
 
@@ -152,6 +171,9 @@ export default function Home() {
               {/* Vitamin Tracker */}
               <VitaminTracker />
 
+              {/* Streak Counter — Disiplin Serisi */}
+              <StreakCounter />
+
               {/* Daily Tracker */}
               <DailyTracker completed={completed} onToggle={toggleTask} />
 
@@ -160,8 +182,8 @@ export default function Home() {
 
               <div className="h-px bg-border" />
 
-              {/* Active Tasks (Dynamic from DB) */}
-              <ActiveTasks />
+              {/* Active Tasks (Dynamic from DB) with Quadrant Filter */}
+              <ActiveTasks activeQuadrantFilter={activeQuadrantFilter} />
 
               <div className="h-px bg-border my-6" />
 

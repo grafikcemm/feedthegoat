@@ -2,25 +2,72 @@
 
 import { useState, useEffect, useMemo } from "react";
 
+type Quadrant = "MIND" | "BODY" | "SPIRIT" | "VOCATION";
+
 type ActiveTask = {
     id: string;
     title: string;
     is_completed: boolean;
     is_urgent?: boolean;
     priority: "P1" | "P2" | "P3";
+    quadrant: Quadrant;
     created_at: string;
     completed_at?: string;
 };
 
-export default function ActiveTasks() {
+const QUADRANT_STYLES: Record<Quadrant, { border: string; color: string; bg: string; label: string }> = {
+    MIND: { border: "border-blue-500", color: "text-blue-500", bg: "bg-blue-500/10", label: "🧠 ZİHİN" },
+    BODY: { border: "border-green-500", color: "text-green-500", bg: "bg-green-500/10", label: "💪 BEDEN" },
+    SPIRIT: { border: "border-purple-500", color: "text-purple-500", bg: "bg-purple-500/10", label: "🔮 RUH" },
+    VOCATION: { border: "border-orange-500", color: "text-orange-500", bg: "bg-orange-500/10", label: "⚡ İŞ/KARİYER" },
+};
+
+const QUADRANT_SHORT: Record<Quadrant, string> = {
+    MIND: "ZİHİN",
+    BODY: "BEDEN",
+    SPIRIT: "RUH",
+    VOCATION: "İŞ",
+};
+
+// Default quadrant mappings for existing tasks
+const TASK_QUADRANT_MAP: Record<string, Quadrant> = {
+    "Python ile Yapay Zeka 101": "MIND",
+    "Claude Code": "MIND",
+    "Behance": "VOCATION",
+    "Ajans mail": "VOCATION",
+    "Gym": "BODY",
+    "Spor": "BODY",
+    "Kitap": "MIND",
+    "kitap": "MIND",
+    "Twitter": "VOCATION",
+    "Lead Gen": "VOCATION",
+    "weSafe": "VOCATION",
+    "reklam görselleri": "MIND",
+    "video": "VOCATION",
+    "notebookları": "VOCATION",
+};
+
+const guessQuadrant = (title: string): Quadrant => {
+    for (const [keyword, quadrant] of Object.entries(TASK_QUADRANT_MAP)) {
+        if (title.toLowerCase().includes(keyword.toLowerCase())) return quadrant;
+    }
+    return "VOCATION";
+};
+
+interface ActiveTasksProps {
+    activeQuadrantFilter?: Quadrant | null;
+}
+
+export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) {
     const [tasks, setTasks] = useState<ActiveTask[]>([]);
     const [isLoaded, setIsLoaded] = useState(false);
 
     // Form states
     const [newTaskTitle, setNewTaskTitle] = useState("");
     const [newPriority, setNewPriority] = useState<"P1" | "P2" | "P3">("P2");
+    const [newQuadrant, setNewQuadrant] = useState<Quadrant>("VOCATION");
 
-    // Load Data
+    // Load Data with migration
     useEffect(() => {
         let loadedTasks: ActiveTask[] = [];
         const savedTasks = localStorage.getItem("goat-active-tasks-v2");
@@ -29,42 +76,105 @@ export default function ActiveTasks() {
                 const parsed = JSON.parse(savedTasks);
                 loadedTasks = parsed.map((t: any) => {
                     const { subTasks, category, deadline, ...rest } = t;
+                    // Migrate: add quadrant if missing
+                    if (!rest.quadrant) {
+                        rest.quadrant = guessQuadrant(rest.title || "");
+                    }
                     return rest;
                 });
                 setTasks(loadedTasks);
             } catch (e) { }
         }
 
-        // One-time migration of old supabase tasks
-        const hasMigrated = localStorage.getItem("goat-migrated-supabase");
+        // One-time migration (v4 = full task restore from screenshot)
+        const hasMigrated = localStorage.getItem("goat-migrated-supabase-v4");
         if (!hasMigrated) {
             const oldTasks: ActiveTask[] = [
+                {
+                    id: "t-grafikcem-reels",
+                    title: "Grafikcem reels çekimlerini & editlerini yap - Yeni insta profil fotoğrafı, diğer ayarlar (tiktok, içerik planı)",
+                    is_completed: false,
+                    is_urgent: true,
+                    priority: "P1",
+                    quadrant: "VOCATION",
+                    created_at: "2026-03-01T09:00:00.000Z"
+                },
+                {
+                    id: "t-ceren-8mart",
+                    title: "Ceren 8 Mart videosunu tamamla & Esline Güzellik işlerine başlangıç yap",
+                    is_completed: false,
+                    is_urgent: true,
+                    priority: "P1",
+                    quadrant: "VOCATION",
+                    created_at: "2026-03-02T09:00:00.000Z"
+                },
+                {
+                    id: "t-python-4",
+                    title: "(Pazar) Python ile Yapay Zeka 101 - 4. Ders",
+                    is_completed: false,
+                    is_urgent: true,
+                    priority: "P2",
+                    quadrant: "MIND",
+                    created_at: "2026-03-03T09:00:00.000Z"
+                },
+                {
+                    id: "t-python-3",
+                    title: "(Pazar) Python ile Yapay Zeka 101 - 3. Ders",
+                    is_completed: false,
+                    is_urgent: true,
+                    priority: "P2",
+                    quadrant: "MIND",
+                    created_at: "2026-03-03T08:00:00.000Z"
+                },
+                {
+                    id: "t-python-2",
+                    title: "(Cumartesi) Python ile Yapay Zeka 101 - 2. Ders",
+                    is_completed: false,
+                    is_urgent: true,
+                    priority: "P2",
+                    quadrant: "MIND",
+                    created_at: "2026-03-02T08:00:00.000Z"
+                },
+                {
+                    id: "t-python-1",
+                    title: "(Cumartesi) Python ile Yapay Zeka 101 - 1. Ders",
+                    is_completed: false,
+                    is_urgent: true,
+                    priority: "P2",
+                    quadrant: "MIND",
+                    created_at: "2026-03-01T08:00:00.000Z"
+                },
+                {
+                    id: "t-ingilizce-rutin",
+                    title: "İngilizceyi günlük rutin olarak sistem haline sokacak güncellemeleri yap ve günlük rutin olarak ekle",
+                    is_completed: false,
+                    is_urgent: true,
+                    priority: "P3",
+                    quadrant: "MIND",
+                    created_at: "2026-03-01T07:00:00.000Z"
+                },
+                {
+                    id: "t-behance-portfolio",
+                    title: "Behance portfolyonu güncel tutmaya odaklı planlama yap ve ajanslara mail yollamak için planlama yap",
+                    is_completed: false,
+                    priority: "P3",
+                    quadrant: "VOCATION",
+                    created_at: "2026-03-01T06:00:00.000Z"
+                },
                 {
                     id: "b9ed6856-f556-4440-8549-60d2a24fae73",
                     title: "Ana sayfa da bulunan yapay zeka ile reklam görselleri kursunu bitir",
                     is_completed: false,
-                    priority: "P2",
+                    priority: "P3",
+                    quadrant: "MIND",
                     created_at: "2026-02-21T08:58:02.800071+00:00"
                 },
                 {
-                    id: "136a4c51-c229-438f-a540-f4853165202e",
-                    title: "Python ile Yapay Zeka 101 - 1. Ders Tamamla!",
+                    id: "t-wesafe-tamamla",
+                    title: "weSafe projesini tamamla",
                     is_completed: false,
-                    priority: "P2",
-                    created_at: "2026-02-22T11:44:36.972526+00:00"
-                },
-                {
-                    id: "f4ee137f-8f3e-434e-bc1f-e3cf6fbd72f1",
-                    title: "2026'da Claude Code ile Sıfırdan Zirveye Youtube Kursunu Bitir",
-                    is_completed: false,
-                    priority: "P1",
-                    created_at: "2026-02-25T18:37:49.571699+00:00"
-                },
-                {
-                    id: "57e92577-6370-433b-adac-7015fe720112",
-                    title: "Anasayfa video ve notebookları bitir & weSafe sosyal medya boardu bitir",
-                    is_completed: false,
-                    priority: "P1",
+                    priority: "P3",
+                    quadrant: "VOCATION",
                     created_at: "2026-02-27T10:57:59.221605+00:00"
                 }
             ];
@@ -75,7 +185,7 @@ export default function ActiveTasks() {
 
             const combined = Array.from(newTasksMap.values());
             setTasks(combined);
-            localStorage.setItem("goat-migrated-supabase", "true");
+            localStorage.setItem("goat-migrated-supabase-v4", "true");
         }
 
         setIsLoaded(true);
@@ -105,6 +215,7 @@ export default function ActiveTasks() {
             title: newTaskTitle.trim(),
             is_completed: false,
             priority: newPriority,
+            quadrant: newQuadrant,
             created_at: new Date().toISOString()
         };
 
@@ -144,13 +255,17 @@ export default function ActiveTasks() {
     };
 
     const activeTasksList = useMemo(() => {
-        const active = tasks.filter(t => !t.is_completed);
+        let active = tasks.filter(t => !t.is_completed);
+        // Apply quadrant filter if active
+        if (activeQuadrantFilter) {
+            active = active.filter(t => t.quadrant === activeQuadrantFilter);
+        }
         return active.sort((a, b) => {
             const pOrder = { "P1": 1, "P2": 2, "P3": 3 };
             if (pOrder[a.priority] !== pOrder[b.priority]) return pOrder[a.priority] - pOrder[b.priority];
             return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
         });
-    }, [tasks]);
+    }, [tasks, activeQuadrantFilter]);
 
     const completedTasksList = useMemo(() => {
         const completed = tasks.filter(t => t.is_completed);
@@ -171,14 +286,21 @@ export default function ActiveTasks() {
 
     return (
         <section>
-            <h2 className="text-xs uppercase tracking-[0.25em] text-text-muted mb-4 font-mono">
-                AKTİF GÖREVLER
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xs uppercase tracking-[0.25em] text-text-muted font-mono">
+                    AKTİF GÖREVLER
+                    {activeQuadrantFilter && (
+                        <span className={`ml-2 ${QUADRANT_STYLES[activeQuadrantFilter].color}`}>
+                            — {QUADRANT_STYLES[activeQuadrantFilter].label}
+                        </span>
+                    )}
+                </h2>
+            </div>
 
             <div className="brutalist-card p-4 space-y-4 bg-surface/10 border-border">
 
-                {/* Simplified Add Task Form */}
-                <form onSubmit={handleAddTask} className="flex gap-2 items-center">
+                {/* Add Task Form */}
+                <form onSubmit={handleAddTask} className="flex gap-2 items-center flex-wrap">
                     <select
                         value={newPriority}
                         onChange={(e) => setNewPriority(e.target.value as any)}
@@ -188,12 +310,22 @@ export default function ActiveTasks() {
                         <option value="P2">P2</option>
                         <option value="P3">P3</option>
                     </select>
+                    <select
+                        value={newQuadrant}
+                        onChange={(e) => setNewQuadrant(e.target.value as Quadrant)}
+                        className="bg-background border border-border px-2 py-2 text-[10px] font-bold text-text outline-none focus:border-accent-green uppercase tracking-wider"
+                    >
+                        <option value="MIND">🧠 MIND</option>
+                        <option value="BODY">💪 BODY</option>
+                        <option value="SPIRIT">🔮 SPIRIT</option>
+                        <option value="VOCATION">⚡ VOC</option>
+                    </select>
                     <input
                         type="text"
                         value={newTaskTitle}
                         onChange={(e) => setNewTaskTitle(e.target.value)}
                         placeholder="Yeni görev ekle..."
-                        className="flex-1 bg-background border border-border px-3 py-2 text-sm font-mono text-text outline-none focus:border-accent-green transition-colors"
+                        className="flex-1 bg-background border border-border px-3 py-2 text-sm font-mono text-text outline-none focus:border-accent-green transition-colors min-w-[150px]"
                     />
                     <button
                         type="submit"
@@ -207,44 +339,54 @@ export default function ActiveTasks() {
                 {/* Active Tasks List */}
                 {activeTasksList.length === 0 ? (
                     <div className="text-text-muted text-xs font-mono uppercase tracking-widest py-6 text-center border border-dashed border-border">
-                        AKTİF GÖREV BULUNAMADI.
+                        {activeQuadrantFilter
+                            ? `${QUADRANT_STYLES[activeQuadrantFilter].label} QUADRANT'INDA AKTİF GÖREV YOK.`
+                            : "AKTİF GÖREV BULUNAMADI."}
                     </div>
                 ) : (
                     <div className="space-y-2">
-                        {activeTasksList.map((task) => (
-                            <div key={task.id} className={`brutalist-border border-border group overflow-hidden transition-all duration-200 p-3 flex items-center gap-3 ${task.is_urgent ? "bg-accent-green/5 border-accent-green glow-green" : "bg-surface/20"}`}>
-                                <button
-                                    onClick={() => toggleTask(task.id)}
-                                    className="w-4 h-4 flex-shrink-0 border-2 border-border flex items-center justify-center text-[9px] font-bold transition-colors bg-transparent text-transparent hover:border-text-muted"
-                                >
-                                    ✓
-                                </button>
+                        {activeTasksList.map((task) => {
+                            const qStyle = QUADRANT_STYLES[task.quadrant];
+                            return (
+                                <div key={task.id} className={`brutalist-border border-border group overflow-hidden transition-all duration-200 p-3 flex items-center gap-3 ${task.is_urgent ? "bg-accent-green/5 border-accent-green glow-green" : "bg-surface/20"}`}>
+                                    <button
+                                        onClick={() => toggleTask(task.id)}
+                                        className="w-4 h-4 flex-shrink-0 border-2 border-border flex items-center justify-center text-[9px] font-bold transition-colors bg-transparent text-transparent hover:border-text-muted"
+                                    >
+                                        ✓
+                                    </button>
 
-                                <span className={`px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-widest border shrink-0 ${PRIORITY_STYLES[task.priority]}`}>
-                                    {task.priority}
-                                </span>
+                                    {/* Quadrant Badge */}
+                                    <span className={`px-1 py-0.5 text-[8px] font-bold uppercase tracking-wider border shrink-0 ${qStyle.border} ${qStyle.color} ${qStyle.bg}`}>
+                                        {QUADRANT_SHORT[task.quadrant]}
+                                    </span>
 
-                                <span className={`text-sm font-bold text-text flex-1 min-w-0 truncate ${task.is_urgent ? 'text-accent-green' : (task.priority === 'P1' ? 'text-accent-red' : '')}`}>
-                                    {task.title}
-                                </span>
+                                    <span className={`px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-widest border shrink-0 ${PRIORITY_STYLES[task.priority]}`}>
+                                        {task.priority}
+                                    </span>
 
-                                <button
-                                    onClick={(e) => toggleUrgency(task.id, e)}
-                                    className={`opacity-0 group-hover:opacity-100 transition-all p-1 text-base shrink-0 ${task.is_urgent ? "text-accent-green opacity-100" : "text-text-muted hover:text-accent-green"}`}
-                                    title="Acil/Önemli İşaretle"
-                                >
-                                    ★
-                                </button>
+                                    <span className={`text-sm font-bold text-text flex-1 min-w-0 truncate ${task.is_urgent ? 'text-accent-green' : (task.priority === 'P1' ? 'text-accent-red' : '')}`}>
+                                        {task.title}
+                                    </span>
 
-                                <button
-                                    onClick={() => deleteTask(task.id)}
-                                    className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-accent-red transition-all p-1 text-xs shrink-0"
-                                    title="Görevi Sil"
-                                >
-                                    ✕
-                                </button>
-                            </div>
-                        ))}
+                                    <button
+                                        onClick={(e) => toggleUrgency(task.id, e)}
+                                        className={`opacity-0 group-hover:opacity-100 transition-all p-1 text-base shrink-0 ${task.is_urgent ? "text-accent-green opacity-100" : "text-text-muted hover:text-accent-green"}`}
+                                        title="Acil/Önemli İşaretle"
+                                    >
+                                        ★
+                                    </button>
+
+                                    <button
+                                        onClick={() => deleteTask(task.id)}
+                                        className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-accent-red transition-all p-1 text-xs shrink-0"
+                                        title="Görevi Sil"
+                                    >
+                                        ✕
+                                    </button>
+                                </div>
+                            );
+                        })}
                     </div>
                 )}
             </div>
@@ -264,6 +406,9 @@ export default function ActiveTasks() {
                         {completedTasksList.map((task) => (
                             <div key={task.id} className="flex items-center gap-2 p-1.5 bg-surface/5 border border-border">
                                 <span className="text-accent-green text-[10px] font-bold">✓</span>
+                                <span className={`text-[8px] font-bold uppercase ${QUADRANT_STYLES[task.quadrant]?.color || "text-text-muted"}`}>
+                                    {task.quadrant ? QUADRANT_SHORT[task.quadrant] : "—"}
+                                </span>
                                 <span className="text-[11px] text-text-muted line-through flex-1 truncate">{task.title}</span>
                                 <span className="text-[9px] text-text-muted/50 tracking-widest">
                                     {task.completed_at ? new Date(task.completed_at).toLocaleDateString("tr-TR") : ''}

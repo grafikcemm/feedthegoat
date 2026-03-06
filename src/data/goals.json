@@ -1,386 +1,466 @@
 [
-    {
-        "title": "1. TEMEL VE SÜPER GÜÇ EDİNİMİ (İLK 6 AY)",
-        "affirmation": "Bu 6 ay, geri kalan hayatının fragmanıdır.",
-        "items": [
-            {
-                "text": "Prompt Engineering — Stratejik Seviye (System prompt mimarisi, chain-of-thought, çok adımlı orkestrasyon) [Ay 1-2]",
-                "subTasks": [
-                    "Anthropic Prompt Engineering dokümantasyonunu oku (docs.anthropic.com — ücretsiz, 2 gün)",
-                    "LearnPrompting.org kursunu tamamla (ücretsiz, 1 hafta)",
-                    "5 farklı iş senaryosu için system prompt yaz (müşteri hizmeti, lead qualification, içerik üretimi, veri analizi, kod review)",
-                    "Chain-of-thought + few-shot prompting ile 3 gerçek proje çıktısı üret",
-                    "Claude ve GPT-4 arasında aynı prompt ile karşılaştırma testi yap (5 case study)",
-                    "Multi-step orchestration: n8n'de 1 prompt zinciri workflow'u kur (input → analiz → çıktı → kontrol)"
-                ]
-            },
-            {
-                "text": "JavaScript Temelleri + Python Basics (2-3 haftalık yoğun sprint) [Ay 1-2]",
-                "subTasks": [
-                    "FreeCodeCamp \"JavaScript Algorithms & Data Structures\" kursunu bitir (freecodecamp.org — ücretsiz, 2 hafta)",
-                    "JavaScript ile 1 mini proje yap (to-do app veya hesap makinesi)",
-                    "Kaggle \"Intro to Python\" kursunu bitir (kaggle.com/learn — ücretsiz, 1 hafta)",
-                    "Python ile 1 API çağırma scripti yaz (OpenAI veya Anthropic API)",
-                    "JSON, API, REST kavramlarını öğren (MDN Web Docs — developer.mozilla.org)"
-                ]
-            },
-            {
-                "text": "N8N Otomasyonları (API, Webhook, Apify, Apollo.io, Instantly.ai) — satılabilir seviyeye taşı [Ay 1-2]",
-                "subTasks": [
-                    "n8n Advanced Workflows dokümantasyonunu bitir (docs.n8n.io)",
-                    "Apify ile web scraping workflow'u kur (lead listesi çekme)",
-                    "Apollo.io API entegrasyonu — lead enrichment workflow yap",
-                    "Instantly.ai cold email entegrasyonu — otomatik outreach akışı kur",
-                    "Webhook + conditional logic ile hata yönetimli production-ready workflow yap",
-                    "İlk 2 müşteriye otomasyon hizmeti sat ve teslim et"
-                ]
-            },
-            {
-                "text": "Vibe Coding + Cursor IDE + Clean Code Prensipleri [Ay 2-4]",
-                "subTasks": [
-                    "Lovable.dev'de ilk CRUD uygulamasını yap (ücretsiz plan, 1 hafta)",
-                    "Bolt.new'de 1 landing page oluştur ve Lovable ile hız/kalite karşılaştır",
-                    "Cursor IDE kur ve resmi dokümantasyonu oku (cursor.com/docs)",
-                    "Cursor ile mevcut bir projeyi refactor et (kendi kodun veya açık kaynak)",
-                    "Clean Code kitabının ilk 5 bölümünü oku veya YouTube \"Clean Code Summary\" videolarını izle",
-                    "Cursor + Claude ile tam bir mini SaaS projesi geliştir (dashboard, form builder veya tracker)"
-                ]
-            },
-            {
-                "text": "AI Ajanları (AI Agents) Mimarisi — n8n üzerinden kavramsal + pratik [Ay 2-4]",
-                "subTasks": [
-                    "n8n AI Agent node dokümantasyonunu oku + 3 resmi template'i incele ve kopyala",
-                    "DeepLearning.AI \"Building Agentic RAG with LlamaIndex\" kursunu bitir (deeplearning.ai — ücretsiz, 3-4 saat)",
-                    "DeepLearning.AI \"AI Agents in LangGraph\" kursunu bitir (ücretsiz, 4 saat)",
-                    "n8n'de single-agent → tool-calling agent → supervisor agent geçişini yap (3 aşamalı pratik)",
-                    "Gerçek müşteri senaryosu için 1 AI agent workflow kur (örn: gelen e-postaları oku → sınıflandır → yanıtla)",
-                    "Agent workflow'unu satılabilir hizmet olarak paketle ve fiyatlandır"
-                ]
-            },
-            {
-                "text": "UI/UX Tasarımları (Figma, Relume, Framer, Lovable, Bolt.new) + Google UX Design Certificate başlat [Ay 2-4]",
-                "subTasks": [
-                    "Google UX Design Professional Certificate başlat (Coursera — ilk 2 modülü bitir)",
-                    "Figma'da component library + auto layout masterclass izle (YouTube: \"Figma Auto Layout Masterclass\")",
-                    "Relume.io ile 2 farklı site wireframe oluştur (AI-destekli sitemap + wireframe)",
-                    "Framer'da 1 portfolio sitesi yap ve yayınla",
-                    "Lovable veya Bolt.new ile Figma tasarımını koda çevir (design-to-code pipeline dene)",
-                    "1 tam UI kit / design system oluştur (Figma — minimum 10 component: button, input, card, modal, nav vb.)"
-                ]
-            },
-            {
-                "text": "Motion Design (After Effects temel kurs) [Ay 4-6]",
-                "subTasks": [
-                    "Kurs seç ve başla: Domestika \"After Effects for Beginners\" VEYA YouTube \"Ben Marriott\" serisi (ücretsiz)",
-                    "5 temel tekniği öğren: keyframe, easing, mask, shape layers, text animation",
-                    "3 farklı sosyal medya animasyonu yap (logo reveal, text animation, infographic animation)",
-                    "1 müşteri projesi için motion deliverable üret (animasyonlu sunum veya sosyal medya içeriği)",
-                    "Kendi YouTube/IG içerikleri için intro + lower third şablonu oluştur",
-                    "30-60 saniyelik demo reel / showreel hazırla"
-                ]
-            },
-            {
-                "text": "İlk Vibe Coding Ürününü Canlıya Al — micro-SaaS, şablon veya müşteri projesi [Ay 6]",
-                "subTasks": [
-                    "Ürün konseptini belirle (micro-SaaS / Figma template / n8n workflow template / Framer template)",
-                    "MVP özellik listesi oluştur — max 3 özellik, kapsamı küçük tut",
-                    "2 hafta içinde ürünü geliştir (Cursor + Claude)",
-                    "Gumroad veya Lemon Squeezy'de satış sayfası oluştur (benefit-driven copy + 3 mockup + video demo)",
-                    "ProductHunt veya Twitter/X'te lansman yap",
-                    "İlk 5 satışı veya kullanıcıyı getir"
-                ]
-            }
+  {
+    "title": "1. TEMEL VE SÜPER GÜÇ EDİNİMİ (İLK 6 AY)",
+    "affirmation": "Bu 6 ay, geri kalan hayatının fragmanıdır.",
+    "items": [
+      {
+        "text": "Prompt Engineering — Stratejik Seviye (System prompt mimarisi, chain-of-thought, çok adımlı orkestrasyon) [Ay 1-2]",
+        "subTasks": [
+          "Anthropic Prompt Engineering dokümantasyonunu oku (docs.anthropic.com — ücretsiz, 2 gün)",
+          "LearnPrompting.org kursunu tamamla (ücretsiz, 1 hafta)",
+          "5 farklı iş senaryosu için system prompt yaz (müşteri hizmeti, lead qualification, içerik üretimi, veri analizi, kod review)",
+          "Chain-of-thought + few-shot prompting ile 3 gerçek proje çıktısı üret",
+          "Claude ve GPT-4 arasında aynı prompt ile karşılaştırma testi yap (5 case study)",
+          "Multi-step orchestration: n8n'de 1 prompt zinciri workflow'u kur (input → analiz → çıktı → kontrol)"
         ]
-    },
-    {
-        "title": "2. KİŞİSEL TEKNİK HEDEFLERİM",
-        "affirmation": "Piksel itici bir amele olmaktan çıkıp, veriyle, satışla ve psikolojiyle masayı domine eden tehlikeli bir stratejiste dönüşüyorsun.",
-        "items": [
-            {
-                "text": "Dijital & Finansal Okuryazarlık",
-                "subTasks": [
-                    "Khan Academy \"Personal Finance\" kursunu bitir (khanacademy.org — ücretsiz, 2 hafta)",
-                    "Şahıs şirketi vergi yapısını öğren: KDV, stopaj, muhtasar, geçici vergi (mali müşavirle 1 toplantı)",
-                    "Freelance gelir takibi sistemi kur (Notion veya Excel — aylık gelir/gider/kar/zarar tablosu)",
-                    "E-fatura, e-arşiv, GİB portal sistemini öğren ve aktif et"
-                ]
-            },
-            {
-                "text": "Girişkenlik öğren",
-                "subTasks": [
-                    "\"The Mom Test\" kitabını oku (Rob Fitzpatrick — müşteri görüşmesi nasıl yapılır)",
-                    "Haftada 1 yabancıyla sohbet başlat (networking event, cold DM, LinkedIn bağlantı)",
-                    "10 cold DM gönder ve yanıt oranlarını takip et",
-                    "1 discovery call yap, kaydet ve kendi performansını değerlendir (ne iyi gitti, ne kötü)"
-                ]
-            },
-            {
-                "text": "Growth Marketing & Value-Based Pricing Sistematiği (Chris Do metodolojisi, 3-tier paket yapısı)",
-                "subTasks": [
-                    "Chris Do \"The Futur\" YouTube kanalından pricing serilerini izle (ücretsiz, minimum 10 video)",
-                    "\"Win Without Pitching Manifesto\" kitabını oku (Blair Enns)",
-                    "Kendi hizmetlerin için 3-tier fiyat paketi oluştur (Basic / Pro / Premium — her biri net kapsam + fiyat)",
-                    "HubSpot Academy \"Inbound Marketing\" sertifikasını al (ücretsiz, 4-6 saat)",
-                    "1 gerçek müşteriye value-based pricing uygula ve sonucu dokümante et"
-                ]
-            },
-            {
-                "text": "Database Mantığı (Supabase)",
-                "subTasks": [
-                    "Supabase resmi tutorial'ları tamamla (supabase.com/docs — ücretsiz)",
-                    "SQL temellerini öğren — SQLBolt interaktif kurs (sqlbolt.com — ücretsiz, 2-3 gün)",
-                    "Supabase'de 1 veritabanı kur (müşteri takip tablosu veya proje yönetim sistemi)",
-                    "n8n + Supabase entegrasyonu ile 1 otomasyon workflow yap (veri yazma/okuma/güncelleme)"
-                ]
-            },
-            {
-                "text": "Vibe Marketing & Storytelling/Copywriting",
-                "subTasks": [
-                    "\"Building a StoryBrand\" kitabını oku (Donald Miller)",
-                    "marketingexamples.com sitesini tara — en iyi 20 copywriting örneğini kaydet (Harry Dry, ücretsiz)",
-                    "Kendi hizmetlerin için 3 farklı hook/headline yaz ve A/B test et (LinkedIn veya IG)",
-                    "5 rakibin landing page copy'sini analiz et — güçlü ve zayıf yönleri not al",
-                    "LinkedIn'de 4 farklı copywriting formatıyla post paylaş ve engagement karşılaştır"
-                ]
-            },
-            {
-                "text": "Marka İletişimi, Satış & İkna Psikolojisi",
-                "subTasks": [
-                    "\"Influence\" kitabını oku (Robert Cialdini — 6 ikna prensibi)",
-                    "\"Never Split the Difference\" kitabını oku veya MasterClass'ını izle (Chris Voss — müzakere)",
-                    "10 farklı marka case study incele (positioning nasıl yapılmış, hangi hikaye anlatılmış)",
-                    "Kendi satış scriptini yaz (cold call / discovery call / follow-up — 3 ayrı script)",
-                    "\"Fiyat çok yüksek\" itirazına 3 farklı yanıt hazırla ve ezberle"
-                ]
-            },
-            {
-                "text": "Veri Okuryazarlığı (GA4 + Meta Ads Reporting + Supabase Queries)",
-                "subTasks": [
-                    "Google Analytics 4 sertifikasını al (Google Skillshop — ücretsiz, 4-5 saat)",
-                    "GA4'ü kendi websitene kur ve 30 gün veri topla, ilk raporu oluştur",
-                    "Meta Ads Manager'da 1 kampanya oluştur ve raporla (kendi içeriğin için, minimum bütçeyle)",
-                    "Meta Blueprint \"Digital Marketing Associate\" kursunu bitir (ücretsiz kurs bölümü)",
-                    "Supabase'den SQL sorguları ile veri çekme pratiği yap (SELECT, WHERE, JOIN, GROUP BY)"
-                ]
-            },
-            {
-                "text": "AI Content Multiplier Sistemi (OpusClip + ElevenLabs + HeyGen)",
-                "subTasks": [
-                    "OpusClip'e kayıt ol ve 1 uzun videoyu 5 short'a çevir",
-                    "ElevenLabs ile kendi sesinden voice clone oluştur",
-                    "HeyGen ile 1 AI avatar videosu üret (tanıtım veya eğitim formatı)",
-                    "Tam pipeline kur: 1 uzun içerik → 5 short + 3 carousel + 1 blog post + 1 newsletter",
-                    "Bu pipeline'ı n8n ile yarı otomatize et (content → platform dağıtımı)"
-                ]
-            },
-            {
-                "text": "Zevk/Kürasyon/Yargı Geliştirme (Günlük 30dk referans inceleme — Behance, Awwwards, Are.na)",
-                "subTasks": [
-                    "Behance'de haftalık 10 proje kaydet ve neden iyi olduğunu 1 cümleyle not al",
-                    "Awwwards \"Site of the Day\" arşivinden haftada 3 site incele",
-                    "Are.na'da kendi kürasyon board'unu oluştur (minimum 50 referans)",
-                    "\"Steal Like an Artist\" kitabını oku (Austin Kleon)",
-                    "Her ay 1 \"taste report\" yaz — bu ay en çok neyi beğendin, trendler neler"
-                ]
-            },
-            {
-                "text": "AI Deneyim Tasarımı (Conversational UX, güven kalıpları, AI arayüz tasarımı)",
-                "subTasks": [
-                    "Nielsen Norman Group \"AI UX\" makalelerini oku (nngroup.com/topic/ai — ücretsiz, minimum 10 makale)",
-                    "Anthropic \"Designing with AI\" dokümantasyonunu oku",
-                    "3 AI chatbot/asistan arayüzünü UX açısından analiz et ve karşılaştır (ChatGPT, Claude, Perplexity)",
-                    "1 conversational UX wireframe tasarla (Figma'da — AI asistan arayüzü)",
-                    "AI arayüzlerinde güven oluşturma pattern'lerini belirle — 5 pattern dokümante et"
-                ]
-            }
+      },
+      {
+        "text": "JavaScript Temelleri + Python Basics (2-3 haftalık yoğun sprint) [Ay 1-2]",
+        "subTasks": [
+          "FreeCodeCamp \"JavaScript Algorithms & Data Structures\" kursunu bitir (freecodecamp.org — ücretsiz, 2 hafta)",
+          "JavaScript ile 1 mini proje yap (to-do app veya hesap makinesi)",
+          "Kaggle \"Intro to Python\" kursunu bitir (kaggle.com/learn — ücretsiz, 1 hafta)",
+          "Python ile 1 API çağırma scripti yaz (OpenAI veya Anthropic API)",
+          "JSON, API, REST kavramlarını öğren (MDN Web Docs — developer.mozilla.org)"
         ]
-    },
-    {
-        "title": "3. SENE İÇİNDE: BECERİ & ÜRETİM",
-        "affirmation": "Bozma Creative bir hayal değil, bir imparatorluktur. Müşteri bekleyen kurban rolünü öldürüp, avlanan bir ajans sahibine evriliyorsun.",
-        "items": [
-            {
-                "text": "After Effects (Motion Design) kursunu bitir",
-                "subTasks": [
-                    "Panel 1'de seçilen kursu tamamla (tüm modüller)",
-                    "Portfolio için 3 motion design projesi oluştur (farklı stiller)",
-                    "Müşteri sunumu için animasyonlu pitch deck veya video yap",
-                    "30-60 saniyelik showreel / demo reel hazırla"
-                ]
-            },
-            {
-                "text": "AI Agent Workflow'ları Kur ve Hizmet Olarak Sat (n8n — AaaS modeli)",
-                "subTasks": [
-                    "3 farklı sektör için AI agent template'i hazırla (e-ticaret, emlak, SaaS)",
-                    "Her template için Loom demo videosu çek (3-5 dakika)",
-                    "Fiyatlandırma oluştur: setup fee + aylık bakım modeli",
-                    "İlk 3 müşteriye AaaS sat ve teslim et",
-                    "Case study yaz: \"X müşterinin Y sorununu Z agent ile çözdük, %N tasarruf sağlandı\""
-                ]
-            },
-            {
-                "text": "UI/UX Design System Oluştur (Figma)",
-                "subTasks": [
-                    "Token sistemi kur (renk, tipografi, spacing — Figma Variables kullan)",
-                    "Minimum 20 component oluştur (button, input, card, modal, nav, table, badge, avatar, alert, tooltip vb.)",
-                    "Light + Dark mode destekli yap",
-                    "Responsive breakpoint'leri ekle (mobile, tablet, desktop)",
-                    "Kullanım kılavuzu / dokümantasyon sayfası hazırla",
-                    "Gumroad'da satışa koy veya portfolio'da sergile"
-                ]
-            },
-            {
-                "text": "Yapay zeka (SaaS — AI Agent) terimlerini ve mimarisini uygulama seviyesine taşı",
-                "subTasks": [
-                    "Temel kavram glossary'si oluştur: LLM, RAG, fine-tuning, embedding, vector database, token, context window, hallucination, grounding",
-                    "DeepLearning.AI \"ChatGPT Prompt Engineering for Developers\" bitir (ücretsiz, 1.5 saat)",
-                    "DeepLearning.AI \"LangChain for LLM Application Development\" bitir (ücretsiz, 2 saat)",
-                    "1 RAG pipeline'ı kur (n8n + Supabase pgvector veya Pinecone)",
-                    "Müşteriye AI mimari açıklaması yapabilecek seviyeye gel — 5 dakikalık sunum kaydet ve değerlendir"
-                ]
-            },
-            {
-                "text": "HubSpot Inbound Marketing + GA4 sertifikalarını al (ücretsiz)",
-                "subTasks": [
-                    "HubSpot Academy \"Inbound Marketing\" sertifikasını al (ücretsiz, 4-6 saat)",
-                    "HubSpot Academy \"Content Marketing\" sertifikasını al (ücretsiz, 6 saat)",
-                    "Google Analytics 4 sertifikasını al (Google Skillshop — ücretsiz)",
-                    "Tüm sertifikaları LinkedIn profiline ekle",
-                    "Portfolio sitesine \"Sertifikalar\" bölümü aç"
-                ]
-            },
-            {
-                "text": "Discovery Call Script Oluştur + İlk 10 Müşteri Görüşmesini Kaydet",
-                "subTasks": [
-                    "Chris Do \"The Futur\" kanalından discovery call videolarını izle (YouTube — ücretsiz, minimum 5 video)",
-                    "Script yaz: Açılış → Problem tespiti → Mevcut çözüm → Bütçe → Timeline → Sonraki adım",
-                    "İtiraz yanıtları hazırla: \"Fiyat yüksek\" / \"Düşünmem lazım\" / \"Rakip daha ucuz\" (her birine 2-3 alternatif)",
-                    "İlk 3 görüşmeyi kaydet, izle ve neyi iyi/kötü yaptığını not al",
-                    "10 görüşme tamamla ve conversion rate hesapla",
-                    "Script'i sonuçlara göre optimize et (neyi değiştirdin, neden)"
-                ]
-            },
-            {
-                "text": "Client Journey Sistemi Kur (Brief → Teslim → Ödeme → Referans — Notion + n8n)",
-                "subTasks": [
-                    "Notion'da müşteri pipeline template'i oluştur (Lead → Teklif → Onay → Üretim → Teslim → Ödeme → Referans)",
-                    "Her aşama için otomatik e-posta/mesaj şablonu yaz (7 ayrı şablon)",
-                    "n8n ile otomatik hatırlatmalar kur (ödeme gecikme, teslim yaklaşma, takip mesajı)",
-                    "Müşteri onboarding formu oluştur (brief template — Tally veya Typeform)",
-                    "Proje teslim sonrası otomatik feedback anketi ekle",
-                    "Referans sistemi: teslimden 30 gün sonra otomatik \"bizi tavsiye eder misiniz?\" mesajı"
-                ]
-            }
+      },
+      {
+        "text": "N8N Otomasyonları (API, Webhook, Apify, Apollo.io, Instantly.ai) — satılabilir seviyeye taşı [Ay 1-2]",
+        "subTasks": [
+          "n8n Advanced Workflows dokümantasyonunu bitir (docs.n8n.io)",
+          "Apify ile web scraping workflow'u kur (lead listesi çekme)",
+          "Apollo.io API entegrasyonu — lead enrichment workflow yap",
+          "Instantly.ai cold email entegrasyonu — otomatik outreach akışı kur",
+          "Webhook + conditional logic ile hata yönetimli production-ready workflow yap",
+          "İlk 2 müşteriye otomasyon hizmeti sat ve teslim et"
         ]
-    },
-    {
-        "title": "4. SENE İÇİNDE: MONETİZASYON & BÜYÜME",
-        "affirmation": "Para kazanmayan bilgi, vitrine konmuş sahte silah gibidir. Sistemi kur, satışı otomatize et, uyurken kazan.",
-        "items": [
-            {
-                "text": "Bozma Creative ajans hesabını faaliyete geçir",
-                "subTasks": [
-                    "Logo, brand guidelines ve visual identity finalize et",
-                    "Profesyonel website yap (Framer veya kendi vibe coding ürünü)",
-                    "3 müşteri case study hazırla (weSafe + 2 mevcut proje)",
-                    "Google Business Profile oluştur",
-                    "Instagram business hesabını optimize et (bio, highlights, portfolio pinleri)"
-                ]
-            },
-            {
-                "text": "AI ile YouTube/TikTok/IG kısa videoları (OpusClip ile content multiplier)",
-                "subTasks": [
-                    "OpusClip hesabı aç ve ilk 5 short'u oluştur",
-                    "CapCut ile AI-destekli edit workflow kur (auto-caption + auto b-roll)",
-                    "Haftalık 3 short üretim rutini oluştur ve takvime bağla",
-                    "İlk 30 short'u yayınla ve performans analiz et (hangisi tuttu, neden)",
-                    "En iyi performans gösteren formatı template'leştir ve tekrarla"
-                ]
-            },
-            {
-                "text": "İlk dijital ürünü sat (Figma/Framer şablonu veya N8N workflow — Gumroad)",
-                "subTasks": [
-                    "Ürün tipi seç: Figma UI Kit / Framer Template / N8N Workflow Template / Notion Template",
-                    "Gumroad veya Lemon Squeezy hesabı aç",
-                    "Ürün sayfası yaz: benefit-driven copy + 3 mockup görseli + video demo",
-                    "Twitter/X + LinkedIn + Instagram'da lansman paylaşımı yap",
-                    "İlk 10 satışı getir",
-                    "Müşteri yorumlarını topla ve satış sayfasına ekle (social proof)"
-                ]
-            },
-            {
-                "text": "Müşteri bulma — Cold Outreach sistemi kur (Apollo + Instantly + n8n)",
-                "subTasks": [
-                    "Apollo.io hesabı aç ve ICP'ye uygun ilk 100 lead listesini oluştur (sektör + pozisyon filtresi)",
-                    "Instantly.ai hesabı aç ve domain warm-up başlat (minimum 2 hafta bekle)",
-                    "3 farklı cold email şablonu yaz (A/B/C versiyonu — farklı hook ve CTA)",
-                    "n8n ile Apollo → Instantly → CRM (Notion) otomatik akışını kur",
-                    "Günde 30 e-posta gönder, haftalık open rate + reply rate takip et",
-                    "İlk 3 müşteriyi cold outreach'ten getir"
-                ]
-            },
-            {
-                "text": "AEO/GEO Farkındalığı (Not al, 2027'de uygula)",
-                "subTasks": [
-                    "\"AEO (Answer Engine Optimization) nedir\" araştır — 5 makale oku ve özetini not al",
-                    "Kendi websiteni AI arama motorlarında test et (Perplexity, ChatGPT, Gemini — çıkıyor musun?)",
-                    "Schema markup temellerini öğren (schema.org — ücretsiz, 2-3 saat)",
-                    "2027 uygulama planı taslağı yaz (şimdilik sadece not al, aksiyon yok)"
-                ]
-            },
-            {
-                "text": "Wise + Payoneer hesapları aç, uluslararası ödeme altyapısını kur",
-                "subTasks": [
-                    "Wise Business hesabı aç (wise.com — kimlik doğrulama dahil)",
-                    "Payoneer hesabı aç (payoneer.com — kimlik doğrulama dahil)",
-                    "İkisinin komisyon, kur ve transfer hızı yapısını karşılaştır — hangi durumda hangisi avantajlı belirle",
-                    "İlk test transferi yap (küçük miktar göndererek sistemi doğrula)",
-                    "İngilizce fatura şablonu oluştur (USD/EUR, Wise/Payoneer ödeme bilgileri dahil)"
-                ]
-            },
-            {
-                "text": "Şahıs şirketi kur + Türk mali müşavire danış (uluslararası freelance vergilendirme)",
-                "subTasks": [
-                    "Şahıs şirketi açma prosedürünü araştır (Vergi dairesi + Ticaret/Esnaf odası)",
-                    "Mali müşavir ile görüşme yap — uluslararası freelance gelirin Türkiye'de vergilendirilmesi",
-                    "Aylık vergi takvimi oluştur (KDV beyanı, Muhtasar, Geçici Vergi tarihleri)",
-                    "E-fatura / e-arşiv sistemine kaydol (GİB portal)",
-                    "Şirketi resmi olarak aktif et ve ilk faturayı kes"
-                ]
-            },
-            {
-                "text": "Toptal / Contra platformlarına başvur, LinkedIn profilini İngilizce optimize et",
-                "subTasks": [
-                    "LinkedIn profilini tamamen İngilizce yaz (headline, about, experience, skills)",
-                    "LinkedIn headline formülü uygula: \"[Title] | I help [target] achieve [outcome] with [method]\"",
-                    "5 skill endorsement ve 3 recommendation topla (mevcut müşteriler veya iş arkadaşlarından)",
-                    "Contra.com profilini oluştur, portfolio yükle ve 3 servis listele",
-                    "Toptal.com başvuru yap (portfolio review + teknik screening hazırlığı)",
-                    "Haftada 3 LinkedIn paylaşımı rutinine başla (İngilizce — B2B odaklı)"
-                ]
-            },
-            {
-                "text": "Kişisel YouTube kanalını aç ve uzmanlık alanını monetize et",
-                "subTasks": [
-                    "Kanal konseptini belirle (AI + Design + Automation niche — Türkçe mi İngilizce mi karar ver)",
-                    "Kanal adı, banner ve profil görseli hazırla",
-                    "İlk 10 video konusunu planla (başlık + thumbnail taslağı)",
-                    "İlk videoyu çek, düzenle ve yayınla",
-                    "Haftalık 1 video rutini oluştur",
-                    "İlk 100 abone hedefine ulaş"
-                ]
-            },
-            {
-                "text": "E-posta listesi başlat (Beehiiv veya Substack) + İlk lead magnet oluştur",
-                "subTasks": [
-                    "Beehiiv veya Substack hesabı aç ve marka uyumlu profil oluştur",
-                    "Lead magnet oluştur: ücretsiz PDF rehber veya mini template pack (örn: \"Freelancer için 10 N8N Workflow Template\")",
-                    "Lead magnet için landing page yap (Framer veya Carrd — e-posta topla)",
-                    "Instagram bio + LinkedIn + websiteye kayıt linki ekle",
-                    "İlk 100 aboneyi topla",
-                    "Haftalık veya 2 haftada 1 newsletter gönderme rutini başlat"
-                ]
-            }
+      },
+      {
+        "text": "Vibe Coding + Cursor IDE + Clean Code Prensipleri [Ay 2-4]",
+        "subTasks": [
+          "Lovable.dev'de ilk CRUD uygulamasını yap (ücretsiz plan, 1 hafta)",
+          "Bolt.new'de 1 landing page oluştur ve Lovable ile hız/kalite karşılaştır",
+          "Cursor IDE kur ve resmi dokümantasyonu oku (cursor.com/docs)",
+          "Cursor ile mevcut bir projeyi refactor et (kendi kodun veya açık kaynak)",
+          "Clean Code kitabının ilk 5 bölümünü oku veya YouTube \"Clean Code Summary\" videolarını izle",
+          "Cursor + Claude ile tam bir mini SaaS projesi geliştir (dashboard, form builder veya tracker)"
         ]
-    }
+      },
+      {
+        "text": "AI Ajanları (AI Agents) Mimarisi — n8n üzerinden kavramsal + pratik [Ay 2-4]",
+        "subTasks": [
+          "n8n AI Agent node dokümantasyonunu oku + 3 resmi template'i incele ve kopyala",
+          "DeepLearning.AI \"Building Agentic RAG with LlamaIndex\" kursunu bitir (deeplearning.ai — ücretsiz, 3-4 saat)",
+          "DeepLearning.AI \"AI Agents in LangGraph\" kursunu bitir (ücretsiz, 4 saat)",
+          "n8n'de single-agent → tool-calling agent → supervisor agent geçişini yap (3 aşamalı pratik)",
+          "Gerçek müşteri senaryosu için 1 AI agent workflow kur (örn: gelen e-postaları oku → sınıflandır → yanıtla)",
+          "Agent workflow'unu satılabilir hizmet olarak paketle ve fiyatlandır"
+        ]
+      },
+      {
+        "text": "UI/UX Tasarımları (Figma, Relume, Framer, Lovable, Bolt.new) + Google UX Design Certificate başlat [Ay 2-4]",
+        "subTasks": [
+          "Google UX Design Professional Certificate başlat (Coursera — ilk 2 modülü bitir)",
+          "Figma'da component library + auto layout masterclass izle (YouTube: \"Figma Auto Layout Masterclass\")",
+          "Relume.io ile 2 farklı site wireframe oluştur (AI-destekli sitemap + wireframe)",
+          "Framer'da 1 portfolio sitesi yap ve yayınla",
+          "Lovable veya Bolt.new ile Figma tasarımını koda çevir (design-to-code pipeline dene)",
+          "1 tam UI kit / design system oluştur (Figma — minimum 10 component: button, input, card, modal, nav vb.)"
+        ]
+      },
+      {
+        "text": "AI Güvenliği & Etik Temelleri [Ay 3-4]",
+        "subTasks": [
+          "Anthropic Responsible Scaling Policy oku",
+          "Hallucination detection teknikleri öğren",
+          "GDPR ve KVKK temellerini öğren",
+          "\"AI Kullanım & Veri Güvenliği\" tek sayfa müşteri dokümanı şablonu hazırla"
+        ]
+      },
+      {
+        "text": "İlk Vibe Coding Ürününü Canlıya Al — micro-SaaS, şablon veya müşteri projesi [Ay 5]",
+        "subTasks": [
+          "Ürün konseptini belirle (micro-SaaS / Figma template / n8n workflow template / Framer template)",
+          "MVP özellik listesi oluştur — max 3 özellik, kapsamı küçük tut",
+          "2 hafta içinde ürünü geliştir (Cursor + Claude)",
+          "Gumroad veya Lemon Squeezy'de satış sayfası oluştur (benefit-driven copy + 3 mockup + video demo)",
+          "ProductHunt veya Twitter/X'te lansman yap",
+          "İlk 5 satışı veya kullanıcıyı getir"
+        ]
+      },
+      {
+        "text": "Motion Design (After Effects temel kurs) [Ay 6-8]",
+        "subTasks": [
+          "Ay 4-5: Runway, Kling, Pika test et",
+          "AI video vs After Effects karşılaştırma notu yaz",
+          "Kurs seç ve başla: Domestika \"After Effects for Beginners\" VEYA YouTube \"Ben Marriott\" serisi (ücretsiz)",
+          "5 temel tekniği öğren: keyframe, easing, mask, shape layers, text animation",
+          "3 farklı sosyal medya animasyonu yap (logo reveal, text animation, infographic animation)",
+          "1 müşteri projesi için motion deliverable üret (animasyonlu sunum veya sosyal medya içeriği)",
+          "Kendi YouTube/IG içerikleri için intro + lower third şablonu oluştur",
+          "30-60 saniyelik demo reel / showreel hazırla"
+        ]
+      }
+    ]
+  },
+  {
+    "title": "2. KİŞİSEL TEKNİK HEDEFLERİM",
+    "affirmation": "Piksel itici bir amele olmaktan çıkıp, veriyle, satışla ve psikolojiyle masayı domine eden tehlikeli bir stratejiste dönüşüyorsun.",
+    "items": [
+      {
+        "text": "⚡ ÖNCELİKLİ — Growth Marketing & Value-Based Pricing Sistematiği (Chris Do metodolojisi, 3-tier paket yapısı)",
+        "subTasks": [
+          "Chris Do \"The Futur\" YouTube kanalından pricing serilerini izle (ücretsiz, minimum 10 video)",
+          "\"Win Without Pitching Manifesto\" kitabını oku (Blair Enns)",
+          "Kendi hizmetlerin için 3-tier fiyat paketi oluştur (Basic / Pro / Premium — her biri net kapsam + fiyat)",
+          "HubSpot Academy \"Inbound Marketing\" sertifikasını al (ücretsiz, 4-6 saat)",
+          "1 gerçek müşteriye value-based pricing uygula ve sonucu dokümante et",
+          "Rapordaki yüksek maruz sektörleri hedef liste olarak kullan: Müşteri Hizmetleri %70.1, Veri Girişi %67.1, Pazarlama %64.8, Satış %62.8, Finans %57.2"
+        ]
+      },
+      {
+        "text": "Dijital & Finansal Okuryazarlık",
+        "subTasks": [
+          "Khan Academy \"Personal Finance\" kursunu bitir (khanacademy.org — ücretsiz, 2 hafta)",
+          "Şahıs şirketi vergi yapısını öğren: KDV, stopaj, muhtasar, geçici vergi (mali müşavirle 1 toplantı)",
+          "Freelance gelir takibi sistemi kur (Notion veya Excel — aylık gelir/gider/kar/zarar tablosu)",
+          "E-fatura, e-arşiv, GİB portal sistemini öğren ve aktif et"
+        ]
+      },
+      {
+        "text": "Girişkenlik öğren",
+        "subTasks": [
+          "\"The Mom Test\" kitabını oku (Rob Fitzpatrick — müşteri görüşmesi nasıl yapılır)",
+          "Haftada 1 yabancıyla sohbet başlat (networking event, cold DM, LinkedIn bağlantı)",
+          "10 cold DM gönder ve yanıt oranlarını takip et",
+          "1 discovery call yap, kaydet ve kendi performansını değerlendir (ne iyi gitti, ne kötü)"
+        ]
+      },
+      {
+        "text": "Database Mantığı (Supabase)",
+        "subTasks": [
+          "Supabase resmi tutorial'ları tamamla (supabase.com/docs — ücretsiz)",
+          "SQL temellerini öğren — SQLBolt interaktif kurs (sqlbolt.com — ücretsiz, 2-3 gün)",
+          "Supabase'de 1 veritabanı kur (müşteri takip tablosu veya proje yönetim sistemi)",
+          "n8n + Supabase entegrasyonu ile 1 otomasyon workflow yap (veri yazma/okuma/güncelleme)"
+        ]
+      },
+      {
+        "text": "Vibe Marketing & Storytelling/Copywriting",
+        "subTasks": [
+          "\"Building a StoryBrand\" kitabını oku (Donald Miller)",
+          "marketingexamples.com sitesini tara — en iyi 20 copywriting örneğini kaydet (Harry Dry, ücretsiz)",
+          "Kendi hizmetlerin için 3 farklı hook/headline yaz ve A/B test et (LinkedIn veya IG)",
+          "5 rakibin landing page copy'sini analiz et — güçlü ve zayıf yönleri not al",
+          "LinkedIn'de 4 farklı copywriting formatıyla post paylaş ve engagement karşılaştır"
+        ]
+      },
+      {
+        "text": "Marka İletişimi, Satış & İkna Psikolojisi",
+        "subTasks": [
+          "\"Influence\" kitabını oku (Robert Cialdini — 6 ikna prensibi)",
+          "\"Never Split the Difference\" kitabını oku veya MasterClass'ını izle (Chris Voss — müzakere)",
+          "10 farklı marka case study incele (positioning nasıl yapılmış, hangi hikaye anlatılmış)",
+          "Kendi satış scriptini yaz (cold call / discovery call / follow-up — 3 ayrı script)",
+          "\"Fiyat çok yüksek\" itirazına 3 farklı yanıt hazırla ve ezberle"
+        ]
+      },
+      {
+        "text": "Veri Okuyazarlığı & Data Storytelling (GA4 + Meta Ads Reporting + Supabase Queries)",
+        "subTasks": [
+          "Cole Nussbaumer Knaflic \"Storytelling with Data\" kitabından 3 kaynak incele",
+          "Bir müşteri projesi için AI-powered insight raporu tasarla (Canva veya Figma'da)",
+          "Supabase sorgularından görsel hikaye dönüştürme pratiği (1 örnek proje)",
+          "Google Analytics 4 sertifikasını al (Google Skillshop — ücretsiz, 4-5 saat)",
+          "GA4'ü kendi websitene kur ve 30 gün veri topla, ilk raporu oluştur",
+          "Meta Ads Manager'da 1 kampanya oluştur ve raporla (kendi içeriğin için, minimum bütçeyle)",
+          "Meta Blueprint \"Digital Marketing Associate\" kursunu bitir (ücretsiz kurs bölümü)"
+        ]
+      },
+      {
+        "text": "AI Content Multiplier Sistemi (OpusClip + ElevenLabs + HeyGen)",
+        "subTasks": [
+          "OpusClip'e kayıt ol ve 1 uzun videoyu 5 short'a çevir",
+          "ElevenLabs ile kendi sesinden voice clone oluştur",
+          "HeyGen ile 1 AI avatar videosu üret (tanıtım veya eğitim formatı)",
+          "Tam pipeline kur: 1 uzun içerik → 5 short + 3 carousel + 1 blog post + 1 newsletter",
+          "Bu pipeline'ı n8n ile yarı otomatize et (content → platform dağıtımı)",
+          "Paketi fiyatlandır: aylık retainer formatında",
+          "@grafikcem'de 1 Reels: behind the scenes içerik üretim sürecini göster",
+          "3 potansiyel müşteriye pilot teklif sun"
+        ]
+      },
+      {
+        "text": "Zevk/Kürasyon/Yargı Geliştirme (Günlük 30dk referans inceleme — Behance, Awwwards, Are.na)",
+        "subTasks": [
+          "Behance'de haftalık 10 proje kaydet ve neden iyi olduğunu 1 cümleyle not al",
+          "Awwwards \"Site of the Day\" arşivinden haftada 3 site incele",
+          "Are.na'da kendi kürasyon board'unu oluştur (minimum 50 referans)",
+          "\"Steal Like an Artist\" kitabını oku (Austin Kleon)",
+          "Her ay 1 \"taste report\" yaz — bu ay en çok neyi beğendin, trendler neler"
+        ]
+      },
+      {
+        "text": "AI Deneyim Tasarımı (Conversational UX, güven kalıpları, AI arayüz tasarımı)",
+        "subTasks": [
+          "Nielsen Norman Group \"AI UX\" makalelerini oku (nngroup.com/topic/ai — ücretsiz, minimum 10 makale)",
+          "Anthropic \"Designing with AI\" dokümantasyonunu oku",
+          "3 AI chatbot/asistan arayüzünü UX açısından analiz et ve karşılaştır (ChatGPT, Claude, Perplexity)",
+          "1 conversational UX wireframe tasarla (Figma'da — AI asistan arayüzü)",
+          "AI arayüzlerinde güven oluşturma pattern'lerini belirle — 5 pattern dokümante et"
+        ]
+      },
+      {
+        "text": "Arts & Media AI Konumlanma Stratejisi [Ay 1-2]",
+        "subTasks": [
+          "@grafikcem bio'sunu güncelle: \"Grafik Tasarım → AI-Powered Creative Director\" konumlanmasını netleştir (sadece tasarımcı değil, AI operatörü)",
+          "Anthropic raporundaki Arts & Media maruziyetini içerik serisine dönüştür: \"Tasarımcılar İçin AI Hayatta Kalma Kılavuzu\" (3 Reels serisi)",
+          "Hedef müşteri listeni rapor verisiyle güncelle: Pazarlama ajansları (%64.8 maruz) ve müşteri hizmetleri firmaları (%70.1 maruz) öncelikli hedef — onların AI'a kaybettiği görevleri sen devral",
+          "\"AI ile Tasarım Maliyetini %50 Düşürüyorum\" value proposition'ını test et — 1 DM kampanyası",
+          "Türkiye'deki pazarlama ajanslarına özel \"AI Workflow Kurulum\" paketi fiyatlandır"
+        ]
+      },
+      {
+        "text": "AI Literacy Eğitim Paketi Oluştur",
+        "subTasks": [
+          "@grafikcem takipçi profili analiz et (Instagram Insights)",
+          "\"AI ile Tasarım Workflow'u\" 60 dk workshop müfredatı oluştur",
+          "İlk 20 kişiye beta olarak ücretsiz sun",
+          "Geri bildirimlere göre ücretli versiyon oluştur",
+          "Kurs satış sayfası hazırla (Gumroad)"
+        ]
+      }
+    ]
+  },
+  {
+    "title": "3. SENE İÇİNDE: BECERİ & ÜRETİM",
+    "affirmation": "Bozma Creative bir hayal değil, bir imparatorluktur. Müşteri bekleyen kurban rolünü öldürüp, avlanan bir ajans sahibine evriliyorsun.",
+    "items": [
+      {
+        "text": "AI Agent Workflow'ları Kur ve Hizmet Olarak Sat (n8n — AaaS modeli)",
+        "subTasks": [
+          "3 farklı sektör için AI agent template'i hazırla (e-ticaret, emlak, SaaS)",
+          "Her template için Loom demo videosu çek (3-5 dakika)",
+          "Fiyatlandırma oluştur: setup fee + aylık bakım modeli",
+          "İlk 3 müşteriye AaaS sat ve teslim et",
+          "Case study yaz: \"X müşterinin Y sorununu Z agent ile çözdük, %N tasarruf sağlandı\"",
+          "Yüksek maruz sektörleri hedef al: Müşteri Hizmetleri, Veri Girişi, Pazarlama, Satış, Finans",
+          "Her sektör için 1 demo workflow hazırla",
+          "\"AI Workflow Denetim & Optimizasyon\" hizmetini fiyat listesine ekle"
+        ]
+      },
+      {
+        "text": "UI/UX Design System Oluştur (Figma)",
+        "subTasks": [
+          "Token sistemi kur (renk, tipografi, spacing — Figma Variables kullan)",
+          "Minimum 20 component oluştur (button, input, card, modal, nav, table, badge, avatar, alert, tooltip vb.)",
+          "Light + Dark mode destekli yap",
+          "Responsive breakpoint'leri ekle (mobile, tablet, desktop)",
+          "Kullanım kılavuzu / dokümantasyon sayfası hazırla",
+          "Gumroad'da satışa koy veya portfolio'da sergile"
+        ]
+      },
+      {
+        "text": "Yapay zeka (SaaS — AI Agent) terimlerini ve mimarisini uygulama seviyesine taşı",
+        "subTasks": [
+          "Temel kavram glossary'si oluştur: LLM, RAG, fine-tuning, embedding, vector database, token, context window, hallucination, grounding",
+          "DeepLearning.AI \"ChatGPT Prompt Engineering for Developers\" bitir (ücretsiz, 1.5 saat)",
+          "DeepLearning.AI \"LangChain for LLM Application Development\" bitir (ücretsiz, 2 saat)",
+          "1 RAG pipeline'ı kur (n8n + Supabase pgvector veya Pinecone)",
+          "Müşteriye AI mimari açıklaması yapabilecek seviyeye gel — 5 dakikalık sunum kaydet ve değerlendir"
+        ]
+      },
+      {
+        "text": "HubSpot Inbound Marketing + GA4 sertifikalarını al (ücretsiz)",
+        "subTasks": [
+          "HubSpot Academy \"Inbound Marketing\" sertifikasını al (ücretsiz, 4-6 saat)",
+          "HubSpot Academy \"Content Marketing\" sertifikasını al (ücretsiz, 6 saat)",
+          "Google Analytics 4 sertifikasını al (Google Skillshop — ücretsiz)",
+          "Tüm sertifikaları LinkedIn profiline ekle",
+          "Portfolio sitesine \"Sertifikalar\" bölümü aç"
+        ]
+      },
+      {
+        "text": "Discovery Call Script Oluştur + İlk 10 Müşteri Görüşmesini Kaydet",
+        "subTasks": [
+          "Chris Do \"The Futur\" kanalından discovery call videolarını izle (YouTube — ücretsiz, minimum 5 video)",
+          "Script yaz: Açılış → Problem tespiti → Mevcut çözüm → Bütçe → Timeline → Sonraki adım",
+          "İtiraz yanıtları hazırla: \"Fiyat yüksek\" / \"Düşünmem lazım\" / \"Rakip daha ucuz\" (her birine 2-3 alternatif)",
+          "İlk 3 görüşmeyi kaydet, izle ve neyi iyi/kötü yaptığını not al",
+          "10 görüşme tamamla ve conversion rate hesapla",
+          "Script'i sonuçlara göre optimize et (neyi değiştirdin, neden)",
+          "Script'e ekle: \"AI kullanan süreciniz var mı?\"",
+          "Veri destekli satış argümanı hazırla (Anthropic raporu referanslı)",
+          "Rapor verisini Türkiye'ye lokalize et: \"Türkiye'de pazarlama departmanlarının %60+ görevi AI ile otomatize edilebilir durumda\" — kendi araştırmanı yap, müşteriye sunum için bir slide hazırla"
+        ]
+      },
+      {
+        "text": "Client Journey Sistemi Kur (Brief → Teslim → Ödeme → Referans — Notion + n8n)",
+        "subTasks": [
+          "Notion'da müşteri pipeline template'i oluştur (Lead → Teklif → Onay → Üretim → Teslim → Ödeme → Referans)",
+          "Her aşama için otomatik e-posta/mesaj şablonu yaz (7 ayrı şablon)",
+          "n8n ile otomatik hatırlatmalar kur (ödeme gecikme, teslim yaklaşma, takip mesajı)",
+          "Müşteri onboarding formu oluştur (brief template — Tally veya Typeform)",
+          "Proje teslim sonrası otomatik feedback anketi ekle",
+          "Referans sistemi: teslimden 30 gün sonra otomatik \"bizi tavsiye eder misiniz?\" mesajı"
+        ]
+      },
+      {
+        "text": "AI Workflow Denetim & Optimizasyon Hizmeti",
+        "subTasks": [
+          "Standart denetim checklist oluştur",
+          "Denetim raporu şablonu tasarla",
+          "Fiyatlandır: tek seferlik + aylık retainer",
+          "İlk 2 denetim projesini pilot olarak ücretsiz sun, case study oluştur"
+        ]
+      },
+      {
+        "text": "SPIRIT Quadrant Geliştirme [Ay 2-4] — HUMAN 3.0 en zayıf quadrant (1.3)",
+        "subTasks": [
+          "Mert Durmazer topluluğuna aktif katıl: haftada en az 1 soru sor veya yorum yap",
+          "Türkiye'de 2 AI/tasarım etkinliğine katıl (online veya offline — bağlantı için değil, perspektif için)",
+          "1 mentor ilişkisi kur: ileride danışabileceğin biri (tercihen AaaS alanında)",
+          "Haftalık bir \"bağlantı ritüeli\" belirle: 10 dk sektörden birine DM/yorum"
+        ]
+      },
+      {
+        "text": "After Effects (Motion Design) kursunu bitir — ERTELENEBİLİR (Ay 6+)",
+        "subTasks": [
+          "Panel 1'de seçilen kursu tamamla (tüm modüller)",
+          "Portfolio için 3 motion design projesi oluştur (farklı stiller)",
+          "Müşteri sunumu için animasyonlu pitch deck veya video yap",
+          "30-60 saniyelik showreel / demo reel hazırla"
+        ]
+      }
+    ]
+  },
+  {
+    "title": "4. SENE İÇİNDE: MONETİZASYON & BÜYÜME",
+    "affirmation": "Para kazanmayan bilgi, vitrine konmuş sahte silah gibidir. Sistemi kur, satışı otomatize et, uyurken kazan.",
+    "items": [
+      {
+        "text": "E-posta listesi başlat (Beehiiv veya Substack) + İlk lead magnet oluştur",
+        "subTasks": [
+          "Beehiiv veya Substack hesabı aç ve marka uyumlu profil oluştur",
+          "Lead magnet oluştur: ücretsiz PDF rehber veya mini template pack (örn: \"Freelancer için 10 N8N Workflow Template\")",
+          "Lead magnet için landing page yap (Framer veya Carrd — e-posta topla)",
+          "Instagram bio'ya link ekle + 3 lead magnet Reels → hedef: 500 abone (30 gün)",
+          "Her newsletter: 1 AI+Tasarım ipucu + 1 workflow şablonu",
+          "90 gün sonunda monetizasyon değerlendir"
+        ]
+      },
+      {
+        "text": "Bozma Creative ajans hesabını faaliyete geçir",
+        "subTasks": [
+          "Logo, brand guidelines ve visual identity finalize et",
+          "Profesyonel website yap (Framer veya kendi vibe coding ürünü)",
+          "3 müşteri case study hazırla (weSafe + 2 mevcut proje)",
+          "Google Business Profile oluştur",
+          "Instagram business hesabını optimize et (bio, highlights, portfolio pinleri)"
+        ]
+      },
+      {
+        "text": "AI ile YouTube/TikTok/IG kısa videoları (OpusClip ile content multiplier)",
+        "subTasks": [
+          "OpusClip hesabı aç ve ilk 5 short'u oluştur",
+          "CapCut ile AI-destekli edit workflow kur (auto-caption + auto b-roll)",
+          "Haftalık 3 short üretim rutini oluştur ve takvime bağla",
+          "İlk 30 short'u yayınla ve performans analiz et (hangisi tuttu, neden)",
+          "En iyi performans gösteren formatı template'leştir ve tekrarla"
+        ]
+      },
+      {
+        "text": "İlk dijital ürünü sat (Figma/Framer şablonu veya N8N workflow — Gumroad)",
+        "subTasks": [
+          "Ürün tipi seç: Figma UI Kit / Framer Template / N8N Workflow Template / Notion Template",
+          "Gumroad veya Lemon Squeezy hesabı aç",
+          "Ürün sayfası yaz: benefit-driven copy + 3 mockup görseli + video demo",
+          "Twitter/X + LinkedIn + Instagram'da lansman paylaşımı yap",
+          "İlk 10 satışı getir",
+          "Müşteri yorumlarını topla ve satış sayfasına ekle (social proof)"
+        ]
+      },
+      {
+        "text": "Müşteri bulma — Cold Outreach sistemi kur (Apollo + Instantly + n8n)",
+        "subTasks": [
+          "Apollo.io hesabı aç ve ICP'ye uygun ilk 100 lead listesini oluştur (sektör + pozisyon filtresi)",
+          "Instantly.ai hesabı aç ve domain warm-up başlat (minimum 2 hafta bekle)",
+          "3 farklı cold email şablonu yaz (A/B/C versiyonu — farklı hook ve CTA)",
+          "n8n ile Apollo → Instantly → CRM (Notion) otomatik akışını kur",
+          "Günde 30 e-posta gönder, haftalık open rate + reply rate takip et",
+          "İlk 3 müşteriyi cold outreach'ten getir"
+        ]
+      },
+      {
+        "text": "Kişisel YouTube kanalını aç ve uzmanlık alanını monetize et",
+        "subTasks": [
+          "Kanal konseptini belirle (AI + Design + Automation niche — Türkçe mi İngilizce mi karar ver)",
+          "Kanal adı, banner ve profil görseli hazırla",
+          "İlk 5 video: \"AI Hangi Meslekleri Tehdit Ediyor?\" (rapor özeti), \"Tasarımcılar İçin AI Hayatta Kalma Rehberi\", \"n8n ile İlk AI Otomasyonunu Kur (Adım Adım)\", \"Freelancer Olarak AI'dan Para Kazanmak\", \"@grafikcem Nasıl 82K Takipçiye Ulaştı?\"",
+          "Her video: Instagram Reels + YouTube Shorts çapraz paylaş",
+          "Haftalık 1 video rutini oluştur",
+          "İlk 100 abone hedefine ulaş"
+        ]
+      },
+      {
+        "text": "AEO/GEO Farkındalığı (Not al, 2027'de uygula)",
+        "subTasks": [
+          "\"AEO (Answer Engine Optimization) nedir\" araştır — 5 makale oku ve özetini not al",
+          "Kendi websiteni AI arama motorlarında test et (Perplexity, ChatGPT, Gemini — çıkıyor musun?)",
+          "Schema markup temellerini öğren (schema.org — ücretsiz, 2-3 saat)",
+          "2027 uygulama planı taslağı yaz (şimdilik sadece not al, aksiyon yok)"
+        ]
+      },
+      {
+        "text": "Wise + Payoneer hesapları aç, uluslararası ödeme altyapısını kur",
+        "subTasks": [
+          "Wise Business hesabı aç (wise.com — kimlik doğrulama dahil)",
+          "Payoneer hesabı aç (payoneer.com — kimlik doğrulama dahil)",
+          "İkisinin komisyon, kur ve transfer hızı yapısını karşılaştır — hangi durumda hangisi avantajlı belirle",
+          "İlk test transferi yap (küçük miktar göndererek sistemi doğrula)",
+          "İngilizce fatura şablonu oluştur (USD/EUR, Wise/Payoneer ödeme bilgileri dahil)"
+        ]
+      },
+      {
+        "text": "Şahıs şirketi kur + Türk mali müşavire danış (uluslararası freelance vergilendirme)",
+        "subTasks": [
+          "Şahıs şirketi açma prosedürünü araştır (Vergi dairesi + Ticaret/Esnaf odası)",
+          "Mali müşavir ile görüşme yap — uluslararası freelance gelirin Türkiye'de vergilendirilmesi",
+          "Aylık vergi takvimi oluştur (KDV beyanı, Muhtasar, Geçici Vergi tarihleri)",
+          "E-fatura / e-arşiv sistemine kaydol (GİB portal)",
+          "Şirketi resmi olarak aktif et ve ilk faturayı kes"
+        ]
+      },
+      {
+        "text": "Toptal / Contra platformlarına başvur, LinkedIn profilini İngilizce optimize et — YEDEK PLAN",
+        "subTasks": [
+          "LinkedIn profilini tamamen İngilizce yaz (headline, about, experience, skills)",
+          "LinkedIn headline formülü uygula: \"[Title] | I help [target] achieve [outcome] with [method]\"",
+          "5 skill endorsement ve 3 recommendation topla (mevcut müşteriler veya iş arkadaşlarından)",
+          "Contra.com profilini oluştur, portfolio yükle ve 3 servis listele",
+          "Toptal.com başvuru yap (portfolio review + teknik screening hazırlığı)",
+          "Haftada 3 LinkedIn paylaşımı rutinine başla (İngilizce — B2B odaklı)"
+        ]
+      },
+      {
+        "text": "@grafikcem Kişisel Marka Çeşitlendirme",
+        "subTasks": [
+          "Bio güncelle: \"AI + Design + Automation\"",
+          "Haftalık içerik takvimi: Pzt=AI ipucu, Çar=Workflow showcase, Cum=Behind the scenes",
+          "Instagram→Beehiiv→YouTube funnel kur",
+          "3 ayda bir marka metrikleri değerlendir",
+          "LinkedIn'de \"AI Kreatif Direktör\" konumlanmasını güçlendir (haftada 3 paylaşım)",
+          "Ayda 1 kez \"AI iş piyasası\" rapor paylaşımı: Anthropic gibi kaynakları Türkçe özetle + senin yorumun → hem içerik hem otorite"
+        ]
+      },
+      {
+        "text": "Piyasa Boşluğu Takip Sistemi",
+        "subTasks": [
+          "Perplexity Task 9'a ek sektör ekle: Pazarlama ajansları + müşteri hizmetleri firmaları (rapordaki en yüksek maruziyet sektörleri) → bu firmaların AI'a geçiş sürecinde tasarım ve otomasyon ihtiyacı doğuyor",
+          "Aylık \"piyasa nabzı\" notu tut (Notion'da): Hangi sektörde iş ilanı azaldı? Hangi sektör AI workflow arıyor? → Bu veriyi 3 ayda bir içeriğe dönüştür",
+          "\"AI Displacement Danışmanlığı\" hizmetini fiyat listesine ekle: şirketlere hangi görevlerini AI'a devredebileceklerini göster"
+        ]
+      }
+    ]
+  }
 ]

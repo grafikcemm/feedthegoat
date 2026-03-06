@@ -72,6 +72,24 @@ export default function EndDayButton({
                     });
             }
 
+            // Update local streak tracking
+            const todayKey = today;
+            if (allComplete) {
+                const currentStreak = parseInt(localStorage.getItem("goat-streak-v1") || "0", 10);
+                const currentBest = parseInt(localStorage.getItem("goat-streak-best-v1") || "0", 10);
+                const newLocalStreak = currentStreak + 1;
+                const newBest = Math.max(currentBest, newLocalStreak);
+                localStorage.setItem("goat-streak-v1", newLocalStreak.toString());
+                localStorage.setItem("goat-streak-best-v1", newBest.toString());
+                localStorage.setItem("goat-streak-last-date", todayKey);
+                localStorage.setItem(`goat-day-complete-${todayKey}`, "true");
+                window.dispatchEvent(new Event("streakUpdated"));
+            } else {
+                localStorage.setItem("goat-streak-v1", "0");
+                localStorage.setItem("goat-streak-last-date", todayKey);
+                window.dispatchEvent(new Event("streakUpdated"));
+            }
+
             if (!allComplete) {
                 // Failed day, show the brutal Dark Mirror. Modal close will trigger refresh.
                 onFail();

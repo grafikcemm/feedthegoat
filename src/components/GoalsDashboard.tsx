@@ -55,7 +55,8 @@ export default function GoalsDashboard() {
     const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
-        const savedGoals = localStorage.getItem("goat-goals-v3");
+        const savedGoalsV4 = localStorage.getItem("goat-goals-v4");
+        const savedGoalsV3 = localStorage.getItem("goat-goals-v3");
         const savedStart = localStorage.getItem("goat-goals-start");
 
         if (savedStart) {
@@ -64,19 +65,15 @@ export default function GoalsDashboard() {
             localStorage.setItem("goat-goals-start", Date.now().toString());
         }
 
-        if (savedGoals) {
-            setGoals(JSON.parse(savedGoals));
-        } else {
-            // Initial data structure creation
-            const initialGoals: Goal[] = goalsDataRaw.map((goal: any, index: number) => {
+        // Build fresh goals from updated JSON
+        const buildFreshGoals = (): Goal[] => {
+            return goalsDataRaw.map((goal: any, index: number) => {
                 let type: "detailed" | "levels" | "checkbox" = "checkbox";
                 if (index === 0) type = "detailed";
                 else if (index === 1) type = "levels";
 
                 const items: GoalItemContent[] = goal.items.map((itemObj: any, iIndex: number) => {
                     const itemText = itemObj.text;
-                    // Extract exact name for prereq matching
-                    const cleanText = itemText.split("—")[0].split("(")[0].trim();
                     const preReqText = index === 0 && iIndex > 0 ? goal.items[iIndex - 1].text.split("—")[0].split("(")[0].trim() : undefined;
 
                     const initialSubTasks = (itemObj.subTasks || []).map((st: string, stIdx: number) => ({
@@ -88,9 +85,9 @@ export default function GoalsDashboard() {
                     return {
                         id: `g${index}-i${iIndex}`,
                         text: itemText,
-                        status: "LOCKED",
+                        status: "LOCKED" as ItemStatus,
                         subTasks: initialSubTasks,
-                        level: "NotStarted",
+                        level: "NotStarted" as Level,
                         completed: false,
                         preReq: preReqText
                     };
@@ -106,14 +103,95 @@ export default function GoalsDashboard() {
                     type
                 };
             });
-            setGoals(initialGoals);
+        };
+
+        // Migration: merge old saved data with new structure
+        const migrateGoals = (oldGoals: Goal[]): Goal[] => {
+            const freshGoals = buildFreshGoals();
+
+            // Build a map of old items by text prefix for fuzzy matching
+            const oldItemMap = new Map<string, GoalItemContent>();
+            oldGoals.forEach(g => {
+                g.items.forEach(item => {
+                    // Use first 30 chars as key for matching
+                    const key = item.text.substring(0, 30).toLowerCase();
+                    oldItemMap.set(key, item);
+                });
+            });
+
+            return freshGoals.map((freshGoal) => {
+                const oldGoal = oldGoals.find(og => og.id === freshGoal.id);
+
+                const mergedItems = freshGoal.items.map(freshItem => {
+                    // Try to find matching old item
+                    const freshKey = freshItem.text.substring(0, 30).toLowerCase();
+                    const oldItem = oldItemMap.get(freshKey);
+
+                    if (oldItem) {
+                        // Preserve user's progress: status, level, completed, completedDate
+                        // Merge subtasks: keep old completed states, add new ones
+                        const oldSubMap = new Map(oldItem.subTasks.map(st => [st.text.substring(0, 25).toLowerCase(), st]));
+                        const mergedSubs: SubTask[] = [];
+
+                        freshItem.subTasks.forEach(freshSt => {
+                            const stKey = freshSt.text.substring(0, 25).toLowerCase();
+                            const oldSt = oldSubMap.get(stKey);
+                            if (oldSt) {
+                                mergedSubs.push({ ...freshSt, completed: oldSt.completed, id: oldSt.id });
+                                oldSubMap.delete(stKey);
+                            } else {
+                                mergedSubs.push(freshSt);
+                            }
+                        });
+
+                        // Keep any old subtasks that user added manually
+                        oldSubMap.forEach(oldSt => {
+                            const isUserAdded = !freshItem.subTasks.some(fs => fs.text.substring(0, 25).toLowerCase() === oldSt.text.substring(0, 25).toLowerCase());
+                            if (isUserAdded) {
+                                mergedSubs.push(oldSt);
+                            }
+                        });
+
+                        return {
+                            ...freshItem,
+                            status: oldItem.status,
+                            level: oldItem.level,
+                            completed: oldItem.completed,
+                            completedDate: oldItem.completedDate,
+                            subTasks: mergedSubs,
+                        };
+                    }
+
+                    return freshItem;
+                });
+
+                return {
+                    ...freshGoal,
+                    type: oldGoal?.type || freshGoal.type,
+                    items: mergedItems,
+                };
+            });
+        };
+
+        if (savedGoalsV4) {
+            // Already on v4, but still run migration to pick up any new items
+            const parsed = JSON.parse(savedGoalsV4);
+            setGoals(migrateGoals(parsed));
+        } else if (savedGoalsV3) {
+            // Migrate from v3 to v4
+            const parsed = JSON.parse(savedGoalsV3);
+            const migrated = migrateGoals(parsed);
+            setGoals(migrated);
+        } else {
+            // Fresh install
+            setGoals(buildFreshGoals());
         }
         setIsLoaded(true);
     }, []);
 
     useEffect(() => {
         if (isLoaded && goals.length > 0) {
-            localStorage.setItem("goat-goals-v3", JSON.stringify(goals));
+            localStorage.setItem("goat-goals-v4", JSON.stringify(goals));
         }
     }, [goals, isLoaded]);
 
