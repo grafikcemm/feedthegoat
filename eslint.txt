@@ -1,0 +1,147 @@
+[0m[0m
+[0m[4mC:\Users\alice\.gemini\antigravity\scratch\feed-the-goat\src\components\ContentArsenal.tsx[24m[0m
+[0m  [2m23:17[22m  [31merror[39m  Error: Calling setState synchronously within an effect can trigger cascading renders[0m
+[0m[0m
+[0mEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:[0m
+[0m* Update external systems with the latest state from React.[0m
+[0m* Subscribe for updates from some external system, calling setState in a callback function when external state changes.[0m
+[0m[0m
+[0mCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).[0m
+[0m[0m
+[0mC:\Users\alice\.gemini\antigravity\scratch\feed-the-goat\src\components\ContentArsenal.tsx:23:17[0m
+[0m  21 |             try {[0m
+[0m  22 |                 const parsed = JSON.parse(saved);[0m
+[0m> 23 |                 setItems(parsed);[0m
+[0m     |                 ^^^^^^^^ Avoid calling setState() directly within an effect[0m
+[0m  24 |             } catch (e) {[0m
+[0m  25 |                 console.error("Failed to parse Content Arsenal data", e);[0m
+[0m  26 |             }  [2mreact-hooks/set-state-in-effect[22m[0m
+[0m[0m
+[0m[4mC:\Users\alice\.gemini\antigravity\scratch\feed-the-goat\src\components\archive\CrossQuadrantAlerts.tsx[24m[0m
+[0m  [2m35:17[22m  [31merror[39m    Error: Calling setState synchronously within an effect can trigger cascading renders[0m
+[0m[0m
+[0mEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:[0m
+[0m* Update external systems with the latest state from React.[0m
+[0m* Subscribe for updates from some external system, calling setState in a callback function when external state changes.[0m
+[0m[0m
+[0mCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).[0m
+[0m[0m
+[0mC:\Users\alice\.gemini\antigravity\scratch\feed-the-goat\src\components\archive\CrossQuadrantAlerts.tsx:35:17[0m
+[0m  33 |         if (savedDismissed) {[0m
+[0m  34 |             try {[0m
+[0m> 35 |                 setDismissed(JSON.parse(savedDismissed));[0m
+[0m     |                 ^^^^^^^^^^^^ Avoid calling setState() directly within an effect[0m
+[0m  36 |             } catch (e) { /* ignore */ }[0m
+[0m  37 |         }[0m
+[0m  38 |  [2mreact-hooks/set-state-in-effect[22m[0m
+[0m  [2m36:22[22m  [33mwarning[39m  'e' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m45:22[22m  [33mwarning[39m  'e' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\alice\.gemini\antigravity\scratch\feed-the-goat\src\components\archive\DailyTracker.tsx[24m[0m
+[0m  [2m22:25[22m  [31merror[39m    Error: Cannot access variable before it is declared[0m
+[0m[0m
+[0m`getWeekKey` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.[0m
+[0m[0m
+[0mC:\Users\alice\.gemini\antigravity\scratch\feed-the-goat\src\components\archive\DailyTracker.tsx:22:25[0m
+[0m  20 |[0m
+[0m  21 |         // Simple local storage tracker for Gym weekly count[0m
+[0m> 22 |         const weekKey = getWeekKey(new Date());[0m
+[0m     |                         ^^^^^^^^^^ `getWeekKey` accessed before it is declared[0m
+[0m  23 |         const savedCount = localStorage.getItem(`gym-count-${weekKey}`);[0m
+[0m  24 |         if (savedCount) {[0m
+[0m  25 |             setGymWeeklyCount(parseInt(savedCount, 10));[0m
+[0m[0m
+[0mC:\Users\alice\.gemini\antigravity\scratch\feed-the-goat\src\components\archive\DailyTracker.tsx:30:5[0m
+[0m  28 |[0m
+[0m  29 |     // Helper to get week key[0m
+[0m> 30 |     const getWeekKey = (d: Date) => {[0m
+[0m     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m> 31 |         const date = new Date(d.getTime());[0m
+[0m     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m> 32 |         date.setHours(0, 0, 0, 0);[0m
+[0m     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m> 33 |         // Thursday in current week decides the year.[0m
+[0m     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m> 34 |         date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);[0m
+[0m     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m> 35 |         // January 4 is always in week 1.[0m
+[0m     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m> 36 |         const week1 = new Date(date.getFullYear(), 0, 4);[0m
+[0m     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m> 37 |         // Adjust to Thursday in week 1 and count number of weeks from date to week1.[0m
+[0m     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m> 38 |         return date.getFullYear() + "-" + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);[0m
+[0m     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m> 39 |     };[0m
+[0m     | ^^^^^^^ `getWeekKey` is declared here[0m
+[0m  40 |[0m
+[0m  41 |     // Listen for gym task toggle to update count[0m
+[0m  42 |     const handleToggle = (id: string, layer: string) => {  [2mreact-hooks/immutability[22m[0m
+[0m  [2m89:29[22m  [33mwarning[39m  'cardClasses' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m90:29[22m  [33mwarning[39m  'checkClasses' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m  [2m91:29[22m  [33mwarning[39m  'labelClasses' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\alice\.gemini\antigravity\scratch\feed-the-goat\src\components\archive\DarkMirrorModal.tsx[24m[0m
+[0m  [2m19:13[22m  [31merror[39m  Error: Calling setState synchronously within an effect can trigger cascading renders[0m
+[0m[0m
+[0mEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:[0m
+[0m* Update external systems with the latest state from React.[0m
+[0m* Subscribe for updates from some external system, calling setState in a callback function when external state changes.[0m
+[0m[0m
+[0mCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).[0m
+[0m[0m
+[0mC:\Users\alice\.gemini\antigravity\scratch\feed-the-goat\src\components\archive\DarkMirrorModal.tsx:19:13[0m
+[0m  17 |     useEffect(() => {[0m
+[0m  18 |         if (!open) {[0m
+[0m> 19 |             setCountdown(5);[0m
+[0m     |             ^^^^^^^^^^^^ Avoid calling setState() directly within an effect[0m
+[0m  20 |             return;[0m
+[0m  21 |         }[0m
+[0m  22 |  [2mreact-hooks/set-state-in-effect[22m[0m
+[0m[0m
+[0m[4mC:\Users\alice\.gemini\antigravity\scratch\feed-the-goat\src\components\archive\QuadrantDashboard.tsx[24m[0m
+[0m  [2m109:9[22m   [31merror[39m    Error: Calling setState synchronously within an effect can trigger cascading renders[0m
+[0m[0m
+[0mEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:[0m
+[0m* Update external systems with the latest state from React.[0m
+[0m* Subscribe for updates from some external system, calling setState in a callback function when external state changes.[0m
+[0m[0m
+[0mCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).[0m
+[0m[0m
+[0mC:\Users\alice\.gemini\antigravity\scratch\feed-the-goat\src\components\archive\QuadrantDashboard.tsx:109:9[0m
+[0m  107 |     if (saved) {[0m
+[0m  108 |       try {[0m
+[0m> 109 |         setQuadrants(JSON.parse(saved));[0m
+[0m      |         ^^^^^^^^^^^^ Avoid calling setState() directly within an effect[0m
+[0m  110 |       } catch (e) {[0m
+[0m  111 |         console.error("Failed to parse quadrant data");[0m
+[0m  112 |       }  [2mreact-hooks/set-state-in-effect[22m[0m
+[0m  [2m110:16[22m  [33mwarning[39m  'e' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\alice\.gemini\antigravity\scratch\feed-the-goat\src\components\archive\ShadowJournalModal.tsx[24m[0m
+[0m  [2m56:53[22m  [31merror[39m  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m  [2m56:62[22m  [31merror[39m  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m[0m
+[0m[4mC:\Users\alice\.gemini\antigravity\scratch\feed-the-goat\src\components\archive\StreakCounter.tsx[24m[0m
+[0m  [2m14:26[22m  [31merror[39m  Error: Calling setState synchronously within an effect can trigger cascading renders[0m
+[0m[0m
+[0mEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:[0m
+[0m* Update external systems with the latest state from React.[0m
+[0m* Subscribe for updates from some external system, calling setState in a callback function when external state changes.[0m
+[0m[0m
+[0mCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).[0m
+[0m[0m
+[0mC:\Users\alice\.gemini\antigravity\scratch\feed-the-goat\src\components\archive\StreakCounter.tsx:14:26[0m
+[0m  12 |         const savedBest = localStorage.getItem("goat-streak-best-v1");[0m
+[0m  13 |[0m
+[0m> 14 |         if (savedStreak) setStreak(parseInt(savedStreak, 10));[0m
+[0m     |                          ^^^^^^^^^ Avoid calling setState() directly within an effect[0m
+[0m  15 |         if (savedBest) setBestStreak(parseInt(savedBest, 10));[0m
+[0m  16 |[0m
+[0m  17 |         // Check yesterday's completion status  [2mreact-hooks/set-state-in-effect[22m[0m
+[0m[0m
+[0m[4mC:\Users\alice\.gemini\antigravity\scratch\feed-the-goat\src\components\archive\WeeklyTracker.tsx[24m[0m
+[0m  [2m44:41[22m  [33mwarning[39m  'index' is defined but never used  [2m@typescript-eslint/no-unused-vars[22m[0m
+[0m[0m
+[0m[31m[1m✖ 15 problems (8 errors, 7 warnings)[22m[39m[0m
+[0m[31m[1m[22m[39m[0m

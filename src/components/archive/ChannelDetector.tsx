@@ -28,12 +28,13 @@ export default function ChannelDetector() {
         const saved = localStorage.getItem("goat-channel-v1");
         if (saved) {
             try {
-                setChannel(JSON.parse(saved));
-            } catch (e) {
+                const parsed = JSON.parse(saved);
+                setTimeout(() => setChannel(parsed), 0);
+            } catch {
                 console.error("Failed to parse channel data");
             }
         }
-        setIsLoaded(true);
+        setTimeout(() => setIsLoaded(true), 0);
     }, []);
 
     useEffect(() => {
@@ -57,10 +58,17 @@ export default function ChannelDetector() {
         setChannel(prev => ({ ...prev, quadrant: order[nextIdx] }));
     };
 
+    const [nowMs, setNowMs] = useState<number>(0);
+    useEffect(() => {
+        setTimeout(() => setNowMs(Date.now()), 0);
+        const i = setInterval(() => setNowMs(Date.now()), 60000);
+        return () => clearInterval(i);
+    }, []);
+
     // Calculate duration if active
     const getDuration = (): string => {
-        if (!channel.activatedAt) return "";
-        const diff = Date.now() - new Date(channel.activatedAt).getTime();
+        if (!channel.activatedAt || !nowMs) return "";
+        const diff = nowMs - new Date(channel.activatedAt).getTime();
         const mins = Math.floor(diff / 60000);
         if (mins < 60) return `${mins} dk`;
         const hrs = Math.floor(mins / 60);

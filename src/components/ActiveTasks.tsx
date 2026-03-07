@@ -22,12 +22,7 @@ const QUADRANT_STYLES: Record<Quadrant, { border: string; color: string; bg: str
     VOCATION: { border: "border-orange-500", color: "text-orange-500", bg: "bg-orange-500/10", label: "⚡ İŞ/KARİYER" },
 };
 
-const QUADRANT_SHORT: Record<Quadrant, string> = {
-    MIND: "ZİHİN",
-    BODY: "BEDEN",
-    SPIRIT: "RUH",
-    VOCATION: "İŞ",
-};
+
 
 // Default quadrant mappings for existing tasks
 const TASK_QUADRANT_MAP: Record<string, Quadrant> = {
@@ -65,7 +60,7 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
     // Form states
     const [newTaskTitle, setNewTaskTitle] = useState("");
     const [newPriority, setNewPriority] = useState<"P1" | "P2" | "P3">("P2");
-    const [newQuadrant, setNewQuadrant] = useState<Quadrant>("VOCATION");
+    const [newQuadrant] = useState<Quadrant>("VOCATION");
 
     // Load Data with migration
     useEffect(() => {
@@ -74,16 +69,21 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
         if (savedTasks) {
             try {
                 const parsed = JSON.parse(savedTasks);
-                loadedTasks = parsed.map((t: any) => {
-                    const { subTasks, category, deadline, ...rest } = t;
+                loadedTasks = parsed.map((t: ActiveTask & { subTasks?: unknown, category?: unknown, deadline?: unknown }) => {
+                    const mapped = { ...t };
+                    delete mapped.subTasks;
+                    delete mapped.category;
+                    delete mapped.deadline;
                     // Migrate: add quadrant if missing
-                    if (!rest.quadrant) {
-                        rest.quadrant = guessQuadrant(rest.title || "");
+                    if (!mapped.quadrant) {
+                        mapped.quadrant = guessQuadrant(mapped.title || "");
                     }
-                    return rest;
+                    return mapped;
                 });
-                setTasks(loadedTasks);
-            } catch (e) { }
+                setTimeout(() => {
+                    setTasks(loadedTasks);
+                }, 0);
+            } catch { }
         }
 
         // One-time migration (v4 = full task restore from screenshot)
@@ -183,12 +183,16 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
             oldTasks.forEach(t => newTasksMap.set(t.id, t));
             loadedTasks.forEach(t => newTasksMap.set(t.id, t));
 
-            const combined = Array.from(newTasksMap.values());
-            setTasks(combined);
+            const combined = Array.from(newTasksMap.values()) as ActiveTask[];
+            setTimeout(() => {
+                setTasks(combined);
+            }, 0);
             localStorage.setItem("goat-migrated-supabase-v4", "true");
         }
 
-        setIsLoaded(true);
+        setTimeout(() => {
+            setIsLoaded(true);
+        }, 0);
     }, []);
 
     // Save Data
@@ -289,11 +293,6 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
             <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xs uppercase tracking-[0.25em] text-text-muted font-mono">
                     AKTİF GÖREVLER
-                    {activeQuadrantFilter && (
-                        <span className={`ml-2 ${QUADRANT_STYLES[activeQuadrantFilter].color}`}>
-                            — {QUADRANT_STYLES[activeQuadrantFilter].label}
-                        </span>
-                    )}
                 </h2>
             </div>
 
@@ -303,22 +302,12 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
                 <form onSubmit={handleAddTask} className="flex gap-2 items-center flex-wrap">
                     <select
                         value={newPriority}
-                        onChange={(e) => setNewPriority(e.target.value as any)}
+                        onChange={(e) => setNewPriority(e.target.value as "P1" | "P2" | "P3")}
                         className="bg-background border border-border px-2 py-2 text-[10px] font-bold text-text outline-none focus:border-accent-green uppercase tracking-wider"
                     >
                         <option value="P1">P1</option>
                         <option value="P2">P2</option>
                         <option value="P3">P3</option>
-                    </select>
-                    <select
-                        value={newQuadrant}
-                        onChange={(e) => setNewQuadrant(e.target.value as Quadrant)}
-                        className="bg-background border border-border px-2 py-2 text-[10px] font-bold text-text outline-none focus:border-accent-green uppercase tracking-wider"
-                    >
-                        <option value="MIND">🧠 MIND</option>
-                        <option value="BODY">💪 BODY</option>
-                        <option value="SPIRIT">🔮 SPIRIT</option>
-                        <option value="VOCATION">⚡ VOC</option>
                     </select>
                     <input
                         type="text"
@@ -346,7 +335,6 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
                 ) : (
                     <div className="space-y-2">
                         {activeTasksList.map((task) => {
-                            const qStyle = QUADRANT_STYLES[task.quadrant];
                             return (
                                 <div key={task.id} className={`brutalist-border border-border group overflow-hidden transition-all duration-200 p-3 flex items-center gap-3 ${task.is_urgent ? "bg-accent-green/5 border-accent-green glow-green" : "bg-surface/20"}`}>
                                     <button
@@ -355,11 +343,6 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
                                     >
                                         ✓
                                     </button>
-
-                                    {/* Quadrant Badge */}
-                                    <span className={`px-1 py-0.5 text-[8px] font-bold uppercase tracking-wider border shrink-0 ${qStyle.border} ${qStyle.color} ${qStyle.bg}`}>
-                                        {QUADRANT_SHORT[task.quadrant]}
-                                    </span>
 
                                     <span className={`px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-widest border shrink-0 ${PRIORITY_STYLES[task.priority]}`}>
                                         {task.priority}
@@ -406,9 +389,6 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
                         {completedTasksList.map((task) => (
                             <div key={task.id} className="flex items-center gap-2 p-1.5 bg-surface/5 border border-border">
                                 <span className="text-accent-green text-[10px] font-bold">✓</span>
-                                <span className={`text-[8px] font-bold uppercase ${QUADRANT_STYLES[task.quadrant]?.color || "text-text-muted"}`}>
-                                    {task.quadrant ? QUADRANT_SHORT[task.quadrant] : "—"}
-                                </span>
                                 <span className="text-[11px] text-text-muted line-through flex-1 truncate">{task.title}</span>
                                 <span className="text-[9px] text-text-muted/50 tracking-widest">
                                     {task.completed_at ? new Date(task.completed_at).toLocaleDateString("tr-TR") : ''}

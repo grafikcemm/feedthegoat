@@ -22,7 +22,7 @@ const DAILY_PODCASTS = [
 
 export default function TheArsenal() {
     const [todaysPodcast, setTodaysPodcast] = useState<typeof DAILY_PODCASTS[0] | null>(null);
-    const [isExpanded, setIsExpanded] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(true);
     const [actionPlan, setActionPlan] = useState("");
     const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
     const [feedback, setFeedback] = useState("");
@@ -32,7 +32,9 @@ export default function TheArsenal() {
             (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 1000 / 60 / 60 / 24
         );
         const todayIndex = dayOfYear % DAILY_PODCASTS.length;
-        setTodaysPodcast(DAILY_PODCASTS[todayIndex]);
+        setTimeout(() => {
+            setTodaysPodcast(DAILY_PODCASTS[todayIndex]);
+        }, 0);
     }, []);
 
     if (!todaysPodcast) return null;
@@ -62,11 +64,11 @@ export default function TheArsenal() {
             {/* Collapsed header — always visible */}
             <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className={`w-full brutalist-card p-3 flex items-center gap-3 text-left hover:bg-surface-hover transition-colors group ${status === "success" ? "border-accent-green/30 bg-accent-green/5" : ""}`}
+                className={`w-full brutalist-card p-3 flex items-center gap-3 text-left hover:bg-surface-hover transition-colors group ${status === "success" ? "border-accent-green/30 bg-accent-green/5" : "border-accent-amber glow-amber bg-accent-amber/5"}`}
             >
                 <span className="text-text-muted text-xs shrink-0">{isExpanded ? '▼' : '▶'}</span>
-                <span className="text-[10px] uppercase tracking-[0.2em] text-accent-amber font-bold shrink-0">
-                    BİLGİ CEPHANELİĞİ
+                <span className="text-[11px] uppercase tracking-[0.2em] text-accent-amber font-bold shrink-0 animate-pulse">
+                    ⚠️ BİLGİ CEPHANELİĞİ (GÜNÜN HEDEFİ)
                 </span>
                 <span className="text-xs text-text-muted truncate flex-1">
                     {todaysPodcast.title}

@@ -11,8 +11,8 @@ export default function StreakCounter() {
         const savedStreak = localStorage.getItem("goat-streak-v1");
         const savedBest = localStorage.getItem("goat-streak-best-v1");
 
-        if (savedStreak) setStreak(parseInt(savedStreak, 10));
-        if (savedBest) setBestStreak(parseInt(savedBest, 10));
+        if (savedStreak) setTimeout(() => setStreak(parseInt(savedStreak, 10)), 0);
+        if (savedBest) setTimeout(() => setBestStreak(parseInt(savedBest, 10)), 0);
 
         // Check yesterday's completion status
         const yesterday = new Date();
@@ -32,12 +32,12 @@ export default function StreakCounter() {
 
             // If more than 1 day gap, streak is broken
             if (diffDays > 1 && !yesterdayComplete) {
-                setStreak(0);
+                setTimeout(() => setStreak(0), 0);
                 localStorage.setItem("goat-streak-v1", "0");
             }
         }
 
-        setIsLoaded(true);
+        setTimeout(() => setIsLoaded(true), 0);
 
         // Listen for streak update events (from EndDayButton)
         const handleStreakUpdate = () => {

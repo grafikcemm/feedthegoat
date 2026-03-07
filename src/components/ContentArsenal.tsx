@@ -20,12 +20,12 @@ export default function ContentArsenal() {
         if (saved) {
             try {
                 const parsed = JSON.parse(saved);
-                setItems(parsed);
-            } catch (e) {
-                console.error("Failed to parse Content Arsenal data", e);
+                setTimeout(() => setItems(parsed), 0);
+            } catch {
+                console.error("Failed to parse Content Arsenal data");
             }
         }
-        setIsLoaded(true);
+        setTimeout(() => setIsLoaded(true), 0);
     }, []);
 
     // Save to local storage

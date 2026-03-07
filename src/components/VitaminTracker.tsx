@@ -22,13 +22,16 @@ export default function VitaminTracker() {
     const [currentDay, setCurrentDay] = useState<number>(new Date().getDay());
 
     useEffect(() => {
-        setIsClient(true);
-        setCurrentDay(new Date().getDay());
+        setTimeout(() => {
+            setIsClient(true);
+            setCurrentDay(new Date().getDay());
+        }, 0);
         const dateStr = new Date().toISOString().split("T")[0];
         const saved = localStorage.getItem(`vitamins-${dateStr}`);
         if (saved) {
             try {
-                setCompleted(JSON.parse(saved));
+                const parsed = JSON.parse(saved);
+                setTimeout(() => setCompleted(parsed), 0);
             } catch (e) {
                 console.error("Failed to parse vitamin state", e);
             }
@@ -58,9 +61,9 @@ export default function VitaminTracker() {
     if (!isClient) return null;
 
     return (
-        <section className="mb-8">
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xs font-bold uppercase tracking-[0.25em] text-text">
+        <section className="mb-4">
+            <div className="flex justify-between items-center mb-2">
+                <h2 className="text-[10px] font-bold uppercase tracking-[0.25em] text-text">
                     VİTAMİN TAKİP
                 </h2>
                 <span className={`text-[10px] font-bold tabular-nums ${isAllComplete ? "text-accent-green" : "text-text-muted"}`}>
@@ -68,7 +71,7 @@ export default function VitaminTracker() {
                 </span>
             </div>
 
-            <div className="brutalist-card bg-surface border-border flex flex-col space-y-3 p-4">
+            <div className="brutalist-card bg-surface border-border flex flex-col space-y-1 p-2">
                 {activeVitamins.map((item) => {
                     const isOn = !!completed[item.id];
                     return (
@@ -76,21 +79,21 @@ export default function VitaminTracker() {
                             key={item.id}
                             onClick={() => toggleVitamin(item.id)}
                             className={`
-                flex items-center gap-3 text-left w-full
-                transition-all duration-200 cursor-pointer p-3 min-h-[44px] brutalist-border
+                flex items-center gap-2 text-left w-full
+                transition-all duration-200 cursor-pointer p-1.5 min-h-[32px] brutalist-border
                 ${isOn ? "border-accent-green/40 bg-accent-green/5 text-accent-green" : "border-border hover:border-text-muted hover:bg-surface-hover text-text"}
               `}
                         >
                             <div
                                 className={`
-                  w-5 h-5 flex-shrink-0 brutalist-border flex items-center justify-center text-[11px] font-bold
+                  w-4 h-4 flex-shrink-0 brutalist-border flex items-center justify-center text-[9px] font-bold
                   transition-colors duration-200
                   ${isOn ? "bg-accent-green text-black border-accent-green" : "bg-transparent text-text-muted border-border"}
                 `}
                             >
                                 {isOn ? "✓" : ""}
                             </div>
-                            <span className="text-[12px] leading-snug flex-1 font-bold">
+                            <span className="text-[10px] leading-snug flex-1 font-bold">
                                 {item.label}
                             </span>
                         </button>

@@ -7,7 +7,9 @@ export default function MotivationCards() {
     const [quote, setQuote] = useState<Quote | null>(null);
 
     useEffect(() => {
-        setQuote(getDailyQuote());
+        setTimeout(() => {
+            setQuote(getDailyQuote());
+        }, 0);
     }, []);
 
     if (!quote) return (

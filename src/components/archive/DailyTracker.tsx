@@ -15,17 +15,6 @@ export default function DailyTracker({
     const [currentDay, setCurrentDay] = useState<number>(new Date().getDay());
     const [gymWeeklyCount, setGymWeeklyCount] = useState<number>(0);
 
-    useEffect(() => {
-        setCurrentDay(new Date().getDay());
-
-        // Simple local storage tracker for Gym weekly count
-        const weekKey = getWeekKey(new Date());
-        const savedCount = localStorage.getItem(`gym-count-${weekKey}`);
-        if (savedCount) {
-            setGymWeeklyCount(parseInt(savedCount, 10));
-        }
-    }, []);
-
     // Helper to get week key
     const getWeekKey = (d: Date) => {
         const date = new Date(d.getTime());
@@ -37,6 +26,19 @@ export default function DailyTracker({
         // Adjust to Thursday in week 1 and count number of weeks from date to week1.
         return date.getFullYear() + "-" + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
     };
+
+    useEffect(() => {
+        setTimeout(() => setCurrentDay(new Date().getDay()), 0);
+
+        // Simple local storage tracker for Gym weekly count
+        const weekKey = getWeekKey(new Date());
+        const savedCount = localStorage.getItem(`gym-count-${weekKey}`);
+        if (savedCount) {
+            setTimeout(() => setGymWeeklyCount(parseInt(savedCount, 10)), 0);
+        }
+    }, []);
+
+
 
     // Listen for gym task toggle to update count
     const handleToggle = (id: string, layer: string) => {
@@ -81,14 +83,8 @@ export default function DailyTracker({
                 <div className="flex flex-col gap-3">
                     {tasks.map(task => {
                         const isOn = !!completed[task.id];
-                        let cardClasses = "border-border hover:border-text-muted hover:bg-surface-hover";
-                        let checkClasses = "bg-transparent text-text-muted";
-                        let labelClasses = "text-text";
-
                         if (isOn) {
-                            cardClasses = `border-${colorClass}/60 bg-${colorClass}/5 glow-${colorClass.replace('accent-', '')}`;
-                            checkClasses = `bg-${colorClass} text-black border-${colorClass}`;
-                            labelClasses = `text-${colorClass}`;
+                            // removed unused variable assignments
                         }
 
                         // Use a generic style replacement for the dynamic classes to avoid Tailwind purging issues.

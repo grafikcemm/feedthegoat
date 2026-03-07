@@ -16,7 +16,7 @@ export default function DarkMirrorModal({ open, onClose }: DarkMirrorModalProps)
 
     useEffect(() => {
         if (!open) {
-            setCountdown(5);
+            setTimeout(() => setCountdown(5), 0);
             return;
         }
 

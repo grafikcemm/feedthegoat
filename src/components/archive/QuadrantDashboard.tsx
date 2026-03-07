@@ -106,12 +106,13 @@ export default function QuadrantDashboard({
     const saved = localStorage.getItem("goat-quadrants-v1");
     if (saved) {
       try {
-        setQuadrants(JSON.parse(saved));
-      } catch (e) {
+        const parsed = JSON.parse(saved);
+        setTimeout(() => setQuadrants(parsed), 0);
+      } catch {
         console.error("Failed to parse quadrant data");
       }
     }
-    setIsLoaded(true);
+    setTimeout(() => setIsLoaded(true), 0);
   }, []);
 
   useEffect(() => {

@@ -53,7 +53,7 @@ export default function ShadowJournalModal({ open, onClose }: ShadowJournalModal
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div>
                                 <label className="text-xs uppercase tracking-widest text-text font-bold block mb-2">
-                                    1. Bugün nerede "Uysallık" (Nice Guy refleksi) gösterdin?
+                                    1. Bugün nerede &quot;Uysallık&quot; (Nice Guy refleksi) gösterdin?
                                 </label>
                                 <textarea
                                     value={q1}

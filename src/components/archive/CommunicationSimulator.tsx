@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const SCENARIOS = [
     {
@@ -33,9 +33,12 @@ export default function CommunicationSimulator() {
     const [response, setResponse] = useState("");
     const [submitted, setSubmitted] = useState(false);
 
-    const dayOfYear = Math.floor(
-        (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 1000 / 60 / 60 / 24
-    );
+    const [dayOfYear, setDayOfYear] = useState<number>(0);
+    useEffect(() => {
+        setTimeout(() => setDayOfYear(Math.floor(
+            (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 1000 / 60 / 60 / 24
+        )), 0);
+    }, []);
     const currentIndex = dayOfYear % SCENARIOS.length;
     const scenario = SCENARIOS[currentIndex];
 
@@ -114,7 +117,7 @@ export default function CommunicationSimulator() {
                                 Sınır Korundu
                             </p>
                             <p className="text-xs text-text italic">
-                                "{response}"
+                                &quot;{response}&quot;
                             </p>
                         </div>
                     </div>

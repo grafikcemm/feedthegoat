@@ -48,7 +48,7 @@ export default function AggressiveAlert({ doneCount, totalCount }: AggressiveAle
                             KONFOR ALANI ÖLDÜRÜR. O ÇOCUK SENİ İZLİYOR.
                         </h2>
                         <p className="text-sm font-medium mt-1">
-                            Saat 14:00'ü geçti ve Dopamin Skorun %50'nin altında. İrade kasın eriyor.
+                            Saat 14:00&apos;ü geçti ve Dopamin Skorun %50&apos;nin altında. İrade kasın eriyor.
                         </p>
                     </div>
                 </div>

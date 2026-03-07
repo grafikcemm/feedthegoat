@@ -59,14 +59,16 @@ export default function SkillTree() {
 
         if (savedV2) {
             try {
-                setSkills(migrateSkills(JSON.parse(savedV2)));
+                const parsed = JSON.parse(savedV2);
+                setTimeout(() => setSkills(migrateSkills(parsed)), 0);
             } catch { console.error("Failed to parse SkillTree v2"); }
         } else if (savedV1) {
             try {
-                setSkills(migrateSkills(JSON.parse(savedV1)));
+                const parsed = JSON.parse(savedV1);
+                setTimeout(() => setSkills(migrateSkills(parsed)), 0);
             } catch { console.error("Failed to parse SkillTree v1"); }
         }
-        setIsLoaded(true);
+        setTimeout(() => setIsLoaded(true), 0);
     }, []);
 
     useEffect(() => {

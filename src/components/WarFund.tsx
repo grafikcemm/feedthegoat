@@ -32,12 +32,13 @@ export default function WarFund() {
         const saved = localStorage.getItem("goat-warfund-v1");
         if (saved) {
             try {
-                setRecords(JSON.parse(saved));
+                const parsed = JSON.parse(saved);
+                setTimeout(() => setRecords(parsed), 0);
             } catch (e) {
                 console.error("Failed to parse WarFund data", e);
             }
         }
-        setIsLoaded(true);
+        setTimeout(() => setIsLoaded(true), 0);
     }, []);
 
     // Save on Change

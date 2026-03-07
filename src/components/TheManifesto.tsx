@@ -29,7 +29,10 @@ export default function TheManifesto() {
     useEffect(() => {
         const savedReflections = localStorage.getItem("goat-manifesto-reflections");
         if (savedReflections) {
-            try { setReflections(JSON.parse(savedReflections)); } catch (e) { }
+            try { 
+                const parsed = JSON.parse(savedReflections);
+                setTimeout(() => setReflections(parsed), 0); 
+            } catch { }
         }
 
         let savedStart = localStorage.getItem("goat-goals-start");
@@ -41,9 +44,10 @@ export default function TheManifesto() {
         const startMs = parseInt(savedStart, 10);
         const diffDays = Math.floor((Date.now() - startMs) / (1000 * 60 * 60 * 24));
         // Add 1 so the first day is "1. gün"
-        setBattleDays(Math.max(1, diffDays + 1));
-
-        setIsLoaded(true);
+        setTimeout(() => {
+            setBattleDays(Math.max(1, diffDays + 1));
+            setIsLoaded(true);
+        }, 0);
     }, []);
 
     const saveReflection = () => {
