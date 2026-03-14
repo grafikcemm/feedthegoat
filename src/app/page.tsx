@@ -6,17 +6,20 @@ import EndDayButton from "@/components/EndDayButton";
 import ActiveTasks from "@/components/ActiveTasks";
 import GoalsDashboard from "@/components/GoalsDashboard";
 import VitaminTracker from "@/components/VitaminTracker";
-import TheArsenal from "@/components/TheArsenal";
-
+import NutritionTracker from "@/components/NutritionTracker";
+import DailyPrayer from "@/components/DailyPrayer";
 import NeverBreak from "@/components/NeverBreak";
 import BonusTasks from "@/components/BonusTasks";
+import DopamineDetox from "@/components/DopamineDetox";
 import WeeklyScreen from "@/components/WeeklyScreen";
 import WarFund from "@/components/WarFund";
+import SportsProgram from "@/components/SportsProgram";
 
-type Tab = "GUNLUK" | "HAFTALIK" | "STRATEJI" | "FINANS";
+type Tab = "GUNLUK" | "HAFTALIK" | "STRATEJI" | "FINANS" | "SPOR_SAGLIK";
 
 const TABS: { key: Tab; label: string; icon: string }[] = [
   { key: "GUNLUK", label: "GÜNLÜK", icon: "⚡" },
+  { key: "SPOR_SAGLIK", label: "SPOR & SAĞLIK", icon: "🏋️‍♂️" },
   { key: "HAFTALIK", label: "HAFTALIK", icon: "📅" },
   { key: "STRATEJI", label: "STRATEJİ", icon: "🗺️" },
   { key: "FINANS", label: "FİNANS", icon: "💰" },
@@ -28,14 +31,53 @@ export default function Home() {
   const [dailyScore, setDailyScore] = useState(0);
   const [dailyStatusMessage, setDailyStatusMessage] = useState("");
   const [dailyStatusColor, setDailyStatusColor] = useState("");
+  const [streak, setStreak] = useState(0);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("goat-streak-v1");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        // If the last date was more than 1 day ago and not today, streak resets if we want strict streak, but let's just keep the count and update it on EndDay.
+        setTimeout(() => setStreak(parsed.count || 0), 0);
+      } catch {}
+    }
+  }, []);
+
+  const handleDayEnd = (isSuccess: boolean) => {
+    const today = new Date().toISOString().split("T")[0];
+    const saved = localStorage.getItem("goat-streak-v1");
+    let currentStreak = streak;
+    let lastDate = "";
+
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        currentStreak = parsed.count || 0;
+        lastDate = parsed.lastDate || "";
+      } catch {}
+    }
+
+    if (lastDate !== today) {
+        if (isSuccess) {
+            currentStreak += 1;
+        } else {
+            currentStreak = 0; // Break streak
+        }
+    }
+
+    setStreak(currentStreak);
+    localStorage.setItem("goat-streak-v1", JSON.stringify({ count: currentStreak, lastDate: today }));
+    calculateScore();
+  };
 
   /* ── Score Calculation ────────────────────────────────── */
   const calculateScore = useCallback(() => {
     let score = 0;
     const today = new Date().toISOString().split("T")[0];
 
-    // Never Break (3 tasks = max 3 points)
-    const savedNB = localStorage.getItem("goat-never-break-v1");
+    // Never Break (5 tasks = max 5 points) - now using v2
+    const savedNB = localStorage.getItem("goat-never-break-v2");
     if (savedNB) {
       try {
         const parsed = JSON.parse(savedNB);
@@ -44,6 +86,7 @@ export default function Home() {
           if (parsed.data["nb-teeth"]) score += 1;
           if (parsed.data["nb-deepwork"]) score += 1;
           if (parsed.data["nb-sports"]) score += 1;
+          if (parsed.data["nb-book"]) score += 1;
         }
       } catch {
         // ignore errors
@@ -67,15 +110,14 @@ export default function Home() {
 
     setDailyScore(score);
 
-    // Determine status purely on base score (out of 4)
-    // Even if they have bonus, the max base requirement is 4.
-    if (score >= 4) {
+    // Determine status based on score (out of 5 base tasks)
+    if (score >= 5) {
       setDailyStatusMessage("Gün Kazanıldı ✓");
       setDailyStatusColor("#00FF88");
-    } else if (score >= 3) {
+    } else if (score >= 4) {
       setDailyStatusMessage("İyi Gün ✓");
       setDailyStatusColor("#00FF88");
-    } else if (score >= 1.5) {
+    } else if (score >= 2) {
       setDailyStatusMessage("Devam Et");
       setDailyStatusColor("#FFB800");
     } else {
@@ -90,7 +132,20 @@ export default function Home() {
       calculateScore();
     }, 0);
     window.addEventListener("dailyScoreUpdated", calculateScore);
-    return () => window.removeEventListener("dailyScoreUpdated", calculateScore);
+
+    // Midnight Auto-Rollover Logic
+    const initDate = new Date().toISOString().split("T")[0];
+    const rolloverInterval = setInterval(() => {
+        const currentDate = new Date().toISOString().split("T")[0];
+        if (initDate !== currentDate) {
+            window.location.reload();
+        }
+    }, 60000); // Check every minute
+
+    return () => {
+        window.removeEventListener("dailyScoreUpdated", calculateScore);
+        clearInterval(rolloverInterval);
+    };
   }, [calculateScore]);
 
   /* ── Today's date display ─────────────────────────────── */
@@ -116,6 +171,7 @@ export default function Home() {
               {activeTab === "HAFTALIK" && "BU HAFTANIN 3 KAZANCI — Haftayı kazanmak için minimum sonuçlar."}
               {activeTab === "STRATEJI" && "STRATEJİ HARİTASI — Her gün bakma. Sadece yönünü güncelle."}
               {activeTab === "FINANS" && "SAVAŞ FONU — Kan kaybetme. Kaynaklarını koru ve büyüt."}
+              {activeTab === "SPOR_SAGLIK" && "SPOR & SAĞLIK — Makineyi güçlü ve zinde tut."}
             </p>
           </div>
           <p className="text-[10px] uppercase tracking-[0.15em] text-text-muted tabular-nums">
@@ -155,31 +211,37 @@ export default function Home() {
           {/* ── TAB: GÜNLÜK ────────────────────────────── */}
           {activeTab === "GUNLUK" && (
             <>
-              {/* 1. Kimlik İnşası + Strateji */}
-              <MotivationCards />
+              {/* 1. Günlük Dua */}
+              <DailyPrayer />
 
-              {/* 2. Vitamin Takibi (Yeni yer - En üst) */}
-              <VitaminTracker />
+              {/* 2. Asla Kırma */}
+              <NeverBreak streak={streak} />
 
               <div className="h-px bg-border my-8" />
 
-              {/* 3. Asla Kırma */}
-              <NeverBreak />
+              {/* 3. Dopamin Detoksu */}
+              <DopamineDetox />
 
               {/* 4. Enerji Varsa */}
               <BonusTasks />
 
               <div className="h-px bg-border my-8" />
 
-              {/* 5. Bilgi Cephaneliği (Yeni yer) */}
-              <TheArsenal />
-
-              <div className="h-px bg-border my-8" />
-
-              {/* 6. Aktif Görevler */}
+              {/* 5. Aktif Görevler */}
               <ActiveTasks />
 
+              {/* 6. Motivasyon & Kimlik İnşası */}
+              <MotivationCards />
+
               <div className="h-px bg-border my-8" />
+
+              {/* Yeni: Manus Button */}
+              <section className="mb-4">
+                  <a href="#" className="flex items-center justify-center gap-2 p-3 border border-text text-text bg-surface hover:bg-text hover:text-black transition-colors font-bold uppercase tracking-widest text-xs">
+                      <span className="text-base">🤖</span>
+                      Manus Günlük Güncellemeleri Kontrol Et
+                  </a>
+              </section>
 
               {/* 7. Günlük Skor */}
               <section className="flex flex-col items-center justify-center text-center space-y-2 py-4">
@@ -188,16 +250,16 @@ export default function Home() {
                   className="text-2xl md:text-3xl font-bold uppercase tracking-wider" 
                   style={{ color: dailyStatusColor }}
                 >
-                  {dailyStatusMessage} <span className="text-sm opacity-50 ml-2">({dailyScore.toFixed(1)}/4)</span>
+                  {dailyStatusMessage} <span className="text-sm opacity-50 ml-2">({dailyScore.toFixed(1)}/5)</span>
                 </div>
               </section>
 
               {/* 8. Günü Bitir */}
               <EndDayButton
                 score={dailyScore}
-                maxBaseScore={4}
-                onFail={() => calculateScore()}
-                onSuccess={() => calculateScore()}
+                maxBaseScore={5}
+                onFail={() => handleDayEnd(false)}
+                onSuccess={() => handleDayEnd(true)}
               />
             </>
           )}
@@ -224,12 +286,36 @@ export default function Home() {
             </>
           )}
 
+          {/* ── TAB: SPOR & SAĞLIK ─────────────────────────────── */}
+          {activeTab === "SPOR_SAGLIK" && (
+            <>
+              <VitaminTracker />
+              <NutritionTracker />
+              <div className="h-px bg-border my-8" />
+              <SportsProgram />
+            </>
+          )}
+
           {/* Footer */}
-          <footer className="pt-6 pb-8 text-center">
+          <footer className="pt-6 pb-8 text-center space-y-4">
             <p className="text-[9px] uppercase tracking-[0.3em] text-text-muted">
               &ldquo;Disiplinsiz özgürlük, özgürlüksüz disiplin — ikisi de
               ölüm.&rdquo;
             </p>
+            <button 
+                onClick={() => {
+                    const data = { ...localStorage };
+                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `goat-backup-${new Date().toISOString().split("T")[0]}.json`;
+                    a.click();
+                }}
+                className="text-[10px] text-text-muted/50 hover:text-text-muted transition-colors border border-border/50 px-3 py-1 bg-surface/10"
+            >
+                VERİLERİ DIŞA AKTAR (JSON)
+            </button>
           </footer>
         </main>
       </div>

@@ -59,7 +59,7 @@ export default function GoalsDashboard() {
     const [expandedSections, setExpandedSections] = useState<Record<number, boolean>>({});
 
     useEffect(() => {
-        const savedGoalsV4 = localStorage.getItem("goat-goals-v4");
+        const savedGoalsV4 = localStorage.getItem("goat-goals-v5");
         const savedStart = localStorage.getItem("goat-goals-start");
 
         if (savedStart) {
@@ -187,7 +187,7 @@ export default function GoalsDashboard() {
 
     useEffect(() => {
         if (isLoaded && goals.length > 0) {
-            localStorage.setItem("goat-goals-v4", JSON.stringify(goals));
+            localStorage.setItem("goat-goals-v5", JSON.stringify(goals));
         }
     }, [goals, isLoaded]);
 
@@ -310,7 +310,7 @@ export default function GoalsDashboard() {
                         return (
                             <div key={item.id} className={`brutalist-card p-4 border transition-all ${isCompleted ? 'opacity-60 bg-surface/5 border-border' : 'border-border bg-surface/20'}`}>
                                 <div className="flex justify-between items-start mb-2 gap-4">
-                                    <div className="flex-[3]">
+                                    <div className="flex-3">
                                         <button
                                             onClick={() => toggleStatus(g.id, item)}
                                             className={`text-[9px] px-2 py-0.5 font-bold uppercase tracking-widest mb-2 border ${statusObj.bg} ${statusObj.color} ${statusObj.border} hover:opacity-80 transition-opacity`}
@@ -321,7 +321,7 @@ export default function GoalsDashboard() {
                                             {item.text}
                                         </h4>
                                     </div>
-                                    <div className="flex-[1] text-right">
+                                    <div className="flex-1 text-right">
                                         {isCompleted && item.completedDate && (
                                             <span className="text-[9px] uppercase tracking-widest text-text-muted block">Tamamlanma: {item.completedDate}</span>
                                         )}

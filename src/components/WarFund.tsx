@@ -6,7 +6,7 @@ type FinRecord = {
     id: string;
     label: string;
     amount: number;
-    type: "income" | "expense";
+    type: "income" | "expense" | "subscription";
 };
 
 const INITIAL_RECORDS: FinRecord[] = [
@@ -24,18 +24,27 @@ export default function WarFund() {
     const [records, setRecords] = useState<FinRecord[]>(INITIAL_RECORDS);
     const [newLabel, setNewLabel] = useState("");
     const [newAmount, setNewAmount] = useState("");
-    const [newType, setNewType] = useState<"income" | "expense">("income");
+    const [newType, setNewType] = useState<"income" | "expense" | "subscription">("income");
     const [isLoaded, setIsLoaded] = useState(false);
 
     // Initial Load
     useEffect(() => {
-        const saved = localStorage.getItem("goat-warfund-v1");
+        const saved = localStorage.getItem("goat-warfund-v2");
         if (saved) {
             try {
                 const parsed = JSON.parse(saved);
                 setTimeout(() => setRecords(parsed), 0);
             } catch (e) {
                 console.error("Failed to parse WarFund data", e);
+            }
+        } else {
+            // migration from v1
+            const oldSaved = localStorage.getItem("goat-warfund-v1");
+            if (oldSaved) {
+                try {
+                    const parsed = JSON.parse(oldSaved);
+                    setTimeout(() => setRecords(parsed), 0);
+                } catch(e) {}
             }
         }
         setTimeout(() => setIsLoaded(true), 0);
@@ -44,16 +53,18 @@ export default function WarFund() {
     // Save on Change
     useEffect(() => {
         if (isLoaded) {
-            localStorage.setItem("goat-warfund-v1", JSON.stringify(records));
+            localStorage.setItem("goat-warfund-v2", JSON.stringify(records));
         }
     }, [records, isLoaded]);
 
     const incomes = useMemo(() => records.filter(r => r.type === "income"), [records]);
     const expenses = useMemo(() => records.filter(r => r.type === "expense"), [records]);
+    const subscriptions = useMemo(() => records.filter(r => r.type === "subscription"), [records]);
 
     const totalIncome = useMemo(() => incomes.reduce((sum, item) => sum + item.amount, 0), [incomes]);
     const totalExpense = useMemo(() => expenses.reduce((sum, item) => sum + item.amount, 0), [expenses]);
-    const netCashflow = totalIncome - totalExpense;
+    const totalSubs = useMemo(() => subscriptions.reduce((sum, item) => sum + item.amount, 0), [subscriptions]);
+    const netCashflow = totalIncome - totalExpense - totalSubs;
 
     const handleAdd = (e: React.FormEvent) => {
         e.preventDefault();
@@ -103,11 +114,12 @@ export default function WarFund() {
             <form onSubmit={handleAdd} className="brutalist-card border-border p-4 bg-surface/20 mb-4 flex flex-col md:flex-row gap-2">
                 <select
                     value={newType}
-                    onChange={e => setNewType(e.target.value as "income" | "expense")}
+                    onChange={e => setNewType(e.target.value as "income" | "expense" | "subscription")}
                     className="bg-background border border-border p-2 text-xs focus:outline-none"
                 >
                     <option value="income">Gelir (+)</option>
                     <option value="expense">Gider (-)</option>
+                    <option value="subscription">Abonelik (-)</option>
                 </select>
                 <input
                     type="text"
@@ -118,7 +130,7 @@ export default function WarFund() {
                 />
                 <input
                     type="number"
-                    placeholder="Miktar (₺)"
+                    placeholder="Miktar (₺) / Aylık"
                     value={newAmount}
                     onChange={e => setNewAmount(e.target.value)}
                     className="w-full md:w-32 bg-background border border-border p-2 text-xs focus:outline-none"
@@ -128,7 +140,7 @@ export default function WarFund() {
                 </button>
             </form>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Gelirler */}
                 <div className="brutalist-card border-border p-4 bg-surface/30">
                     <h3 className="text-xs uppercase tracking-wider text-accent-green mb-3 flex justify-between">
@@ -137,7 +149,7 @@ export default function WarFund() {
                     </h3>
                     <div className="space-y-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
                         {incomes.map((item) => (
-                            <div key={item.id} className="group flex justify-between items-center text-xs pb-2 border-b border-border/50 last:border-0 last:pb-0">
+                            <div key={item.id} className="group flex justify-between items-center text-[11px] pb-2 border-b border-border/50 last:border-0 last:pb-0">
                                 <span className="text-text-muted truncate mr-2">{item.label}</span>
                                 <div className="flex items-center gap-2 shrink-0">
                                     <span className="text-text font-mono">{item.amount.toLocaleString("tr-TR")} ₺</span>
@@ -156,7 +168,26 @@ export default function WarFund() {
                     </h3>
                     <div className="space-y-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
                         {expenses.map((item) => (
-                            <div key={item.id} className="group flex justify-between items-center text-xs pb-2 border-b border-border/50 last:border-0 last:pb-0">
+                            <div key={item.id} className="group flex justify-between items-center text-[11px] pb-2 border-b border-border/50 last:border-0 last:pb-0">
+                                <span className="text-text-muted truncate mr-2">{item.label}</span>
+                                <div className="flex items-center gap-2 shrink-0">
+                                    <span className="text-text font-mono">{item.amount.toLocaleString("tr-TR")} ₺</span>
+                                    <button onClick={() => handleDelete(item.id)} className="opacity-0 group-hover:opacity-100 text-accent-red hover:text-red-400 transition-opacity">×</button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Abonelikler */}
+                <div className="brutalist-card border-border p-4 bg-surface/30">
+                    <h3 className="text-xs uppercase tracking-wider text-accent-red/80 mb-3 flex justify-between">
+                        <span>Abonelikler (Aylık)</span>
+                        <span className="font-bold">{totalSubs.toLocaleString("tr-TR")} ₺</span>
+                    </h3>
+                    <div className="space-y-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
+                        {subscriptions.map((item) => (
+                            <div key={item.id} className="group flex justify-between items-center text-[11px] pb-2 border-b border-border/50 last:border-0 last:pb-0">
                                 <span className="text-text-muted truncate mr-2">{item.label}</span>
                                 <div className="flex items-center gap-2 shrink-0">
                                     <span className="text-text font-mono">{item.amount.toLocaleString("tr-TR")} ₺</span>

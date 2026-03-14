@@ -2,8 +2,21 @@
 
 import { useState, useEffect } from "react";
 
+interface BonusItem {
+  id: string;
+  label: string;
+  activeDays?: number[]; // Days of week (0=Sunday, 1=Monday, etc.)
+}
+
 export default function BonusTasks() {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
+  const [currentDay, setCurrentDay] = useState(new Date().getDay());
+
+  useEffect(() => {
+    setTimeout(() => {
+      setCurrentDay(new Date().getDay());
+    }, 0);
+  }, []);
 
   useEffect(() => {
     const saved = localStorage.getItem("goat-bonus-tasks-v1");
@@ -32,10 +45,10 @@ export default function BonusTasks() {
     window.dispatchEvent(new Event("dailyScoreUpdated"));
   };
 
-  const ITEMS = [
-    { id: "bn-walk", label: "Sabah 20 dk koşu bandı yürüyüş" },
-    { id: "bn-english", label: "Fielse'den 1 ders İngilizce" },
-    { id: "bn-share", label: "Twitter'da haber paylaşımı" },
+  const ITEMS: BonusItem[] = [
+    { id: "bn-walk", label: "Sabah 20 dk koşu bandı yürüyüş", activeDays: [2, 3, 5] }, // Salı, Çarşamba, Cuma
+    { id: "bn-english", label: "Fielse'den 1 ders İngilizce", activeDays: [0, 1, 4, 6] }, // Pzt, Per, Cmt, Pzr
+    { id: "bn-share", label: "2 hesabında tweet paylaşımları" },
     { id: "bn-course", label: "Yüz bakımı yap" },
   ];
 
@@ -51,34 +64,60 @@ export default function BonusTasks() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {ITEMS.map((item) => (
-          <div
-            key={item.id}
-            onClick={() => toggle(item.id)}
-            className={`flex items-center gap-3 p-3 border cursor-pointer transition-colors ${
-              checked[item.id]
-                ? "border-text bg-surface/5"
-                : "border-border bg-surface/20 hover:border-text-muted"
-            }`}
-          >
+        {ITEMS.map((item) => {
+          const isDisabled = item.activeDays && !item.activeDays.includes(currentDay);
+          const needsAction = item.activeDays && !isDisabled && !checked[item.id];
+          
+          return (
             <div
-              className={`w-6 h-6 shrink-0 flex items-center justify-center border-2 transition-colors ${
-                checked[item.id]
-                  ? "border-text bg-text text-background"
-                  : "border-border bg-transparent text-transparent"
+              key={item.id}
+              onClick={() => !isDisabled && toggle(item.id)}
+              className={`relative flex items-center gap-3 p-3 border transition-colors ${
+                isDisabled 
+                  ? "opacity-50 cursor-not-allowed border-border bg-surface/10" 
+                  : "cursor-pointer"
+              } ${
+                !isDisabled && checked[item.id]
+                  ? "border-text bg-surface/5"
+                  : !isDisabled 
+                    ? `border-border bg-surface/20 hover:border-text-muted ${needsAction ? 'animate-pulse border-accent-red/50 shadow-[0_0_10px_rgba(255,59,59,0.2)]' : ''}`
+                    : ""
               }`}
             >
-              <span className="text-xs font-bold">✓</span>
+              <div
+                className={`w-6 h-6 shrink-0 flex items-center justify-center border-2 transition-colors ${
+                  checked[item.id] && !isDisabled
+                    ? "border-text bg-text text-background"
+                    : "border-border bg-transparent text-transparent"
+                }`}
+              >
+                <span className="text-xs font-bold">✓</span>
+              </div>
+              <div className="flex flex-col flex-1 min-w-0">
+                <span
+                  className={`text-xs md:text-sm font-bold select-none truncate ${
+                    isDisabled 
+                      ? "text-text-muted" 
+                      : checked[item.id] 
+                        ? "line-through text-text-muted opacity-70" 
+                        : "text-text"
+                  }`}
+                >
+                  {item.label}
+                </span>
+                {/* "Bugün değil" label for disabled days */}
+                {isDisabled && (
+                  <span 
+                    className="text-[10px] font-medium mt-0.5"
+                    style={{ color: "#666666" }}
+                  >
+                    Bugün değil
+                  </span>
+                )}
+              </div>
             </div>
-            <span
-              className={`text-xs md:text-sm font-bold select-none truncate ${
-                checked[item.id] ? "line-through text-text-muted opacity-70" : "text-text"
-              }`}
-            >
-              {item.label}
-            </span>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

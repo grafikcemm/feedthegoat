@@ -253,9 +253,21 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
     };
 
     const PRIORITY_STYLES = {
-        "P1": "border-accent-red text-accent-red bg-accent-red/10",
-        "P2": "border-accent-amber text-accent-amber bg-accent-amber/5",
-        "P3": "border-border text-text-muted bg-surface/30"
+        "P1": "border-accent-red text-accent-red",
+        "P2": "border-accent-amber text-accent-amber",
+        "P3": "border-border text-text-muted"
+    };
+
+    const PRIORITY_LEFT_BORDER = {
+        "P1": "#FF3B3B",
+        "P2": "#FFB800",
+        "P3": "#444444"
+    };
+
+    const PRIORITY_BG = {
+        "P1": "#1A0808",
+        "P2": "#1A1200",
+        "P3": "transparent"
     };
 
     const activeTasksList = useMemo(() => {
@@ -290,9 +302,12 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
 
     return (
         <section>
-            <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xs uppercase tracking-[0.25em] text-text-muted font-mono">
-                    AKTİF GÖREVLER
+            <div 
+                className="flex items-center justify-between mb-4 px-3 py-2 -mx-1"
+                style={{ backgroundColor: "#0F0F1A" }}
+            >
+                <h2 className="text-xs uppercase tracking-[0.25em] text-text font-mono font-bold">
+                    ⚡ AKTİF GÖREVLER
                 </h2>
             </div>
 
@@ -336,7 +351,15 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
                     <div className="space-y-2">
                         {activeTasksList.map((task) => {
                             return (
-                                <div key={task.id} className={`brutalist-border border-border group overflow-hidden transition-all duration-200 p-3 flex items-center gap-3 ${task.is_urgent ? "bg-accent-green/5 border-accent-green glow-green" : "bg-surface/20"}`}>
+                                <div 
+                                    key={task.id} 
+                                    className={`brutalist-border border-border group overflow-hidden transition-all duration-200 p-3 flex items-center gap-3 ${task.is_urgent ? "border-accent-green glow-green" : ""}`}
+                                    style={{
+                                        borderLeftWidth: "3px",
+                                        borderLeftColor: PRIORITY_LEFT_BORDER[task.priority],
+                                        backgroundColor: task.is_urgent ? "rgba(0, 255, 136, 0.05)" : PRIORITY_BG[task.priority]
+                                    }}
+                                >
                                     <button
                                         onClick={() => toggleTask(task.id)}
                                         className="w-4 h-4 flex-shrink-0 border-2 border-border flex items-center justify-center text-[9px] font-bold transition-colors bg-transparent text-transparent hover:border-text-muted"
@@ -348,7 +371,10 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
                                         {task.priority}
                                     </span>
 
-                                    <span className={`text-sm font-bold text-text flex-1 min-w-0 truncate ${task.is_urgent ? 'text-accent-green' : (task.priority === 'P1' ? 'text-accent-red' : '')}`}>
+                                    <span 
+                                        className={`text-sm text-text flex-1 min-w-0 truncate ${task.is_urgent ? 'text-accent-green' : (task.priority === 'P1' ? 'text-accent-red' : '')}`}
+                                        style={{ fontWeight: 600 }}
+                                    >
                                         {task.title}
                                     </span>
 

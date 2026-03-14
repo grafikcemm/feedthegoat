@@ -1,16 +1,91 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+
+const MOVIES = [
+  { id: 1, title: "The Social Network (2010)", reason: "Bir fikri sıfırdan küresel ürüne dönüştürme hikayesi. Obsesyon vs ilişkiler dengesi." },
+  { id: 2, title: "Whiplash (2014)", reason: "Mükemmellik takıntısı ve disiplinin bedeli. 'Kötü gün' protokolünü hatırlatır." },
+  { id: 3, title: "Steve Jobs (2015)", reason: "Ürün vizyonu, sunum sanatı ve tavizsiz standartlar. Kreatif yönetici olarak seni besler." },
+  { id: 4, title: "The Pursuit of Happyness (2006)", reason: "Sıfırdan başlama, pes etmeme, oğluna söz verme. Finansal darlıkta motivasyon." },
+  { id: 5, title: "Jiro Dreams of Sushi (2011)", reason: "Zanaat ustalığı, 'bir şeyi mükemmel yapma' felsefesi. Fiziksel beceri sigortanla örtüşür." },
+  { id: 6, title: "Moneyball (2011)", reason: "Veri-driven karar verme, herkesin gördüğünü farklı yorumlama. Senin 'Mor Sincap' stratejin." },
+  { id: 7, title: "Ford v Ferrari (2019)", reason: "Mühendislik + tutku + kurumsal baskıya karşı bağımsızlık. Freelancer ruhu." },
+  { id: 8, title: "Chef (2014)", reason: "Kurumsal dünyayı bırakıp kendi işini kurma. Sosyal medya ile marka inşası." },
+  { id: 9, title: "The Founder (2016)", reason: "McDonald's'ın hikayesi. Sistem düşüncesi, franchise modeli, acımasız iş dünyası." },
+  { id: 10, title: "Nightcrawler (2014)", reason: "Karanlık motivasyon, sıfırdan sektöre girme, 'hayır' kabul etmeme. Etik sınırları düşündürür." },
+  { id: 11, title: "Joy (2015)", reason: "Kadın girişimci, patent savaşları, aile baskısı. Ürün geliştirme süreci." },
+  { id: 12, title: "The Intern (2015)", reason: "Nesil farkı, startup kültürü, mentor-mentee ilişkisi. Hafif ama öğretici." },
+  { id: 13, title: "Margin Call (2011)", reason: "Risk yönetimi, kriz anında karar verme, finans dünyasının acımasızlığı." },
+  { id: 14, title: "Rocky (1976)", reason: "Underdog hikayesinin orijinali. Disiplin, antrenman, 'bir şans daha' felsefesi." },
+  { id: 15, title: "The Secret Life of Walter Mitty (2013)", reason: "Hayal kurmaktan aksiyon almaya geçiş. Görsel olarak ilham verici (drone gözüyle izle)." },
+  { id: 16, title: "Gattaca (1997)", reason: "Genetik dezavantaja rağmen irade ile hedefe ulaşma. 'İmkansız' denen şeyi yapma." },
+  { id: 17, title: "Good Will Hunting (1997)", reason: "Ham yetenek vs disiplin. Mentor ilişkisi. Duygusal duvarları yıkma." },
+  { id: 18, title: "A Beautiful Mind (2001)", reason: "Deha ve mücadele. Zihinsel sağlık farkındalığı. Odak ve obsesyon dengesi." },
+  { id: 19, title: "The Shawshank Redemption (1994)", reason: "Sabır, uzun vadeli plan, umut. 20 yıllık tünel = senin 3 yıllık yol haritası." },
+  { id: 20, title: "Creed (2015)", reason: "Kendi kimliğini inşa etme, babanın gölgesinden çıkma, modern Rocky." },
+  { id: 21, title: "Soul (Pixar, 2020)", reason: "Hayatın anlamı, tutku vs günlük yaşam, 'spark' kavramı. Derin ama hafif." },
+  { id: 22, title: "The Walk (2015)", reason: "İkiz Kuleler arasında ip yürüyüşü. İmkansız hedefe takıntılı odaklanma." },
+  { id: 23, title: "127 Hours (2010)", reason: "Hayatta kalma iradesi. Konfor zonunun çok ötesinde karar verme." },
+  { id: 24, title: "Sully (2016)", reason: "Kriz anında soğukkanlılık, uzmanlık, 'doğru olanı yap' cesareti." },
+  { id: 25, title: "Ip Man (2008)", reason: "Ustalık, alçakgönüllülük, disiplin. Dövüş sanatı felsefesi." },
+  { id: 26, title: "The Imitation Game (2014)", reason: "Alan Turing, kod kırma, farklı düşünmenin gücü. AI tarihinin başlangıcı." },
+  { id: 27, title: "Amadeus (1984)", reason: "Yetenek vs çalışkanlık, sanat ve kıskançlık. Yaratıcı süreç üzerine başyapıt." },
+  { id: 28, title: "Ratatouille (2007)", reason: "'Herkes aşçı olabilir' = 'Herkes kreatif olabilir'. Sınıf ayrımına meydan okuma." },
+  { id: 29, title: "Blade Runner 2049 (2017)", reason: "Görsel sinema ustalığı. Drone gözüyle kompozisyon, ışık ve atmosfer dersi." },
+  { id: 30, title: "Her (2013)", reason: "AI-insan ilişkisi, teknolojinin duygusal etkisi. Voice Agent işinle doğrudan bağlantılı." },
+  { id: 31, title: "Ex Machina (2014)", reason: "AI, bilinç, manipülasyon. Yapay zekanın etik sınırları." },
+  { id: 32, title: "Arrival (2016)", reason: "İletişim, dil ve algı. Problem çözme yaklaşımını değiştirir." },
+  { id: 33, title: "Interstellar (2014)", reason: "Vizyon, fedakarlık, zamanın değeri. Görsel olarak drone çekimlerin için ilham." },
+  { id: 34, title: "Searching (2018)", reason: "Tamamen ekranlarda geçen film. Dijital çağda hikaye anlatımı." },
+  { id: 35, title: "Bohemian Rhapsody (2018)", reason: "Kimlik arayışı, sanatsal vizyon, performans. Kişisel marka ilhamı." },
+  { id: 36, title: "The Grand Budapest Hotel (2014)", reason: "Wes Anderson estetiği. Renk paleti, kompozisyon, marka kimliği dersi." },
+  { id: 37, title: "Parasite (2019)", reason: "Sınıf farkı, strateji, plan yapma. Her sahnesinde bir ders var." },
+  { id: 38, title: "Everything Everywhere All at Once (2022)", reason: "Yaratıcılık patlaması, çoklu yetenek, kaos içinde anlam bulma." },
+  { id: 39, title: "Network (1976)", reason: "Medya, manipülasyon, halkı ikna etme. Marketing ve içerik stratejisi temeli." },
+  { id: 40, title: "Hababam Sınıfı (1975)", reason: "Türk kültürel mirası, topluluk, sistem içinde bireysellik. Kendi kültürünü hatırla." },
+  { id: 41, title: "Babam ve Oğlum (2005)", reason: "Baba-oğul ilişkisi, Türkiye tarihi, aile bağları. Duygusal derinlik." },
+  { id: 42, title: "Kelebeğin Rüyası (2013)", reason: "Hayallerin peşinden gitme, Türk sinemasında poetik anlatım." },
+  { id: 43, title: "Into the Wild (2007)", reason: "Maddi dünyadan kaçış, doğa, anlam arayışı. Dopamin detoksunun felsefi temeli." },
+  { id: 44, title: "The Tree of Life (2011)", reason: "Varoluş, doğa vs şehir, spiritüel derinlik. Duandan sonra izle." },
+  { id: 45, title: "Life of Pi (2012)", reason: "İnanç, hayatta kalma, hikaye anlatmanın gücü. Görsel olarak muhteşem." },
+  { id: 46, title: "Ikiru (Kurosawa, 1952)", reason: "Hayatın anlamı, bürokratik sisteme karşı bireysel eylem. Zamansız başyapıt." },
+  { id: 47, title: "The Truman Show (1998)", reason: "Yapay dünyadan uyanış, kendi gerçeğini yaratma. Sosyal medya eleştirisi." },
+  { id: 48, title: "Cast Away (2000)", reason: "Yalnızlık, hayatta kalma, yeniden başlama. Minimalizm ve odak." },
+  { id: 49, title: "Dead Poets Society (1989)", reason: "Eğitim, özgür düşünce, 'carpe diem'. Kişisel gelişim klasiği." },
+  { id: 50, title: "Gladiator (2000)", reason: "Liderlik, onur, kaybedilen her şeye rağmen devam etme." },
+  { id: 51, title: "Oppenheimer (2023)", reason: "Deha, sorumluluk, teknolojinin çift yüzü. AI çağında etik düşünce." },
+  { id: 52, title: "Pay It Forward (2000)", reason: "İyilik zinciri, dünyayı değiştirme idealizmi. Yılın kapanışı için umut." }
+];
+
+function getWeekNumber(d: Date) {
+    const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay()||7));
+    const yearStart = new Date(Date.UTC(date.getUTCFullYear(),0,1));
+    const weekNo = Math.ceil(( ( (date.getTime() - yearStart.getTime()) / 86400000) + 1)/7);
+    return Math.min(Math.max(weekNo, 1), 52); // clamped between 1 and 52
+}
 
 export default function WeeklyScreen() {
     const [focus, setFocus] = useState("");
     const [weeklyTasks, setWeeklyTasks] = useState([
-        { id: "wt-1", text: "CUMARTESİ VEYA PAZAR NEO SKALA 1 KURS", icon: "🎓", done: false },
-        { id: "wt-2", text: "MÜSAİT OLDUKÇA GÖNENÇ AKADEMİ'DEN VİDEOLAR İZLE KİŞİSEL GELİŞİME DEVAM ET", icon: "🧠", done: false }
+        { id: "wt-sat-1", text: "Cumartesi: Gönenç Akademi'den Videolar İzle", icon: "🧠", done: false },
+        { id: "wt-sat-2", text: "Cumartesi: Neo Skala 1 Kurs Tamamla", icon: "🎓", done: false },
+        { id: "wt-sun-1", text: "Pazar: Haftalık gelir/gider takibi (5 dk)", icon: "💸", done: false },
+        { id: "wt-sun-2", text: "Pazar: Haftalık müşteri pipeline kontrolü — kaç teklif gönderildi, kaç yanıt geldi", icon: "📊", done: false }
     ]);
+    const [isClient, setIsClient] = useState(false);
+
+    const weekNumber = useMemo(() => {
+        return getWeekNumber(new Date());
+    }, []);
+
+    const todaysMovie = useMemo(() => {
+        return MOVIES.find(m => m.id === weekNumber) || MOVIES[0];
+    }, [weekNumber]);
 
     useEffect(() => {
-        const saved = localStorage.getItem("goat-weekly-v1");
+        setTimeout(() => setIsClient(true), 0);
+        const saved = localStorage.getItem("goat-weekly-v3");
         if (saved) {
             try {
                 const parsed = JSON.parse(saved);
@@ -19,17 +94,14 @@ export default function WeeklyScreen() {
                 const lastSavedDate = new Date(parsed.lastUpdated || Date.now());
                 const now = new Date();
                 
-                // If it's Monday and the last saved date wasn't today, reset it automatically
-                // A better approach would be to check if we crossed a Monday since last save,
-                // but this is a simple check. If we are in a new week, clear.
-                const resetMs = 1000 * 60 * 60 * 24 * 7; // 1 week
+                const resetMs = 1000 * 60 * 60 * 24 * 7;
                 const isNewWeek = now.getTime() - lastSavedDate.getTime() > resetMs || 
                                  (now.getDay() === 1 && lastSavedDate.getDay() !== 1);
 
                 if (!isNewWeek) {
                     setTimeout(() => {
                         setFocus(parsed.focus || "");
-                        if (parsed.weeklyTasks) {
+                        if (parsed.weeklyTasks && parsed.weeklyTasks.length === 4 && parsed.weeklyTasks[0].id === "wt-sat-1") {
                             setWeeklyTasks(parsed.weeklyTasks);
                         }
                     }, 0);
@@ -39,16 +111,22 @@ export default function WeeklyScreen() {
     }, []);
 
     useEffect(() => {
-        localStorage.setItem("goat-weekly-v1", JSON.stringify({
+        if (!isClient) return;
+        localStorage.setItem("goat-weekly-v3", JSON.stringify({
             focus, weeklyTasks, lastUpdated: new Date().toISOString()
         }));
-    }, [focus, weeklyTasks]);
+    }, [focus, weeklyTasks, isClient]);
 
     const toggleWeeklyTask = (id: string) => {
+        if (typeof window !== "undefined" && window.navigator && window.navigator.vibrate) {
+            window.navigator.vibrate(50);
+        }
         setWeeklyTasks(weeklyTasks.map(t => t.id === id ? { ...t, done: !t.done } : t));
     };
 
     const doneCount = weeklyTasks.filter(t => t.done).length;
+
+    if (!isClient) return null;
 
     return (
         <section className="space-y-8 animate-in fade-in duration-300">
@@ -75,7 +153,7 @@ export default function WeeklyScreen() {
                     <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-text-muted">{doneCount}/{weeklyTasks.length}</span>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4">
                     {weeklyTasks.map(task => (
                         <div 
                             key={task.id}
@@ -86,21 +164,68 @@ export default function WeeklyScreen() {
                                     : "border-border bg-surface/20 hover:border-text-muted"
                             }`}
                         >
-                            <div className={`w-6 h-6 shrink-0 flex items-center justify-center border-2 transition-colors mt-0.5 ${
+                            <div className={`w-11 h-11 shrink-0 flex items-center justify-center border-2 transition-colors ${
                                 task.done 
                                     ? "border-text bg-text text-background" 
                                     : "border-border bg-transparent text-transparent"
                             }`}>
-                                <span className="text-sm font-bold">✓</span>
+                                <span className="text-xl font-bold">✓</span>
                             </div>
-                            <div className="flex-1 flex gap-2">
+                            <div className="flex-1 flex gap-3 items-center">
                                 <span className="shrink-0">{task.icon}</span>
-                                <span className={`text-[10px] uppercase tracking-wider font-bold leading-relaxed ${task.done ? 'line-through text-text-muted opacity-70' : 'text-text'}`}>
+                                <span className={`text-[10px] md:text-xs uppercase tracking-wider font-bold leading-relaxed ${task.done ? 'line-through text-text-muted opacity-70' : 'text-text'}`}>
                                     {task.text}
                                 </span>
                             </div>
                         </div>
                     ))}
+                </div>
+            </div>
+
+            {/* PAZAR ŞARJ GÜNÜ */}
+            <div className="brutalist-card p-4 border border-border bg-black">
+                <label className="block text-[10px] uppercase font-bold tracking-[0.2em] text-accent-red mb-4 text-center">
+                    PAZAR — ŞARJ GÜNÜ
+                </label>
+
+                <div className="space-y-4">
+                    {/* Sabah */}
+                    <div className="p-3 border border-border/50 bg-surface/5">
+                        <h4 className="text-xs font-bold text-white mb-2 tracking-wider flex items-center gap-2">
+                            <span>☀️</span> SABAH (09:00-12:00)
+                        </h4>
+                        <ul className="space-y-1 text-[11px] text-text-muted ml-6 list-disc marker:text-border">
+                            <li>Sabah duası + görselleştirme</li>
+                            <li>Haftalık meal prep (5 günlük tavuk hazırla)</li>
+                            <li>Haftalık gözden geçirme: Ne iyi gitti? Ne kötü gitti? Gelecek hafta ne değişecek?</li>
+                        </ul>
+                    </div>
+
+                    {/* Öğle */}
+                    <div className="p-3 border border-border/50 bg-surface/5">
+                        <h4 className="text-xs font-bold text-white mb-2 tracking-wider flex items-center gap-2">
+                            <span>📖</span> ÖĞLEDEN SONRA (14:00-17:00)
+                        </h4>
+                        <ul className="space-y-1 text-[11px] text-text-muted ml-6 list-disc marker:text-border">
+                            <li>Biyografi oku (minimum 50 sayfa veya 1 saat)</li>
+                            <li>Not al: Bu insandan ne öğrendim? Hayatıma nasıl uygularım?</li>
+                        </ul>
+                    </div>
+
+                    {/* Akşam */}
+                    <div className="p-3 border border-border/50 bg-surface/5">
+                        <h4 className="text-xs font-bold text-white mb-2 tracking-wider flex items-center justify-between">
+                            <span className="flex items-center gap-2"><span>🎬</span> AKŞAM (19:00-22:00)</span>
+                            <span className="text-[9px] text-accent-red font-medium tracking-widest border border-accent-red/30 px-2 py-0.5">HAFTA {weekNumber} FİLMİ</span>
+                        </h4>
+                        
+                        <div className="ml-6 mt-3 border-l-[3px] border-accent-red pl-3 bg-surface/10 p-2">
+                            <div className="text-white font-bold text-xs">{todaysMovie.title}</div>
+                            <div className="text-[10px] text-text-muted mt-1 italic leading-relaxed">
+                                {todaysMovie.reason}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
