@@ -13,6 +13,7 @@
     "@google/genai": "^1.42.0",
     "@supabase/supabase-js": "^2.97.0",
     "@types/node-cron": "^3.0.11",
+    "antigravity-awesome-skills": "^7.9.1",
     "dotenv": "^17.3.1",
     "next": "16.1.6",
     "node-cron": "^4.2.1",

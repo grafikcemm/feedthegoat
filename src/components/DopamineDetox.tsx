@@ -2,146 +2,151 @@
 
 import { useState, useEffect } from "react";
 
-const DETOX_ITEMS = [
-    { id: "detox-porn", label: "Pornografi izlemedim", desc: "Dopamin reseptörlerini sıfırlar, gerçek yaşam motivasyonunu artırır." },
-    { id: "detox-sm", label: "Sosyal medya scroll yapmadım (sadece paylaşım)", desc: "Başkalarının hayatını izlemeyi bırak, kendi hayatını yaşa." },
-    { id: "detox-drink", label: "Su dışında içecek tüketmedim (çay/kahve OK)", desc: "Şekerli içecekler insülin direncini ve zihin sisini tetikler." },
-    { id: "detox-food", label: "Dışarıdan yemek yemedim", desc: "Kendi yakıtını kendin seç." },
-    { id: "detox-morning", label: "Sabah bloğu sessiz geçti (müzik/podcast yok)", desc: "Zihnin kendi düşüncelerini üretmesine izin ver." },
-    { id: "detox-yt", label: "YouTube'da sadece eğitim içerik izledim", desc: "Tüketici eğlencesi değil, üretici hammaddesi." },
-    { id: "detox-phone", label: "Telefon 22:00'de uçak moduna alındı", desc: "Kaliteli uyku, ertesi günün savaşını kazanmanın tek yoludur." },
-];
+const DETOX_RULES = {
+    red: [
+        { id: "dd-r1", label: "Pornografi izlemedim" },
+        { id: "dd-r2", label: "Doomscroll yapmadım" },
+        { id: "dd-r3", label: "Telefon 22:00 uçak modu" }
+    ],
+    yellow: [
+        { id: "dd-y1", label: "Dışarıdan yemek yemedim" },
+        { id: "dd-y2", label: "Su dışı içecek yok (Çay/Kahve OK)" },
+        { id: "dd-y3", label: "Sadece faydalı YouTube izledim" }
+    ],
+    green: [
+        { id: "dd-g1", label: "Sabah bloğu sessiz geçti" },
+        { id: "dd-g2", label: "Sosyal medya sadece üreticiydi" },
+        { id: "dd-g3", label: "Ekstra dijital temizlik / organizasyon" }
+    ]
+};
 
 export default function DopamineDetox() {
     const [checked, setChecked] = useState<Record<string, boolean>>({});
-    const [history, setHistory] = useState<Record<string, boolean>>({}); // "YYYY-MM-DD": true/false
+    const [isExpanded, setIsExpanded] = useState(false);
     const [isClient, setIsClient] = useState(false);
 
     const todayStr = new Date().toISOString().split("T")[0];
 
     useEffect(() => {
         setTimeout(() => setIsClient(true), 0);
-        const savedToday = localStorage.getItem(`goat-detox-today-${todayStr}`);
-        if (savedToday) {
-            try { setChecked(JSON.parse(savedToday)); } catch { }
-        }
-
-        const savedHistory = localStorage.getItem("goat-detox-history");
-        if (savedHistory) {
-            try { setHistory(JSON.parse(savedHistory)); } catch { }
+        const saved = localStorage.getItem(`goat-dd-v3-${todayStr}`);
+        if (saved) {
+        setTimeout(() => {
+            try { setChecked(JSON.parse(saved)); } catch {}
+        }, 0);
         }
     }, [todayStr]);
 
     useEffect(() => {
         if (!isClient) return;
-        localStorage.setItem(`goat-detox-today-${todayStr}`, JSON.stringify(checked));
-
-        const checkedCount = Object.values(checked).filter(Boolean).length;
-        const isSuccess = checkedCount >= 6;
-
-        const updatedHistory = { ...history, [todayStr]: isSuccess };
-        localStorage.setItem("goat-detox-history", JSON.stringify(updatedHistory));
-        setHistory(updatedHistory);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        localStorage.setItem(`goat-dd-v3-${todayStr}`, JSON.stringify(checked));
+        // We aren't doing strict 30 day history anymore according to prompt, 
+        // focus is on day-to-day resilience and the scoreboard.
     }, [checked, isClient, todayStr]);
 
-    const toggle = (id: string) => {
+    const toggle = (id: string, e: React.MouseEvent) => {
+        e.stopPropagation();
         if (typeof window !== "undefined" && window.navigator && window.navigator.vibrate) {
             window.navigator.vibrate(50);
         }
         setChecked(prev => ({ ...prev, [id]: !prev[id] }));
     };
 
-    // Calculate weekly / 30-day scores
-    const calculateScores = () => {
-        let weeklyScore = 0;
-        let streak = 0;
-
-        const d = new Date();
-        for (let i = 0; i < 7; i++) {
-            const tempDate = new Date(d);
-            tempDate.setDate(d.getDate() - i);
-            const dateStr = tempDate.toISOString().split("T")[0];
-            if (history[dateStr]) weeklyScore++;
-        }
-
-        const sortedDates = Object.keys(history).sort((a, b) => b.localeCompare(a));
-        for (const date of sortedDates) {
-            if (history[date]) {
-                streak++;
-            } else {
-                break;
-            }
-        }
-
-        return { weeklyScore, streak };
-    };
-
     if (!isClient) return null;
 
-    const { weeklyScore, streak } = calculateScores();
-    const checkedCount = Object.values(checked).filter(Boolean).length;
-    const isTodaySuccess = checkedCount >= 6;
+    const countGroup = (group: {id: string}[]) => group.filter(item => checked[item.id]).length;
+
+    const redCount = countGroup(DETOX_RULES.red);
+    const yellowCount = countGroup(DETOX_RULES.yellow);
+    const greenCount = countGroup(DETOX_RULES.green);
 
     return (
-        <section className="mb-4">
-            <div className="border border-border" style={{ backgroundColor: "#111111" }}>
-                <div className="p-4 border-b border-border bg-black">
-                    <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                            <span className="text-xl">🧠</span>
-                            <span className="text-sm font-bold uppercase tracking-[0.2em] text-white">
-                                DOPAMİN DETOKSU
-                            </span>
-                        </div>
-                        <div className="text-right">
-                            <span className="text-[10px] uppercase tracking-widest text-text-muted block">Haftalık Skor</span>
-                            <span className="text-sm font-bold text-accent-green">{weeklyScore} / 7 Gün</span>
-                        </div>
-                    </div>
-                    <p className="text-xs uppercase tracking-widest text-text-muted">
-                        30 GÜN. ZİNCİRİ KIRMA. (Hedef: 30. Şu an: <span className="text-white font-bold">{streak}</span>)
-                    </p>
+        <section className="mt-6 border border-border bg-surface/5 overflow-hidden">
+            {/* Compact Header / Scoreboard */}
+            <button 
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="w-full text-left p-3 flex items-center justify-between hover:bg-surface/10 transition-colors bg-black"
+            >
+                <div className="flex items-center gap-3">
+                    <span className="text-lg">🧠</span>
+                    <span className="font-bold text-[11px] tracking-widest uppercase text-text">Dopamin Detoksu</span>
                 </div>
+                
+                <div className="flex items-center gap-3 md:gap-6">
+                    <div className="flex gap-2 text-[10px] font-bold font-mono">
+                        <span className={redCount === 3 ? "text-accent-red" : "text-text-muted"}>🔴 {redCount}/3</span>
+                        <span className={yellowCount === 3 ? "text-accent-amber" : "text-text-muted"}>🟡 {yellowCount}/3</span>
+                        <span className={greenCount === 3 ? "text-accent-green" : "text-text-muted"}>🟢 {greenCount}/3</span>
+                    </div>
+                    <span className="text-text-muted text-[10px] uppercase font-bold tracking-[0.2em] bg-surface/20 border border-border px-1.5 py-0.5">
+                        {isExpanded ? "Gizle" : "Göster"}
+                    </span>
+                </div>
+            </button>
 
-                <div className="p-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {DETOX_ITEMS.map((item) => {
-                        const isDone = checked[item.id];
-                        return (
-                            <div 
-                                key={item.id} 
-                                onClick={() => toggle(item.id)}
-                                className={`flex items-center gap-3 p-3 border cursor-pointer transition-colors ${
-                                    isDone ? "border-text bg-surface/5" : "border-border bg-surface/20 hover:border-text-muted"
-                                }`}
-                                title={item.desc}
-                            >
-                                <div className={`w-11 h-11 shrink-0 flex items-center justify-center border transition-colors ${
-                                    isDone ? "border-text bg-text text-black" : "border-border bg-transparent text-transparent"
-                                }`}>
-                                    <span className="text-xl font-bold">✓</span>
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <div className={`text-sm font-bold select-none leading-tight ${isDone ? "line-through text-text-muted opacity-70" : "text-white"}`}>
-                                        {item.label}
+            {/* Expandable Content */}
+            {isExpanded && (
+                <div className="p-3 bg-background/50 grid grid-cols-1 md:grid-cols-3 gap-3 border-t border-border/30 fade-in">
+                    
+                    {/* RED PANEL */}
+                    <div className="p-3 border border-accent-red/20 bg-accent-red/5">
+                        <h4 className="text-[9px] uppercase tracking-widest text-accent-red font-bold mb-3 border-b border-accent-red/20 pb-1">
+                            KRİTİK SAVUNMA (BOZULAMAZ)
+                        </h4>
+                        <div className="space-y-2">
+                            {DETOX_RULES.red.map(item => (
+                                <div key={item.id} onClick={(e) => toggle(item.id, e)} className="flex items-start gap-2 cursor-pointer group">
+                                    <div className={`w-4 h-4 mt-0.5 shrink-0 border flex items-center justify-center text-[10px] ${checked[item.id] ? 'bg-accent-red border-accent-red text-black' : 'border-border bg-black group-hover:border-accent-red/50'}`}>
+                                        {checked[item.id] && '✓'}
                                     </div>
+                                    <span className={`text-[11px] font-medium leading-tight select-none ${checked[item.id] ? 'line-through text-text-muted' : 'text-text'}`}>
+                                        {item.label}
+                                    </span>
                                 </div>
-                            </div>
-                        );
-                    })}
-                </div>
-
-                <div className="p-4 border-t border-border bg-black/50">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[10px] uppercase tracking-widest text-text-muted">
-                            Bu Gün Başarılı Mı? (En az 6 tik)
-                        </span>
-                        <span className={`text-sm font-bold uppercase tracking-widest ${isTodaySuccess ? "text-accent-green" : "text-accent-red"}`}>
-                            {isTodaySuccess ? "EVET ✅" : "HAYIR ❌"}
-                        </span>
+                            ))}
+                        </div>
                     </div>
+
+                    {/* YELLOW PANEL */}
+                    <div className="p-3 border border-accent-amber/20 bg-accent-amber/5">
+                        <h4 className="text-[9px] uppercase tracking-widest text-accent-amber font-bold mb-3 border-b border-accent-amber/20 pb-1">
+                            PERFORMANS (İRADEYİ KORU)
+                        </h4>
+                        <div className="space-y-2">
+                            {DETOX_RULES.yellow.map(item => (
+                                <div key={item.id} onClick={(e) => toggle(item.id, e)} className="flex items-start gap-2 cursor-pointer group">
+                                    <div className={`w-4 h-4 mt-0.5 shrink-0 border flex items-center justify-center text-[10px] ${checked[item.id] ? 'bg-accent-amber border-accent-amber text-black' : 'border-border bg-black group-hover:border-accent-amber/50'}`}>
+                                        {checked[item.id] && '✓'}
+                                    </div>
+                                    <span className={`text-[11px] font-medium leading-tight select-none ${checked[item.id] ? 'line-through text-text-muted' : 'text-text'}`}>
+                                        {item.label}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* GREEN PANEL */}
+                    <div className="p-3 border border-accent-green/20 bg-accent-green/5">
+                        <h4 className="text-[9px] uppercase tracking-widest text-accent-green font-bold mb-3 border-b border-accent-green/20 pb-1">
+                            BONUS KALİTE (GÜCÜ ARTIR)
+                        </h4>
+                        <div className="space-y-2">
+                            {DETOX_RULES.green.map(item => (
+                                <div key={item.id} onClick={(e) => toggle(item.id, e)} className="flex items-start gap-2 cursor-pointer group">
+                                    <div className={`w-4 h-4 mt-0.5 shrink-0 border flex items-center justify-center text-[10px] ${checked[item.id] ? 'bg-accent-green border-accent-green text-black' : 'border-border bg-black group-hover:border-accent-green/50'}`}>
+                                        {checked[item.id] && '✓'}
+                                    </div>
+                                    <span className={`text-[11px] font-medium leading-tight select-none ${checked[item.id] ? 'line-through text-text-muted' : 'text-text'}`}>
+                                        {item.label}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
                 </div>
-            </div>
+            )}
         </section>
     );
 }

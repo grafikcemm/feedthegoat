@@ -68,10 +68,13 @@ function getWeekNumber(d: Date) {
 export default function WeeklyScreen() {
     const [focus, setFocus] = useState("");
     const [weeklyTasks, setWeeklyTasks] = useState([
-        { id: "wt-sat-1", text: "Cumartesi: Gönenç Akademi'den Videolar İzle", icon: "🧠", done: false },
-        { id: "wt-sat-2", text: "Cumartesi: Neo Skala 1 Kurs Tamamla", icon: "🎓", done: false },
-        { id: "wt-sun-1", text: "Pazar: Haftalık gelir/gider takibi (5 dk)", icon: "💸", done: false },
-        { id: "wt-sun-2", text: "Pazar: Haftalık müşteri pipeline kontrolü — kaç teklif gönderildi, kaç yanıt geldi", icon: "📊", done: false }
+        { id: "wt-sat-1", text: "Cumartesi: Haftalık gelir/gider takibi", icon: "💰", done: false },
+        { id: "wt-sat-2", text: "Cumartesi: Müşteri pipeline kontrolü", icon: "📊", done: false },
+        { id: "wt-sat-3", text: "Cumartesi: Gönenç Akademi video izlemeleri", icon: "🧠", done: false },
+        { id: "wt-sat-4", text: "Cumartesi: Neo Skala 1 kurs progresyonu", icon: "🎓", done: false },
+        { id: "wt-sun-1", text: "Pazar: Hafta içi her gün için 1 potansiyel müşteri ayarla (Pzt, Sal, vs)", icon: "📞", done: false },
+        { id: "wt-sun-2", text: "Pazar: Haftanın içerik kontrollerini tamamla", icon: "📱", done: false },
+        { id: "wt-sun-3", text: "Pazar: Haftanın edit/kurgu revizyonlarını yap", icon: "🎬", done: false }
     ]);
     const [isClient, setIsClient] = useState(false);
 

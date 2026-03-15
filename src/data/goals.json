@@ -1,261 +1,419 @@
 [
   {
-    "title": "1. TEMEL VE SÜPER GÜÇ EDİNİMİ (İLK 6 AY)",
-    "affirmation": "Bu 6 ay, geri kalan hayatının fragmanıdır.",
+    "title": "1. ÇEKİRDEK BECERİLER (İLK 6 AY)",
+    "affirmation": "Daha az araç, daha çok etki.",
     "items": [
       {
         "text": "Prompt Engineering — Stratejik Seviye [Ay 1-2]",
+        "whyImportant": "Agentic AI sistemlerinde yön veren katman bu.",
+        "howToLearn": "3 sektör için system prompt paketi yaz: 1. diş kliniği 2. güzellik merkezi 3. emlak",
+        "output": "3 reusable prompt library + 1 evaluation rubric",
+        "thisWeek": "2 test oturumu + 1 revizyon",
+        "revenueLink": "voice agent ve workflow satışlarının kalite katmanı",
+        "scopeLimit": "genel prompt teorisi gezintisine dönüşmesin",
+        "defaultStatus": "ACTIVE",
         "subTasks": [
-          "Claude system prompts, chain-of-thought, orkestrasyon pratikleri"
+          "Diş kliniği prompt paketi",
+          "Güzellik merkezi prompt paketi",
+          "Emlak prompt paketi"
+        ]
+      },
+      {
+        "text": "N8N Otomasyonları (API, Webhook, Apollo, Instantly vb.) [Ay 1-2]",
+        "whyImportant": "Dijital motorun kalbi: otomasyon, orkestrasyon ve teslim edilebilir workflow mantığı.",
+        "howToLearn": "5 akış kurarak öğren: 1. lead scrape -> enrich -> personalize 2. form -> CRM -> follow-up 3. missed call -> follow-up 4. invoice reminder 5. proposal follow-up",
+        "output": "5 çalışan workflow",
+        "thisWeek": "1 workflow shipping",
+        "revenueLink": "satılabilir otomasyon hizmetleri",
+        "scopeLimit": "genel backend / software engineering'e kaymasın",
+        "defaultStatus": "ACTIVE",
+        "subTasks": [
+          "Lead scrape & enrich workflow",
+          "Form to CRM follow-up workflow"
         ]
       },
       {
         "text": "IHA-1 Lisansı + Drone Uçuş Pratiği [Ay 1-2]",
+        "whyImportant": "Kısa vadeli fiziksel kariyer sigortası ve hibrit paketlerin görsel ayağı.",
+        "howToLearn": "resmi lisans süreci + güvenli uçuş pratiği + shot library",
+        "output": "lisans + 20 örnek shot + 1 showcase",
+        "thisWeek": "lisans sürecinin bir sonraki net adımı",
+        "revenueLink": "drone + marka + tanıtım filmi paketleri",
+        "scopeLimit": "sinematik kurgu ustalığına sapma yok",
+        "defaultStatus": "IN_PROGRESS",
         "subTasks": [
-          "Droneturk/Sapmaz'a kayıt (7.300 TL)",
-          "4 gün eğitim + SHGM sınavı",
-          "DJI Air 3 satın al (~50.000 TL)",
-          "50 saat uçuş pratiği (6 hafta)",
-          "İlk 5 portföy projesi (ücretsiz/düşük fiyat)"
-        ]
-      },
-      {
-        "text": "N8N Otomasyonları (API, Webhook, Apify, Apollo.io, Instantly.ai) [Ay 1-2]",
-        "subTasks": [
-          "n8n.io/academy ücretsiz kursları (Level 1 + Level 2)",
-          "YouTube: 'n8n' resmi kanalı → 'Getting Started' serisi",
-          "Apollo.io + Instantly + Apify entegrasyonu (Cold email pipeline kur)",
-          "İlk 10 workflowu kur ve çalıştır"
+          "SHGM kayıt süreci",
+          "20 örnek shot çekimi"
         ]
       },
       {
         "text": "Voice Agent Mimarisi (Deepgram + LLM + Cartesia/ElevenLabs) [Ay 2-4]",
+        "whyImportant": "Satılabilir B2B ürünleşmiş servis omurgası.",
+        "howToLearn": "STT -> LLM -> TTS -> booking -> logging -> escalation",
+        "output": "3 niche demo",
+        "thisWeek": "1 akış şeması + 1 konuşma senaryosu",
+        "revenueLink": "setup fee + retainer",
+        "scopeLimit": "research rabbit hole'a dönüşmesin",
+        "defaultStatus": "IN_PROGRESS",
         "subTasks": [
-          "Deepgram hesap aç → Türkçe STT test et",
-          "Vapi.ai platformunu incele (Voice Agent orkestrasyonu)",
-          "YouTube: 'Greg Isenberg' → 'How to build AI voice agents'",
-          "İlk Türkçe sesli bot prototipi (basit randevu sorma)"
+          "Akış şeması çizimi",
+          "Konuşma senaryosu yazımı"
         ]
       },
       {
-        "text": "Vibe Coding + Cursor IDE (N8N entegrasyonları için) [Ay 2-4]",
+        "text": "Vibe Coding + Cursor IDE [Ay 2-4]",
+        "whyImportant": "Tam yazılımcı olmak için değil; entegrasyon, test, küçük admin ekranı ve landing page üretmek için.",
+        "howToLearn": "sadece gerçek ihtiyaçlar üzerinden",
+        "output": "1 küçük utility + 1 landing page + 1 debug akışı",
+        "thisWeek": "İlk landing page setup'ı",
+        "revenueLink": "Hızlı ürün çıkarma",
+        "scopeLimit": "syntax ezberi / full stack sapması yok",
+        "defaultStatus": "IN_PROGRESS",
         "subTasks": [
-          "Cursor IDE ile N8N entegrasyonları için basit script yazma",
-          "AI ile kodlama prensiplerini kavrama"
+          "Cursor IDE kurulumu ve ayarları"
         ]
       },
       {
         "text": "UI/UX Tasarımları — Voice Agent + Landing Page odaklı [Ay 2-4]",
+        "whyImportant": "Ayrı bir UX kariyeri değil; satışa yarayan arayüzler ve demo akışları.",
+        "howToLearn": "Mevcut tasarımları klonlayarak ve iterasyonla",
+        "output": "3 landing page + 1 pricing page + 1 demo flow",
+        "thisWeek": "Pricing page wireframe",
+        "revenueLink": "teklif kapanış oranını artırır",
+        "scopeLimit": "kapsamlı design system üretimine dönüşmesin",
+        "defaultStatus": "IN_PROGRESS",
         "subTasks": [
-          "Voice Agent arayüzleri tasarımı",
-          "Müşterilere sunulacak portföy/landing page tasarımı"
+          "Pricing page tasarımı",
+          "Demo flow tasarımı"
         ]
       }
     ]
   },
   {
-    "title": "2. KİŞİSEL TEKNİK HEDEFLERİM",
-    "affirmation": "Piksel itici bir amele olmaktan çıkıp, veriyle, satışla ve psikolojiyle masayı domine eden tehlikeli bir stratejiste dönüşüyorsun.",
+    "title": "2. TİCARİ YETKİNLİKLER",
+    "affirmation": "İyi ürünler değil, iyi teklifler satar.",
     "items": [
       {
-        "text": "⚡ ÖNCELİKLİ — Growth Marketing & Value-Based Pricing Sistematiği",
+        "text": "Teklif, Konumlandırma ve Satış",
+        "whyImportant": "Doğru müşteriye doğru problemi çözen net teklif sunma sistemi.",
+        "howToLearn": "3 paket tasarla, 1 discovery call script yaz, 10 görüşme yap, itiraz / objection library oluştur, fiyat katmanları hazırla",
+        "output": "teklif şablonu + pricing sheet + discovery script + objection notes",
+        "thisWeek": "1 paket ve 1 discovery call script'i tamamla",
+        "revenueLink": "en doğrudan para kazandıran yetkinliklerden biri",
+        "scopeLimit": "sonsuz satış içeriği tüketimine dönüşmesin",
+        "defaultStatus": "ACTIVE",
         "subTasks": [
-          "Chris Do 'The Futur' videoları",
-          "HİBRİT PAKET (Marka Kimliği + Drone + AI Otomasyon) 3-tier fiyatlandırma yap"
+          "Paket 1 tasarımı",
+          "Discovery call script yazımı",
+          "İtiraz (objection) library oluşturma"
         ]
       },
       {
-        "text": "Dijital & Finansal Okuryazarlık",
+        "text": "Operasyonel Analitik",
+        "whyImportant": "Ayrı bir veri analistiği kariyeri değil; kendi işinin metriklerini takip etme sistemi.",
+        "howToLearn": "Kendi dashboardunu kurarak ve metricleri girerek",
+        "output": "sade KPI paneli",
+        "thisWeek": "Veri takip şablonunu oluştur",
+        "revenueLink": "İşin büyüme hızını gösterir",
+        "scopeLimit": "GA4 sertifika / genel BI / genel data kariyerine kaymasın",
+        "defaultStatus": "IN_PROGRESS",
         "subTasks": [
-          "Şahıs şirketi vergi yapısı öğrenme",
-          "Freelance gelir takibi sistemi kur",
-          "Abonelik/Gider kontrolü"
+          "KPI belgesi hazırlama (MRR, close rate, vs.)"
         ]
       },
       {
-        "text": "Girişkenlik öğren",
+        "text": "Görünür Üretim ve Case Study Sistemi",
+        "whyImportant": "Tasarımı sadece görsel değil; düşünce ve süreç olarak görünür kılma.",
+        "howToLearn": "1 projeyi uçtan uca anlatarak",
+        "output": "haftalık 1 case study / breakdown / süreç paylaşımı",
+        "thisWeek": "İlk case study taslağı",
+        "revenueLink": "güven, premium algı ve inbound fırsat",
+        "scopeLimit": "içerik fabrikası kurmaya dönüşmesin",
+        "defaultStatus": "IN_PROGRESS",
         "subTasks": [
-          "'The Mom Test' oku",
-          "Cold DM gönderimleri",
-          "Discovery call pratikleri"
+          "Haftalık case study formatını belirleme"
         ]
       },
       {
-        "text": "Vibe Marketing & Storytelling/Copywriting",
-        "subTasks": [
-          "'Building a StoryBrand' oku",
-          "LinkedIn/IG hook yazma pratiği"
-        ]
-      },
-      {
-        "text": "Marka İletişimi, Satış & İkna Psikolojisi",
-        "subTasks": [
-          "Satış script'leri yazma",
-          "İtiraz yanıtlama (Fiyat çok yüksek vs.)"
-        ]
-      },
-      {
-        "text": "AI Content Multiplier Sistemi (OpusClip + ElevenLabs + HeyGen)",
-        "subTasks": [
-          "1 uzun video -> 5 short pipeline kur",
-          "N8N ile süreci yarı otomatize et"
-        ]
-      },
-      {
-        "text": "Zevk/Kürasyon/Yargı Geliştirme (Günlük 30dk referans inceleme)",
-        "subTasks": [
-          "Behance / Awwwards / Are.na incelemeleri"
-        ]
-      },
-      {
-        "text": "Arts & Media AI Konumlanma Stratejisi [Ay 1-2]",
-        "subTasks": [
-          "@grafikcem bio'sunu AI-Powered Creative Director olarak güncelle",
-          "Pazarlama ajansları için 'AI Workflow Kurulum' paketi çıkar"
-        ]
+        "text": "Dijital & Finansal Okuryazarlık (Yardımcı)",
+        "whyImportant": "Ticari temeller",
+        "howToLearn": "Araştırma ve pratik maliye uygulamaları",
+        "output": "Finansal tracker güncellemeleri",
+        "thisWeek": "",
+        "revenueLink": "para tutma",
+        "scopeLimit": "Muhasebeci olunmayacak",
+        "defaultStatus": "IN_PROGRESS",
+        "subTasks": []
       }
     ]
   },
   {
-    "title": "3. SENE İÇİNDE: BECERİ & ÜRETİM",
-    "affirmation": "Bozma Creative bir hayal değil, bir imparatorluktur. Müşteri bekleyen kurban rolünü öldürüp, avlanan bir ajans sahibine evriliyorsun.",
+    "title": "3. ÜRETİM & TESLİM",
+    "affirmation": "Plan yapmak bedava, üretmek ve teslim etmek pahalıdır.",
     "items": [
       {
-        "text": "AI Agent Workflow'ları Kur ve Hizmet Olarak Sat (n8n — AaaS modeli)",
+        "text": "AI Agent Workflow’ları Kur ve Hizmet Olarak Sat (n8n – AaaS modeli)",
+        "whyImportant": "Üretim ve bakım modeline geçiş.",
+        "howToLearn": "Müşteri ile iterasyon.",
+        "output": "satılabilir 2 workflow paketi",
+        "thisWeek": "1 servis şeması yaz",
+        "revenueLink": "setup fee + aylık bakım",
+        "scopeLimit": "Sadece n8n ekosisteminde kal",
+        "defaultStatus": "IN_PROGRESS",
         "subTasks": [
-          "3 farklı sektör için template hazırla",
-          "Loom demo videoları çek"
+          "Servis şeması 1"
         ]
       },
       {
         "text": "B2B Voice Agent Prototipi + Demo Videosu [Ay 3-4]",
+        "whyImportant": "Ajanstan ürünlü servise geçiş.",
+        "howToLearn": "İlk prototipi tamamla ve videoya çek",
+        "output": "1 demo + 1 demo videosu + 1 demo landing page",
+        "thisWeek": "ilk demo script'i",
+        "revenueLink": "B2B abonelik",
+        "scopeLimit": "Çok kompleks edge case'lere girme",
+        "defaultStatus": "IN_PROGRESS",
         "subTasks": [
-          "Diş kliniği randevu botu prototipi → WhatsApp entegrasyonu",
-          "10 diş kliniğine soğuk email"
-        ]
-      },
-      {
-        "text": "Yapay zeka (SaaS — AI Agent) terimlerini uygulama seviyesine taşı",
-        "subTasks": [
-          "LLM, RAG, workflow konseptlerini müşteriye açıklayacak kadar sunum yapabilmek"
+          "Demo script taslağı"
         ]
       },
       {
         "text": "Discovery Call Script Oluştur + İlk 10 Müşteri Görüşmesini Kaydet",
+        "whyImportant": "Satış kasını geliştirmek",
+        "howToLearn": "Gerçek müşterilerle konuşarak",
+        "output": "10 kayıt + soru havuzu + objection notes",
+        "thisWeek": "script v1 hazırla",
+        "revenueLink": "mesajı ve teklifi rafine eder",
+        "scopeLimit": "Görüşmeleri uzatma",
+        "defaultStatus": "ACTIVE",
         "subTasks": [
-          "Hibrit paket (Marka + Drone + AI) satış odaklı script güncellemesi"
+          "Script v1"
         ]
       },
       {
-        "text": "Client Journey Sistemi Kur (Brief → Teslim → Ödeme → Referans — Notion + n8n)",
+        "text": "Client Journey Sistemi Kur (Brief -> Teslim -> Ödeme -> Referans)",
+        "whyImportant": "Müşteri deneyimini standartlaştırmak.",
+        "howToLearn": "Notion + n8n ile harita çizip bağlayarak",
+        "output": "müşteri akışı standardı",
+        "thisWeek": "journey haritası çiz",
+        "revenueLink": "teslim kalitesi ve referral artışı",
+        "scopeLimit": "Araçlara boğulma, basit tut",
+        "defaultStatus": "IN_PROGRESS",
         "subTasks": [
-          "Notion müşteri pipeline template oluştur",
-          "n8n ile otomatikleştirilmiş hatırlatmalar"
-        ]
-      },
-      {
-        "text": "AI Workflow Denetim & Optimizasyon Hizmeti",
-        "subTasks": [
-          "Checklist oluştur",
-          "Rapor şablonu tasarla"
+          "Journey haritası"
         ]
       },
       {
         "text": "Drone ile Kurumsal Tanıtım Filmi Paketi Oluştur [Ay 3-6]",
+        "whyImportant": "Görsel kanıt eklemek.",
+        "howToLearn": "Örnek kurum çekimleri",
+        "output": "1 paket sayfası + 1 örnek teslim yapısı",
+        "thisWeek": "paket deliverable listesini yaz",
+        "revenueLink": "hibrit premium teklif",
+        "scopeLimit": "Film setine dönmesin",
+        "defaultStatus": "IN_PROGRESS",
         "subTasks": [
-          "AI Otomasyon sunumlarına görsel değer katacak premium drone kayıt paketleri"
+          "Deliverable listesi"
         ]
       },
       {
-        "text": "KNX Ön Hazırlık — Voltimum Webinar + YouTube [2026 Q4]",
+        "text": "AI Workflow Denetim & Optimizasyon Hizmeti",
+        "whyImportant": "Düşük bariyerli müşteri girişi.",
+        "howToLearn": "Framework hazırlayarak",
+        "output": "audit checklist + before/after örneği",
+        "thisWeek": "audit framework yaz",
+        "revenueLink": "düşük giriş bariyerli B2B servis",
+        "scopeLimit": "",
+        "defaultStatus": "IN_PROGRESS",
         "subTasks": [
-          "Drone geliri stabilize olduktan sonra: Voltimum Türkiye üzerinden KNX topoloji webinarı",
-          "YouTube: KNX Basics serisi",
-          "İSMEK Elektrik Temelleri kursu"
+          "Audit checklist"
         ]
       }
     ]
   },
   {
-    "title": "4. SENE İÇİNDE: MONETİZASYON & BÜYÜME",
-    "affirmation": "Para kazanmayan bilgi, vitrine konmuş sahte silah gibidir. Sistemi kur, satışı otomatize et, uyurken kazan.",
+    "title": "4. GELİR & BÜYÜME",
+    "affirmation": "Tüm emek MRR'a dönüşmeli.",
     "items": [
       {
-        "text": "E-posta listesi başlat (Beehiiv veya Substack) + İlk lead magnet oluştur",
-        "subTasks": [
-          "Beehiiv hesabı aç",
-          "İlk lead magnet'i yayınla (Freelancer için 10 N8N Workflow)"
-        ]
-      },
-      {
         "text": "Bozma Creative ajans hesabını faaliyete geçir",
+        "whyImportant": "Ajans kimliğini canlandırmak",
+        "howToLearn": "",
+        "output": "net positioning + profil metni + hizmet listesi",
+        "thisWeek": "profil metnini güncelle",
+        "revenueLink": "Kurumsal kimlik satışı",
+        "scopeLimit": "",
+        "defaultStatus": "ACTIVE",
         "subTasks": [
-          "Instagram, Website ve Brand Guidelines hazırla",
-          "Google Business profile"
-        ]
-      },
-      {
-        "text": "AI ile YouTube/TikTok/IG kısa videoları (OpusClip)",
-        "subTasks": [
-          "Drone içerikleri + AI automation content karması oluştur"
-        ]
-      },
-      {
-        "text": "İlk N8N tabanlı B2B Voice Agent'ı Canlıya Al [Ay 4-5]",
-        "subTasks": [
-          "Mikro-SaaS değil, yüksek biletli B2B otomasyon ürünü sat"
+          "Profil metni",
+          "Hizmet listesi"
         ]
       },
       {
         "text": "Müşteri bulma — Cold Outreach sistemi kur (Apollo + Instantly + n8n)",
+        "whyImportant": "Geleneksel müşteri bekleme sürecinden çıkış",
+        "howToLearn": "Data listesi çekip outreach yaparak",
+        "output": "lead list + kişiselleştirme sistemi + outreach şablonları",
+        "thisWeek": "ilk 20 lead",
+        "revenueLink": "Direkt müşteri kazanımı",
+        "scopeLimit": "Spam gönderme",
+        "defaultStatus": "ACTIVE",
         "subTasks": [
-          "Apollo'dan min. 500 lead (Özel klinik vs) çek",
-          "Instantly'den A/B email outreach kampanyası yap"
+          "Apollo setup",
+          "Instantly domain warmup"
         ]
       },
       {
-        "text": "Kişisel YouTube kanalını aç ve uzmanlık alanını monetize et",
+        "text": "3 Pilot B2B Müşteri Edin (Diş Kliniği / Güzellik / Emlak) [Ay 4-6]",
+        "whyImportant": "Gerçek test ortamı",
+        "howToLearn": "Süreci yöneterek",
+        "output": "3 pilot müşteri",
+        "thisWeek": "1 sektör önceliklendir",
+        "revenueLink": "referans + vaka çalışması + ürün doğrulama",
+        "scopeLimit": "",
+        "defaultStatus": "IN_PROGRESS",
         "subTasks": [
-          "AI + Design + Automation nişinde videolar"
+          "Sektör 1: Diş"
         ]
       },
       {
-        "text": "Wise + Payoneer hesapları aç, uluslararası ödeme altyapısını kur",
+        "text": "İlk n8n tabanlı B2B Voice Agent’i canlıya al [Ay 4-5]",
+        "whyImportant": "Ürün yayını",
+        "howToLearn": "",
+        "output": "1 canlı sistem",
+        "thisWeek": "launch checklist taslağı",
+        "revenueLink": "kanıtlanmış servis MRR",
+        "scopeLimit": "",
+        "defaultStatus": "IN_PROGRESS",
         "subTasks": [
-          "İngilizce fatura şablonları hazırla"
-        ]
-      },
-      {
-        "text": "Şahıs şirketi kur + Türk mali müşavire danış",
-        "subTasks": [
-          "E-fatura & Vergi takvimi entegrasyonu"
-        ]
-      },
-      {
-        "text": "@grafikcem Kişisel Marka Çeşitlendirme",
-        "subTasks": [
-          "Marka Kimliği + Drone + AI otomasyon üçgenini vurgula",
-          "Drone portföyü ekle"
-        ]
-      },
-      {
-        "text": "Piyasa Boşluğu Takip Sistemi",
-        "subTasks": [
-          "Anthropic vb AI maruziyet metriklerine göre hangi sektörde ajans açığı olduğuna bak"
-        ]
-      },
-      {
-        "text": "3 Pilot B2B Müşteri Edin (Diş Klinik / Güzellik / Emlak) [Ay 4-6]",
-        "subTasks": [
-          "Outreach dönüşümlerini kapat",
-          "Pilot müşteri case study'leri oluştur"
+          "Checklist"
         ]
       },
       {
         "text": "Hibrit Paket Fiyatlandır ve Portföy Sitesine Ekle [Ay 3-4]",
-        "subTasks": [
-          "AI Voice Agent + Drone Çekimi + Marka danışmanlığı paketleri hazırla ve listele"
-        ]
+        "whyImportant": "Satışa hazır raftaki ürün",
+        "howToLearn": "",
+        "output": "pricing page + teklif yapısı",
+        "thisWeek": "Paketlerin isimlerini belirle",
+        "revenueLink": "Marka + drone veya Workflow + bakım",
+        "scopeLimit": "",
+        "defaultStatus": "IN_PROGRESS",
+        "subTasks": []
+      },
+      {
+        "text": "E-posta listesi başlat (Beehiiv/Substack) + ilk lead magnet oluştur",
+        "whyImportant": "Kitle edinimi",
+        "howToLearn": "",
+        "output": "Liste",
+        "thisWeek": "",
+        "revenueLink": "ana gelir motoru değil (şimdilik)",
+        "scopeLimit": "sadece temel satış hattı oturduktan sonra",
+        "defaultStatus": "LOW_PRIORITY",
+        "subTasks": []
+      },
+      {
+        "text": "@grafikcem Kişisel Marka Çeşitlendirme",
+        "whyImportant": "Güvenilirlik artışı",
+        "howToLearn": "",
+        "output": "Hesap profili",
+        "thisWeek": "",
+        "revenueLink": "",
+        "scopeLimit": "çekirdek gelir motoru kurulmadan büyütme",
+        "defaultStatus": "LOW_PRIORITY",
+        "subTasks": []
+      }
+    ]
+  },
+  {
+    "title": "5. KİLİTLİ / SONRAKİ FAZ",
+    "affirmation": "Disiplin beklemektir.",
+    "items": [
+      {
+        "text": "KNX Ön Hazırlık — Voltimium Webinar + YouTube [2026 Q4]",
+        "unlockCondition": "IHA-1 tamamlandı, 1 voice agent demo hazır, 1 pilot müşteri süreci başladı",
+        "defaultStatus": "LOCKED",
+        "subTasks": []
+      },
+      {
+        "text": "Wise + Payoneer",
+        "unlockCondition": "ilk uluslararası tahsilat ihtiyacı",
+        "defaultStatus": "TRIGGER_BASED",
+        "subTasks": []
+      },
+      {
+        "text": "Şahıs şirketi kur + mali müşavir danış",
+        "unlockCondition": "düzenli gelir / vergi ihtiyacı",
+        "defaultStatus": "TRIGGER_BASED",
+        "subTasks": []
+      },
+      {
+        "text": "Kişisel YouTube Kanalı",
+        "unlockCondition": "3 case study + 2 müşteri referansı",
+        "defaultStatus": "LOCKED",
+        "subTasks": []
+      },
+      {
+        "text": "AI Content Multiplier Sistemi",
+        "unlockCondition": "teklif ve satış omurgası oturduktan sonra",
+        "defaultStatus": "LOCKED",
+        "subTasks": []
+      },
+      {
+        "text": "AI ile YouTube/TikTok/IG kısa videoları",
+        "unlockCondition": "görünür üretim sistemi disiplinli biçimde kurulursa",
+        "defaultStatus": "LOCKED",
+        "subTasks": []
+      }
+    ]
+  },
+  {
+    "title": "6. ŞİMDİLİK YAPILMAYACAKLAR",
+    "affirmation": "Hayır demek en büyük stratejidir.",
+    "items": [
+      {
+        "text": "Genel veri analistliği kariyeri",
+        "defaultStatus": "IGNORED",
+        "subTasks": []
+      },
+      {
+        "text": "GA4 sertifika takibi",
+        "defaultStatus": "IGNORED",
+        "subTasks": []
+      },
+      {
+        "text": "Genel data / BI / analyst rota",
+        "defaultStatus": "IGNORED",
+        "subTasks": []
+      },
+      {
+        "text": "Rastgele JS / Python syntax öğrenimi",
+        "defaultStatus": "IGNORED",
+        "subTasks": []
+      },
+      {
+        "text": "After Effects ustalık hattı",
+        "defaultStatus": "IGNORED",
+        "subTasks": []
+      },
+      {
+        "text": "Sertifika avı",
+        "defaultStatus": "IGNORED",
+        "subTasks": []
+      },
+      {
+        "text": "Micro-SaaS abonelik fikri",
+        "defaultStatus": "IGNORED",
+        "subTasks": []
+      },
+      {
+        "text": "Tam zamanlı içerik fabrikası",
+        "defaultStatus": "IGNORED",
+        "subTasks": []
+      },
+      {
+        "text": "Her gün yeni fikir ekleme",
+        "defaultStatus": "IGNORED",
+        "subTasks": []
       }
     ]
   }

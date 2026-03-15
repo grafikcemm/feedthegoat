@@ -14,6 +14,7 @@ import DopamineDetox from "@/components/DopamineDetox";
 import WeeklyScreen from "@/components/WeeklyScreen";
 import WarFund from "@/components/WarFund";
 import SportsProgram from "@/components/SportsProgram";
+import RightPanel from "@/components/RightPanel";
 
 type Tab = "GUNLUK" | "HAFTALIK" | "STRATEJI" | "FINANS" | "SPOR_SAGLIK";
 
@@ -21,7 +22,7 @@ const TABS: { key: Tab; label: string; icon: string }[] = [
   { key: "GUNLUK", label: "GÜNLÜK", icon: "⚡" },
   { key: "SPOR_SAGLIK", label: "SPOR & SAĞLIK", icon: "🏋️‍♂️" },
   { key: "HAFTALIK", label: "HAFTALIK", icon: "📅" },
-  { key: "STRATEJI", label: "STRATEJİ", icon: "🗺️" },
+  { key: "STRATEJI", label: "KARİYER", icon: "🗺️" },
   { key: "FINANS", label: "FİNANS", icon: "💰" },
 ];
 
@@ -32,6 +33,7 @@ export default function Home() {
   const [dailyStatusMessage, setDailyStatusMessage] = useState("");
   const [dailyStatusColor, setDailyStatusColor] = useState("");
   const [streak, setStreak] = useState(0);
+  const [isRightPanelOpen, setIsRightPanelOpen] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem("goat-streak-v1");
@@ -117,11 +119,8 @@ export default function Home() {
     } else if (score >= 4) {
       setDailyStatusMessage("İyi Gün ✓");
       setDailyStatusColor("#00FF88");
-    } else if (score >= 2) {
-      setDailyStatusMessage("Devam Et");
-      setDailyStatusColor("#FFB800");
     } else {
-      setDailyStatusMessage("Başla");
+      setDailyStatusMessage(score > 0 ? "Devam Et" : "Başla");
       setDailyStatusColor("#FF3B3B");
     }
   }, []);
@@ -133,18 +132,21 @@ export default function Home() {
     }, 0);
     window.addEventListener("dailyScoreUpdated", calculateScore);
 
-    // Midnight Auto-Rollover Logic
+    // Midnight Auto-Rollover Logic and 18:00 check interval
     const initDate = new Date().toISOString().split("T")[0];
-    const rolloverInterval = setInterval(() => {
+    const checkInterval = setInterval(() => {
         const currentDate = new Date().toISOString().split("T")[0];
         if (initDate !== currentDate) {
             window.location.reload();
+        } else {
+            // Re-calculate score purely to trigger the 18:00 check if time passes naturally
+            calculateScore();
         }
     }, 60000); // Check every minute
 
     return () => {
         window.removeEventListener("dailyScoreUpdated", calculateScore);
-        clearInterval(rolloverInterval);
+        clearInterval(checkInterval);
     };
   }, [calculateScore]);
 
@@ -167,17 +169,27 @@ export default function Home() {
               FEED THE GOAT<span className="text-accent-red">.</span>
             </h1>
             <p className="text-[10px] uppercase tracking-[0.2em] text-text-muted mt-1">
-              {activeTab === "GUNLUK" && "KOMUTA EKRANI — Bugün sadece ana savaşları kazan."}
+              {activeTab === "GUNLUK" && "KARARGÂH — Bugün sadece ana savaşları kazan."}
               {activeTab === "HAFTALIK" && "BU HAFTANIN 3 KAZANCI — Haftayı kazanmak için minimum sonuçlar."}
-              {activeTab === "STRATEJI" && "STRATEJİ HARİTASI — Her gün bakma. Sadece yönünü güncelle."}
+              {activeTab === "STRATEJI" && "KARİYER — Az konu. Çok kanıt. Canlı sistem. Gelir odak."}
               {activeTab === "FINANS" && "SAVAŞ FONU — Kan kaybetme. Kaynaklarını koru ve büyüt."}
               {activeTab === "SPOR_SAGLIK" && "SPOR & SAĞLIK — Makineyi güçlü ve zinde tut."}
             </p>
           </div>
-          <p className="text-[10px] uppercase tracking-[0.15em] text-text-muted tabular-nums">
-            {dateStrTR}
-          </p>
+          <div className="flex flex-col items-start sm:items-end gap-2">
+            <p className="text-[10px] uppercase tracking-[0.15em] text-text-muted tabular-nums">
+              {dateStrTR}
+            </p>
+            <button 
+              onClick={() => setIsRightPanelOpen(true)}
+              className="text-[10px] font-bold uppercase tracking-[0.2em] px-3 py-1.5 border border-border bg-surface text-text hover:bg-text hover:text-black transition-colors"
+            >
+              FİLTRELER
+            </button>
+          </div>
         </header>
+
+        <RightPanel isOpen={isRightPanelOpen} onClose={() => setIsRightPanelOpen(false)} />
 
         {/* ── Tab Navigation ─────────────────────────────── */}
         <nav className="px-4 md:px-8 pt-4 pb-2 max-w-6xl mx-auto">
@@ -187,7 +199,10 @@ export default function Home() {
               return (
                 <button
                   key={tab.key}
-                  onClick={() => setActiveTab(tab.key)}
+                  onClick={() => {
+                    if (navigator.vibrate) navigator.vibrate(50);
+                    setActiveTab(tab.key);
+                  }}
                   className={`
                     flex-1 py-3 px-4 text-[11px] uppercase tracking-[0.25em] font-bold
                     transition-all duration-200 flex items-center justify-center gap-2
@@ -211,31 +226,28 @@ export default function Home() {
           {/* ── TAB: GÜNLÜK ────────────────────────────── */}
           {activeTab === "GUNLUK" && (
             <>
-              {/* 1. Günlük Dua */}
-              <DailyPrayer />
-
-              {/* 2. Asla Kırma */}
+              {/* 1. Asla Kırma (En Yüksek Öncelik) */}
               <NeverBreak streak={streak} />
 
-              <div className="h-px bg-border my-8" />
+              <div className="h-px bg-border my-6" />
 
-              {/* 3. Dopamin Detoksu */}
-              <DopamineDetox />
-
-              {/* 4. Enerji Varsa */}
+              {/* 2. Enerji Varsa (İkinci Öncelik) */}
               <BonusTasks />
 
+              <div className="h-px bg-border my-6" />
+
+              {/* 4. Dopamin Detoksu (Kompakt) */}
+              <DopamineDetox />
+
               <div className="h-px bg-border my-8" />
 
-              {/* 5. Aktif Görevler */}
+              {/* Aktif Görevler */}
               <ActiveTasks />
 
-              {/* 6. Motivasyon & Kimlik İnşası */}
+              {/* Animasyonlu Motivasyon Kartları */}
               <MotivationCards />
 
-              <div className="h-px bg-border my-8" />
-
-              {/* Yeni: Manus Button */}
+              {/* Manus Button */}
               <section className="mb-4">
                   <a href="#" className="flex items-center justify-center gap-2 p-3 border border-text text-text bg-surface hover:bg-text hover:text-black transition-colors font-bold uppercase tracking-widest text-xs">
                       <span className="text-base">🤖</span>
@@ -243,24 +255,27 @@ export default function Home() {
                   </a>
               </section>
 
-              {/* 7. Günlük Skor */}
+              {/* Günlük Skor */}
               <section className="flex flex-col items-center justify-center text-center space-y-2 py-4">
-                <div className="text-[10px] uppercase tracking-widest text-text-muted font-bold">Günlük Skor</div>
+                <div className="text-[10px] uppercase tracking-widest text-text-muted font-bold">Gün Durumu</div>
                 <div 
-                  className="text-2xl md:text-3xl font-bold uppercase tracking-wider" 
+                  className={`text-2xl md:text-3xl font-bold uppercase tracking-wider`}
                   style={{ color: dailyStatusColor }}
                 >
                   {dailyStatusMessage} <span className="text-sm opacity-50 ml-2">({dailyScore.toFixed(1)}/5)</span>
                 </div>
               </section>
 
-              {/* 8. Günü Bitir */}
+              {/* Günü Bitirme Butonu */}
               <EndDayButton
                 score={dailyScore}
                 maxBaseScore={5}
                 onFail={() => handleDayEnd(false)}
                 onSuccess={() => handleDayEnd(true)}
               />
+
+              {/* 5. Günü Kapatış Ritüeli */}
+              <DailyPrayer />
             </>
           )}
 
