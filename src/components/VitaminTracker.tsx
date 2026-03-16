@@ -21,14 +21,14 @@ const VITAMIN_GROUPS: VitaminGroup[] = [
         title: "SABAH",
         icon: "☀️",
         items: [
-            { id: "vit-b12", label: "B12" },
+            { id: "vit-b12", label: "B12 (Aç Karnına)" },
         ]
     },
     {
         id: "morning-coffee",
         title: "Kahveyle Birlikte",
         icon: "☕",
-        subTitle: "(Sabah kahvesiyle)",
+        subTitle: "(Opsiyonel)",
         items: [
             { id: "vit-alpha-gpc", label: "Alpha GPC" },
             { id: "vit-tyrosine", label: "Tyrosine" },
@@ -40,10 +40,9 @@ const VITAMIN_GROUPS: VitaminGroup[] = [
         title: "ÖĞLEN",
         icon: "🍽️",
         items: [
-            { id: "vit-omega3", label: "Omega 3" },
-            { id: "vit-d3k2", label: "D3 K2 Damla" },
-            { id: "vit-iron", label: "Demir" },
             { id: "vit-c", label: "C Vitamini" },
+            { id: "vit-omega3", label: "Omega-3" },
+            { id: "vit-d3k2", label: "D3 K2 Damla" },
             { id: "vit-collagen", label: "Kolajen Şase" },
         ]
     },
@@ -56,7 +55,6 @@ const VITAMIN_GROUPS: VitaminGroup[] = [
             { id: "vit-creatine", label: "Kreatin" },
             { id: "vit-glutamine", label: "Glutamine" },
             { id: "vit-multi", label: "Multi Vitamin" },
-            { id: "vit-zma", label: "ZMA" },
         ]
     },
     {
@@ -64,8 +62,8 @@ const VITAMIN_GROUPS: VitaminGroup[] = [
         title: "GECE",
         icon: "🌙",
         items: [
-            { id: "vit-psyllium", label: "Karnıyarık Otu Tozu" },
             { id: "vit-magnesium", label: "Magnezyum" },
+            { id: "vit-psyllium", label: "Karnıyarık Otu Tozu" },
             { id: "vit-water", label: "Bol Su" },
         ]
     },
@@ -166,7 +164,7 @@ export default function VitaminTracker() {
                                         >
                                             <div
                                                 className={`
-                                                    w-3 h-3 flex-shrink-0 border flex items-center justify-center text-[8px] font-bold
+                                                    w-3 h-3 shrink-0 border flex items-center justify-center text-[8px] font-bold
                                                     transition-colors duration-200
                                                     ${isOn 
                                                         ? "bg-accent-green text-black border-accent-green" 

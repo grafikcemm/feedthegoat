@@ -80,9 +80,6 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
                     }
                     return mapped;
                 });
-                setTimeout(() => {
-                    setTasks(loadedTasks);
-                }, 0);
             } catch { }
         }
 
@@ -182,15 +179,13 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
             const newTasksMap = new Map();
             oldTasks.forEach(t => newTasksMap.set(t.id, t));
             loadedTasks.forEach(t => newTasksMap.set(t.id, t));
-
-            const combined = Array.from(newTasksMap.values()) as ActiveTask[];
-            setTimeout(() => {
-                setTasks(combined);
-            }, 0);
+            loadedTasks = Array.from(newTasksMap.values()) as ActiveTask[];
             localStorage.setItem("goat-migrated-supabase-v4", "true");
         }
 
+        // Set tasks and mark as loaded in same batch to avoid race condition
         setTimeout(() => {
+            setTasks(loadedTasks);
             setIsLoaded(true);
         }, 0);
     }, []);
@@ -247,9 +242,10 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
         setTasks(tasks.map(t => t.id === id ? { ...t, is_urgent: !t.is_urgent } : t));
     };
 
-    const deleteTask = (id: string) => {
-        if (!confirm("Bu görevi silmek istediğine emin misin?")) return;
-        setTasks(tasks.filter(t => t.id !== id));
+    const deleteTask = (id: string, e: React.MouseEvent) => {
+        e.stopPropagation();
+        e.preventDefault();
+        setTasks(prev => prev.filter(t => t.id !== id));
     };
 
     const PRIORITY_STYLES = {
@@ -362,7 +358,7 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
                                 >
                                     <button
                                         onClick={() => toggleTask(task.id)}
-                                        className="w-4 h-4 flex-shrink-0 border-2 border-border flex items-center justify-center text-[9px] font-bold transition-colors bg-transparent text-transparent hover:border-text-muted"
+                                        className="w-4 h-4 shrink-0 border-2 border-border flex items-center justify-center text-[9px] font-bold transition-colors bg-transparent text-transparent hover:border-text-muted"
                                     >
                                         ✓
                                     </button>
@@ -387,8 +383,8 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
                                     </button>
 
                                     <button
-                                        onClick={() => deleteTask(task.id)}
-                                        className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-accent-red transition-all p-1 text-xs shrink-0"
+                                        onClick={(e) => deleteTask(task.id, e)}
+                                        className="text-text-muted hover:text-accent-red transition-all p-1.5 text-xs shrink-0"
                                         title="Görevi Sil"
                                     >
                                         ✕
@@ -419,7 +415,7 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
                                 <span className="text-[9px] text-text-muted/50 tracking-widest">
                                     {task.completed_at ? new Date(task.completed_at).toLocaleDateString("tr-TR") : ''}
                                 </span>
-                                <button onClick={() => deleteTask(task.id)} className="text-text-muted hover:text-accent-red text-xs px-1">✕</button>
+                                <button onClick={(e) => deleteTask(task.id, e)} className="text-text-muted hover:text-accent-red text-xs px-1">✕</button>
                             </div>
                         ))}
                     </div>

@@ -132,10 +132,10 @@ export default function NeverBreak({ streak = 0 }: { streak?: number }) {
   };
 
   const ITEMS = [
-    { id: "nb-morning", label: "06:30 Uyanış + Limonlu Su + Yüze Buz" },
+    { id: "nb-morning", label: "07:00 Uyanış + Yüze Buz" },
     { id: "nb-teeth", label: "Dişlerini fırçala + listerine gargara yap" },
     { id: "nb-deepwork", label: "Vitaminlerin tamamını iç" },
-    { id: "nb-sports", label: "Antrenman (Pzt-Sal-Per-Cum)", activeDays: [1, 2, 4, 5] },
+    { id: "nb-sports", label: "Antrenman (Pzt-Salı-Prş-Cmt)", activeDays: [1, 2, 4, 6] },
     { id: "nb-book", label: "20 sayfa kitap oku" },
   ];
 

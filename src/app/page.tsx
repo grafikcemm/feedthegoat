@@ -33,7 +33,6 @@ export default function Home() {
   const [dailyStatusMessage, setDailyStatusMessage] = useState("");
   const [dailyStatusColor, setDailyStatusColor] = useState("");
   const [streak, setStreak] = useState(0);
-  const [isRightPanelOpen, setIsRightPanelOpen] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem("goat-streak-v1");
@@ -180,16 +179,10 @@ export default function Home() {
             <p className="text-[10px] uppercase tracking-[0.15em] text-text-muted tabular-nums">
               {dateStrTR}
             </p>
-            <button 
-              onClick={() => setIsRightPanelOpen(true)}
-              className="text-[10px] font-bold uppercase tracking-[0.2em] px-3 py-1.5 border border-border bg-surface text-text hover:bg-text hover:text-black transition-colors"
-            >
-              FİLTRELER
-            </button>
           </div>
         </header>
 
-        <RightPanel isOpen={isRightPanelOpen} onClose={() => setIsRightPanelOpen(false)} />
+        <RightPanel />
 
         {/* ── Tab Navigation ─────────────────────────────── */}
         <nav className="px-4 md:px-8 pt-4 pb-2 max-w-6xl mx-auto">
@@ -226,6 +219,9 @@ export default function Home() {
           {/* ── TAB: GÜNLÜK ────────────────────────────── */}
           {activeTab === "GUNLUK" && (
             <>
+              {/* 5. Günü Kapatış Ritüeli (Taşındı) */}
+              <DailyPrayer />
+
               {/* 1. Asla Kırma (En Yüksek Öncelik) */}
               <NeverBreak streak={streak} />
 
@@ -273,9 +269,6 @@ export default function Home() {
                 onFail={() => handleDayEnd(false)}
                 onSuccess={() => handleDayEnd(true)}
               />
-
-              {/* 5. Günü Kapatış Ritüeli */}
-              <DailyPrayer />
             </>
           )}
 

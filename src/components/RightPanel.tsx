@@ -42,112 +42,91 @@ const MALE_TRUTHS = [
     { title: "Allah'tan başka kimseden korkma", subtitle: "Yol bellidir." }
 ];
 
-export default function RightPanel({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) {
-    const [expandedTab, setExpandedTab] = useState<number | null>(0);
+export default function RightPanel() {
+    const [openCard, setOpenCard] = useState<number | null>(null);
+
+    const toggleCard = (idx: number) => {
+        if (openCard === idx) setOpenCard(null);
+        else setOpenCard(idx);
+    };
 
     return (
-        <>
-            {/* Backdrop */}
-            {isOpen && (
-                <div 
-                    className="fixed inset-0 bg-black/80 z-40 transition-opacity backdrop-blur-sm"
-                    onClick={onClose}
-                />
-            )}
-
-            {/* Sliding Drawer */}
-            <div 
-                className={`fixed top-0 right-0 h-full w-full sm:w-[400px] md:w-[450px] bg-[#0A0A0A] border-l border-border z-50 transform transition-transform duration-300 ease-out overflow-y-auto flex flex-col ${isOpen ? "translate-x-0" : "translate-x-full"}`}
-            >
-                <div className="p-4 border-b border-border flex items-center justify-between sticky top-0 bg-[#0A0A0A] z-10">
-                    <div className="flex flex-col">
-                        <span className="text-sm font-bold uppercase tracking-widest text-text">Sistem Filtreleri</span>
-                        <span className="text-[10px] text-text-muted uppercase tracking-widest">Kişilik ve Karar Mekanizması</span>
-                    </div>
+        <div className="fixed right-0 top-32 z-50 flex flex-col gap-4 items-end pointer-events-none">
+            
+            {/* KART 1: KARAR FİLTRESİ */}
+            <div className="pointer-events-auto flex items-start justify-end transition-all duration-300">
+                {openCard !== 0 && (
                     <button 
-                        onClick={onClose}
-                        className="w-10 h-10 border border-border flex items-center justify-center text-text hover:bg-surface/10 transition-colors"
+                        onClick={() => toggleCard(0)}
+                        className="bg-surface/80 backdrop-blur-sm border border-r-0 border-border text-text hover:text-white hover:bg-surface transition-all py-4 px-2 flex items-center justify-center cursor-pointer shadow-lg"
+                        style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
                     >
-                        ✕
+                        <span className="text-[10px] font-bold uppercase tracking-widest whitespace-nowrap">🧭 Karar Filtresi</span>
                     </button>
-                </div>
-
-                <div className="p-4 space-y-4 flex-1">
-                    
-                    {/* ACCORDION 1: KİŞİSEL KARAR FİLTRESİ */}
-                    <div className="border border-border bg-surface/5">
-                        <button 
-                            onClick={() => setExpandedTab(expandedTab === 0 ? null : 0)}
-                            className="w-full text-left p-4 flex items-center justify-between bg-black/50 hover:bg-surface/20 transition-colors"
-                        >
-                            <span className="font-bold text-sm tracking-widest uppercase text-accent-green">
-                                🧭 KİŞİSEL KARAR FİLTRESİ
+                )}
+                {openCard === 0 && (
+                    <div className="bg-[#0A0A0A]/95 backdrop-blur-md border border-r-0 border-border shadow-2xl w-[320px] md:w-[380px] max-h-[70vh] flex flex-col animate-slide-in-right rounded-l-md overflow-hidden">
+                        <div className="p-3 border-b border-border bg-black flex items-center justify-between sticky top-0">
+                            <span className="font-bold text-xs tracking-widest uppercase text-accent-green flex items-center gap-2">
+                                🧭 Karar Filtresi
                             </span>
-                            <span className="text-text-muted text-xs font-bold">{expandedTab === 0 ? "−" : "＋"}</span>
-                        </button>
-
-                        {expandedTab === 0 && (
-                            <div className="p-4 bg-background/50 space-y-6 fade-in border-t border-border/50">
-                                <div className="p-3 border-l-2 border-accent-green bg-accent-green/5 mb-6">
-                                    <h3 className="text-xs font-bold text-accent-green uppercase mb-1">Özet Motto</h3>
-                                    <p className="text-[11px] text-text-muted font-medium italic leading-relaxed">
-                                        "Hayatının merkezine tekrar kendini koy. Daha net teklif. Daha az belirsiz müşteri. Daha yüksek görünürlük."
-                                    </p>
+                            <button onClick={() => setOpenCard(null)} className="text-text-muted hover:text-white px-2 py-1">✕</button>
+                        </div>
+                        <div className="p-4 overflow-y-auto space-y-5">
+                            <div className="p-3 border-l-2 border-accent-green bg-accent-green/5 text-[11px] text-text-muted font-medium italic leading-relaxed">
+                                &quot;Hayatının merkezine tekrar kendini koy. Daha net teklif. Daha az belirsiz müşteri. Daha yüksek görünürlük.&quot;
+                            </div>
+                            {DECISION_FILTER.map((section, idx) => (
+                                <div key={idx} className="space-y-3">
+                                    <h4 className="text-[10px] uppercase font-bold text-text-muted tracking-[0.2em] border-b border-border/50 pb-1">
+                                        {section.title}
+                                    </h4>
+                                    <div className="grid grid-cols-1 gap-2">
+                                        {section.cards.map((card, cidx) => (
+                                            <div key={cidx} className="p-3 border border-border/50 bg-surface/30 hover:border-text-muted/50 transition-colors">
+                                                <span className="text-xs font-bold text-text block mb-1 uppercase tracking-widest">{card.h}</span>
+                                                <span className="text-[10px] text-text-muted leading-snug block">{card.p}</span>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
-
-                                {DECISION_FILTER.map((section, idx) => (
-                                    <div key={idx} className="space-y-3">
-                                        <h4 className="text-[10px] uppercase font-bold text-text-muted tracking-[0.2em] border-b border-border/50 pb-1">
-                                            {section.title}
-                                        </h4>
-                                        <div className="grid grid-cols-1 gap-2">
-                                            {section.cards.map((card, cidx) => (
-                                                <div key={cidx} className="p-3 border border-border/50 bg-surface/5 hover:border-text-muted/50 transition-colors">
-                                                    <span className="text-xs font-bold text-text block mb-1 uppercase tracking-widest">
-                                                        {card.h}
-                                                    </span>
-                                                    <span className="text-[10px] text-text-muted leading-snug block">
-                                                        {card.p}
-                                                    </span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
+                            ))}
+                        </div>
                     </div>
-
-                    {/* ACCORDION 2: ERKEKLİK GERÇEKLERİ */}
-                    <div className="border border-border bg-surface/5">
-                        <button 
-                            onClick={() => setExpandedTab(expandedTab === 1 ? null : 1)}
-                            className="w-full text-left p-4 flex items-center justify-between bg-black/50 hover:bg-surface/20 transition-colors"
-                        >
-                            <span className="font-bold text-sm tracking-widest uppercase text-text">
-                                🛡️ KARAKTER & DİSİPLİN
-                            </span>
-                            <span className="text-text-muted text-xs font-bold">{expandedTab === 1 ? "−" : "＋"}</span>
-                        </button>
-
-                        {expandedTab === 1 && (
-                            <div className="p-4 bg-background/50 space-y-2 fade-in border-t border-border/50">
-                                {MALE_TRUTHS.map((truth, idx) => (
-                                    <div key={idx} className="p-3 border-l-2 border-text bg-surface/10 hover:bg-surface/20 transition-colors flex flex-col gap-1">
-                                        <span className="text-xs font-bold text-text uppercase tracking-widest leading-snug">
-                                            {truth.title}
-                                        </span>
-                                        <span className="text-[10px] text-text-muted italic">
-                                            {truth.subtitle}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-
-                </div>
+                )}
             </div>
-        </>
+
+            {/* KART 2: ERKEKLİK GERÇEKLERİ */}
+            <div className="pointer-events-auto flex items-start justify-end transition-all duration-300">
+                {openCard !== 1 && (
+                    <button 
+                        onClick={() => toggleCard(1)}
+                        className="bg-surface/80 backdrop-blur-sm border border-r-0 border-border text-text hover:text-white hover:bg-surface transition-all py-4 px-2 flex items-center justify-center cursor-pointer shadow-lg"
+                        style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
+                    >
+                        <span className="text-[10px] font-bold uppercase tracking-widest whitespace-nowrap">🛡️ Karakter & Disiplin</span>
+                    </button>
+                )}
+                {openCard === 1 && (
+                    <div className="bg-[#0A0A0A]/95 backdrop-blur-md border border-r-0 border-border shadow-2xl w-[320px] md:w-[380px] max-h-[70vh] flex flex-col animate-slide-in-right rounded-l-md overflow-hidden">
+                        <div className="p-3 border-b border-border bg-black flex items-center justify-between sticky top-0">
+                            <span className="font-bold text-xs tracking-widest uppercase text-text flex items-center gap-2">
+                                🛡️ Karakter & Disiplin
+                            </span>
+                            <button onClick={() => setOpenCard(null)} className="text-text-muted hover:text-white px-2 py-1">✕</button>
+                        </div>
+                        <div className="p-4 overflow-y-auto space-y-2">
+                            {MALE_TRUTHS.map((truth, idx) => (
+                                <div key={idx} className="p-3 border border-border/30 bg-surface/10 hover:bg-surface/20 transition-colors flex flex-col gap-1">
+                                    <span className="text-[11px] font-bold text-text uppercase tracking-widest leading-snug">{truth.title}</span>
+                                    <span className="text-[10px] text-text-muted italic">{truth.subtitle}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
+
+        </div>
     );
 }

@@ -6,76 +6,83 @@ import { useMemo, useState, useEffect } from "react";
 const SPOR_PROGRAMI = [
   {
     day: 1, // Monday
-    title: "PAZARTESİ: ÜST VÜCUT \"ANA MERKEZ\"",
+    title: "PAZARTESİ: Upper A",
     items: [
-      "ISINMA: Sabah evde koşu bandında 35 dakika hafif tempo yürüyüş.",
-      "Machine Chest Press (Makinede Göğüs İtiş): 3 Set x 10-12 Tekrar",
-      "Lat Pulldown (Geniş Tutuş Sırt Çekiş): 3 Set x 10-12 Tekrar",
-      "Seated Dumbbell veya Machine Shoulder Press: 3 Set x 10-12 Tekrar",
-      "Triceps Rope Pushdown (Halatla Arka Kol): 3 Set x 12-15 Tekrar",
-      "Dumbbell Hammer Curl (Çekiç Tutuş Ön Kol): 3 Set x 12-15 Tekrar",
+      "ISINMA: Koşu bandında 7 dakika hafif tempo yürüyüş.",
+      "Machine Chest Press: 4 Set x 10-12 Tekrar",
+      "Lat Pulldown: 3 Set x 10-12 Tekrar",
+      "Chest Supported Row: 3 Set x 10-12 Tekrar",
+      "Machine Shoulder Press: 3 Set x 10-12 Tekrar",
+      "Rope Pushdown: 3 Set x 12-15 Tekrar",
+      "Hammer Curl: 3 Set x 12-15 Tekrar",
       "Face Pull: 3 Set x 15-20 Tekrar. (Tükeniş)",
-      "ANTRENMAN SONU: 30 Dakika Eğimli Kardiyo",
-      "EVE GELİNCE - Bilek Aleti – 3x (tükenene kadar)"
+      "ANTRENMAN SONU: 20 Dakika Eğimli Kardiyo",
     ]
   },
   {
     day: 2, // Tuesday
-    title: "SALI: PASİF DİNLENME",
+    title: "SALI: Lower A",
     items: [
-      "ISINMA: Sabah evde koşu bandında 35 dakika hafif tempo yürüyüş.",
-      "Bilek Aleti – 3x (tükenene kadar)"
+      "ISINMA: Koşu bandında 7 dakika hafif tempo yürüyüş.",
+      "Leg Press: 4 Set x 10-12 Tekrar",
+      "Seated Leg Curl: 4 Set x 10-12 Tekrar",
+      "Leg Extension: 3 Set x 12-15 Tekrar",
+      "Seated Calf Raise: 4 Set x 12-15 Tekrar",
+      "Pall of Press: 3 Set x 12-15 Tekrar",
+      "Side Plank: 2-3 Set",
+      "ANTRENMAN SONU: 20 Dakika Eğimli Kardiyo"
     ]
   },
   {
     day: 3, // Wednesday
-    title: "ÇARŞAMBA: PASİF DİNLENME",
+    title: "ÇARŞAMBA: AKTİF DİNLENME",
     items: [
-      "ISINMA: Sabah evde koşu bandında 35 dakika hafif tempo yürüyüş.",
+      "Koşu bandında 35-45 dakika hafif tempo yürüyüş.",
       "Bilek Aleti – 3x (tükenene kadar)"
     ]
   },
   {
     day: 4, // Thursday
-    title: "PERŞEMBE: OMUZ & KOLLAR",
+    title: "PERŞEMBE: Upper B",
     items: [
-      "ISINMA: Sabah evde koşu bandında 35 dakika hafif tempo yürüyüş.",
-      "Leg Press: 4 Set x 10-12 Tekrar",
-      "Lying Leg Curl (Yüzüstü Arka Bacak): 3 Set x 12-15 Tekrar",
-      "Seated Calf Raise (Oturarak Kalf/Baldır): 3 Set x 15-20 Tekrar",
-      "Plank (Fıtık Dostu Karın): 3 Set x Max (Titreyip düşene kadar).",
-      "ANTRENMAN SONU: 30 Dakika Eğimli Kardiyo",
-      "EVE GELİNCE - Bilek Aleti – 3x (tükenene kadar)"
+      "ISINMA: Koşu bandında 7 dakika hafif tempo yürüyüş.",
+      "Incline Press: 4 Set x 8-10 Tekrar",
+      "Seated Cable Row: 4 Set x 12-15 Tekrar",
+      "Lat Pulldown: 3 Set x 15-20 Tekrar",
+      "Seated Lateral Raise: 3x15-20",
+      "Pec Deck: 2x12-15",
+      "Cable Curl: 3x12-15",
+      "Rope Pushdown: 3x12-15",
+      "Face Pull: 2x15-20",
+      "ANTRENMAN SONU: 20 Dakika Eğimli Kardiyo"
     ]
   },
   {
     day: 5, // Friday
-    title: "CUMA: PASİF DİNLENME",
+    title: "CUMA: AKTİF DİNLENME",
     items: [
-      "ISINMA: Sabah evde koşu bandında 35 dakika hafif tempo yürüyüş.",
+      "Koşu bandında 35-45 dakika hafif tempo yürüyüş.",
       "Bilek Aleti – 3x (tükenene kadar)"
     ]
   },
   {
     day: 6, // Saturday
-    title: "CUMARTESİ: EKSİK BÖLGE & CİLA",
+    title: "CUMARTESİ: Lower B",
     items: [
-      "Incline Dumbbell Press (Üst Göğüs İtiş): 3 Set x 10-12 Tekrar",
-      "Chest-Supported Row (Göğüs Destekli Sırt Çekiş Makinesi): 3 Set x 10-12 Tekrar",
-      "Seated Lateral Raise (Oturarak Yan Omuz Açış): 3 Set x 15 Tekrar",
-      "Cable Curl (Kablo ile): 3 Set x 12-15.",
-      "Face Pull: 3 Set x 15-20 Tekrar.",
-      "ANTRENMAN SONU: 30 Dakika Eğimli Kardiyo",
-      "ANTRENMAN SONU: Plank – 3x (titreyene kadar)",
-      "EVE GELİNCE - Bilek Aleti – 3x (tükenene kadar)"
+      "Leg Press: 3x10-12",
+      "Lying Leg Curl: 4x10-12",
+      "Supported Split Squat: 2-3x10-12",
+      "Seated Calf Raise: 4x15-20",
+      "Dead Bug: 3 set",
+      "Pallof Press: 2-3x10-12",
+      "ANTRENMAN SONU: 20 Dakika Eğimli Kardiyo"
     ]
   },
   {
     day: 0, // Sunday
-    title: "PAZAR: ŞARJ GÜNÜ",
+    title: "PAZAR: SADECE DİNLENME",
     items: [
-      "Tam Dinlenme",
-      "Pazar rutinine odaklan. (Şarj Günü)"
+      "Tam Dinlenme Günü"
     ]
   }
 ];

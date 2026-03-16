@@ -21,42 +21,40 @@ const MEALS: Meal[] = [
         id: "breakfast",
         icon: "☀️",
         title: "CEO'nun Güç Kahvaltısı",
-        subtitle: "Kolesterolü zıplatmadan, proteinle güne başlama sanatı.",
+        subtitle: "Sebze yok. Kahve serbest, şekersiz.",
         calories: 350,
-        protein: 30,
+        protein: 37,
         items: [
-            { text: "Omlet: 2 Tam Yumurta + 3 Yumurta Beyazı (Sarıları atıyoruz)" },
-            { text: "Et: 3-4 Dilim Hindi Füme" },
-            { text: "Yağ: 10-12 adet Zeytin" },
-            { text: "Yeşillik: Sınırsız Salatalık + Limon" },
-            { text: "❌ Asla Yok: Peynir, ekmek, yulaf" },
+            { text: "2 tam yumurta" },
+            { text: "1 ölçek protein tozu + su" },
+            { text: "1 küçük muz" }
         ]
     },
     {
         id: "snack",
         icon: "🥤",
         title: "Taktiksel Yakıt",
-        subtitle: "Akşama kadar kan şekerini dengede tut.",
-        calories: 350,
-        protein: 25,
+        subtitle: "Alternatif: Ton balığı yerine 1 ölçek protein + 1 elma",
+        calories: 250,
+        protein: 28,
         items: [
-            { text: "Seçenek 1 (Tatlı): 1 Ölçek VMAX Vegan Protein + 1 Küçük Muz + Su" },
-            { text: "Seçenek 2 (Tuzlu): 1 Kutu Dardanel Light Ton Balığı + 2 Salatalık" },
-            { text: "Ekstra: 15 Adet Çiğ Badem (+100 kal)" }
+            { text: "1 kutu light ton balığı" },
+            { text: "2 adet pirinç patlağı" },
+            { text: "10 adet çiğ badem" }
         ]
     },
     {
         id: "main",
         icon: "💪",
         title: "İnşaat ve Onarım",
-        subtitle: "Antrenman sonrası kasları doyuracağımız ana merkez.",
-        calories: 700,
-        protein: 60,
+        subtitle: "Antrenman gününde bunu antrenman sonrası kullan.",
+        calories: 760,
+        protein: 86,
         items: [
-            { text: "Ana: 250g Tavuk Göğsü VEYA 200g Az Yağlı Dana Kıyma" },
-            { text: "Karb: 6-7 Yemek Kaşığı Basmati Pirinç VEYA 2 Haşlanmış Patates" },
-            { text: "Şifa: 1 Yemek Kaşığı Çiğ Sızma Zeytinyağı" },
-            { text: "Yeşillik: Salatalık + bol limonlu su" },
+            { text: "250 g tavuk göğsü" },
+            { text: "250 g haşlanmış patates VEYA 150 g pişmiş basmati pirinç" },
+            { text: "1 yemek kaşığı zeytinyağı" },
+            { text: "150 g süzme yoğurt / laktozsuz yoğurt (rahatsız ederse çıkar, 80-100 g ekstra tavuk ekle)" }
         ]
     },
     {
@@ -64,23 +62,21 @@ const MEALS: Meal[] = [
         icon: "🌙",
         title: "Kapanış ve Temizlik",
         subtitle: "Yatmadan önce.",
-        calories: 200,
-        protein: 5,
+        calories: 240,
+        protein: 28,
         items: [
-            { text: "Kuruyemiş: 1 Avuç Çiğ Badem veya Çiğ Ceviz (Kavrulmuş değil!)" },
-            { text: "Biyolojik Süpürge: 1 tatlı kaşığı Karnıyarık Otu Tozu + 2 bardak su" },
+            { text: "1 ölçek protein tozu" },
+            { text: "15 g fıstık ezmesi VEYA 15 adet badem" },
         ]
     },
 ];
 
 const TARGET_CALORIES = 1600;
-const TARGET_PROTEIN = 120;
+const TARGET_PROTEIN = 180;
 
 export default function NutritionTracker() {
     const [eaten, setEaten] = useState<Record<string, boolean>>({});
     const [lastMealTime, setLastMealTime] = useState<string>("");
-    const [fastingProgress, setFastingProgress] = useState(0);
-    const [fastingStatus, setFastingStatus] = useState<string>("");
     const [isClient, setIsClient] = useState(false);
 
     // Load state from localStorage
@@ -104,43 +100,7 @@ export default function NutritionTracker() {
         }
     }, []);
 
-    // Fasting calculation tick
-    useEffect(() => {
-        if (!isClient || !lastMealTime) return;
 
-        const interval = setInterval(() => {
-            const now = new Date();
-            
-            // Last meal was today or yesterday? Let's assume if it's after now, it was yesterday.
-            // A simpler approach: Parse HH:mm and attach it to a Date object.
-            const [hours, mins] = lastMealTime.split(":").map(Number);
-            
-            const lastMealDate = new Date();
-            lastMealDate.setHours(hours, mins, 0, 0);
-
-            if (lastMealDate > now) {
-                // Must be from yesterday
-                lastMealDate.setDate(lastMealDate.getDate() - 1);
-            }
-
-            const targetMilli = lastMealDate.getTime() + (16 * 60 * 60 * 1000); // +16 hours
-            const diffMilli = now.getTime() - lastMealDate.getTime();
-            const remainingMilli = targetMilli - now.getTime();
-
-            if (remainingMilli <= 0) {
-                setFastingStatus("Oruç Tamamlandı! ✓");
-                setFastingProgress(100);
-            } else {
-                const hoursLeft = Math.floor(remainingMilli / (1000 * 60 * 60));
-                const minsLeft = Math.floor((remainingMilli % (1000 * 60 * 60)) / (1000 * 60));
-                setFastingStatus(`${hoursLeft}s ${minsLeft}d kaldı`);
-                const prog = Math.min((diffMilli / (16 * 60 * 60 * 1000)) * 100, 100);
-                setFastingProgress(prog);
-            }
-        }, 60000); // 1 minute interval for performance
-
-        return () => clearInterval(interval);
-    }, [lastMealTime, isClient]);
 
     // Save state to localStorage
     useEffect(() => {
@@ -174,45 +134,6 @@ export default function NutritionTracker() {
 
     return (
         <section className="mb-4">
-            {/* Fasting (Oruç) Tracker */}
-            <div className="border mb-4 bg-black" style={{ borderColor: "#1E1E1E" }}>
-                <div className="p-3 border-b flex flex-col sm:flex-row sm:items-center justify-between gap-3" style={{ borderColor: "#1E1E1E", backgroundColor: "#0A0A1A" }}>
-                    <div className="flex items-center gap-2">
-                        <span className="text-base">⏳</span>
-                        <div>
-                            <span className="text-[11px] font-bold uppercase tracking-wider text-white block">
-                                16:8 ORUÇ TAKİBİ
-                            </span>
-                            {lastMealTime && (
-                                <span className={`text-[9px] uppercase tracking-wider font-bold ${fastingProgress >= 100 ? "text-accent-green" : "text-accent-red"}`}>
-                                    {fastingStatus}
-                                </span>
-                            )}
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <span className="text-[10px] text-text-muted uppercase">Son Yemek:</span>
-                        <input 
-                            type="time" 
-                            value={lastMealTime}
-                            onChange={(e) => setLastMealTime(e.target.value)}
-                            className="bg-surface/20 border border-border px-2 py-1 text-xs text-white uppercase font-bold focus:outline-none focus:border-text transition-colors"
-                        />
-                    </div>
-                </div>
-                {lastMealTime && (
-                    <div className="w-full h-1.5 bg-background">
-                        <div 
-                            className="h-full transition-all duration-1000 ease-linear"
-                            style={{ 
-                                width: `${fastingProgress}%`,
-                                backgroundColor: fastingProgress >= 100 ? "#00FF88" : "#FF3B3B" 
-                            }}
-                        />
-                    </div>
-                )}
-            </div>
-
             {/* Main Card (Now Pulses when something is active) */}
             <div 
                 className="border shadow-[0_0_15px_rgba(255,255,255,0.05)] custom-nutrition-card relative"
