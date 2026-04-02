@@ -12,6 +12,7 @@ import WeeklyScreen from "@/components/WeeklyScreen";
 import WarFund from "@/components/WarFund";
 import RightPanel from "@/components/RightPanel";
 import HealthDashboard from "@/components/health/HealthDashboard";
+import WakeUpMessageCard from "@/components/daily/WakeUpMessageCard";
 
 type Tab = "GUNLUK" | "HAFTALIK" | "STRATEJI" | "FINANS" | "SPOR_SAGLIK";
 
@@ -216,7 +217,10 @@ export default function Home() {
 
           {/* ── TAB: GÜNLÜK ────────────────────────────── */}
           {activeTab === "GUNLUK" && (
-            <>
+            <div className="animate-in fade-in duration-300">
+              {/* 0. Günün Gerçeği (Reality Check) */}
+              <WakeUpMessageCard />
+
               {/* 5. Günü Kapatış Ritüeli (Taşındı) */}
               <DailyPrayer />
 
@@ -254,7 +258,7 @@ export default function Home() {
                 onFail={() => handleDayEnd(false)}
                 onSuccess={() => handleDayEnd(true)}
               />
-            </>
+            </div>
           )}
 
           {/* ── TAB: HAFTALIK ───────────────────────────── */}

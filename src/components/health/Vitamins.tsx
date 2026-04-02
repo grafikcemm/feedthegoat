@@ -36,6 +36,12 @@ export default function Vitamins() {
         title: "GÜN İÇİ KOMBOSU",
         time: "Öğle / Akşam Yemeği Sonrası",
         items: ["Omega 3 Jelibonu", "Çinko"]
+    },
+    {
+        id: "gece_spor",
+        title: "SPOR SONRASI (GECE)",
+        time: "Yatmadan Önce / Spor Sonrası",
+        items: ["Kreatin", "Magnezyum", "Glutamine", "ZMA"]
     }
   ];
 
@@ -43,7 +49,7 @@ export default function Vitamins() {
     <div className="space-y-4">
       <div className="p-4 border border-border bg-surface text-xs text-text-muted mb-6">
          <span className="text-text font-bold uppercase mr-2 tracking-widest text-[10px]">Sistem:</span>
-         Tek tek maddeleri işaretlemek yerine seansları (Sabah, Gün İçi) blok halinde tamamla. Bilişsel yükü azalt.
+         Tek tek maddeleri işaretlemek yerine seansları (Sabah, Gün İçi, Gece) blok halinde tamamla. Bilişsel yükü azalt.
       </div>
 
       <div className="space-y-4">
