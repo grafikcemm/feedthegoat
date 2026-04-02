@@ -140,19 +140,19 @@ export default function NeverBreak({ streak = 0 }: { streak?: number }) {
   ];
 
   return (
-    <section className="mt-6 border border-border bg-surface/10 p-4">
-      <div className="mb-4 flex items-start justify-between">
+    <section className="mt-8">
+      <div className="mb-4 flex items-end justify-between border-b border-border pb-2">
         <div>
-            <h2 className="text-sm font-bold uppercase tracking-widest text-text">
-            Asla Kırma
+            <h2 className="text-xl font-bold tracking-wide text-text mb-1">
+              Kritik Rutinler
             </h2>
-            <p className="text-[10px] uppercase tracking-widest text-text-muted mt-1">
-            &ldquo;Zinciri değil, kimliğini koru.&rdquo;
+            <p className="text-xs text-text-muted">
+              Zinciri değil, kimliğini koru. Sadece ana savaşları kazan.
             </p>
         </div>
         <div className="text-right">
-            <span className="text-[10px] uppercase tracking-widest text-text-muted block">SERİ</span>
-            <span className="text-sm font-bold text-accent-red">🔥 {streak} GÜN</span>
+            <span className="text-[10px] uppercase tracking-widest text-text-muted block mb-0.5">Mevcut Seri</span>
+            <span className="text-base font-bold text-accent-green">{streak} GÜN</span>
         </div>
       </div>
 
@@ -167,27 +167,26 @@ export default function NeverBreak({ streak = 0 }: { streak?: number }) {
           return (
             <div key={item.id} className="space-y-2">
               <div
-                className={`flex items-center gap-3 p-3 border transition-colors ${
+                className={`flex items-center gap-4 p-4 border transition-all ${
                   isDisabled 
-                    ? "opacity-30 cursor-not-allowed border-border" 
+                    ? "opacity-40 cursor-not-allowed border-transparent bg-transparent" 
                     : isFailed
-                      ? "border-accent-red/50"
+                      ? "border-border bg-surface/5"
                       : isDone
-                        ? "border-text bg-surface/5"
-                        : "border-border bg-surface/20"
+                        ? "border-transparent bg-surface/30"
+                        : "border-border bg-surface hover:bg-surface-hover"
                 }`}
-                style={isFailed ? { backgroundColor: "#1A0808" } : undefined}
               >
                 {/* Success Button */}
                 <button
                   onClick={() => !isDisabled && toggleSuccess(item.id)}
                   disabled={isDisabled}
-                  className={`w-11 h-11 shrink-0 flex items-center justify-center border-2 transition-colors ${
+                  className={`w-10 h-10 shrink-0 flex items-center justify-center border transition-colors ${
                     isDone
-                      ? "border-accent-green bg-accent-green text-background"
-                      : "border-border bg-transparent text-transparent hover:border-accent-green/50"
-                  } ${isDisabled ? "cursor-not-allowed" : "cursor-pointer"}`}
-                  title="Yaptım"
+                      ? "border-accent-green bg-accent-green text-black"
+                      : "border-border bg-transparent text-transparent hover:border-text-muted"
+                  } ${isDisabled ? "cursor-not-allowed" : "cursor-pointer rounded-sm"}`}
+                  title="Tamamlandı"
                 >
                   <span className="text-xl font-bold">✓</span>
                 </button>
@@ -196,42 +195,47 @@ export default function NeverBreak({ streak = 0 }: { streak?: number }) {
                 <button
                   onClick={() => !isDisabled && toggleFail(item.id)}
                   disabled={isDisabled}
-                  className={`w-11 h-11 shrink-0 flex items-center justify-center border-2 transition-colors ${
+                  className={`w-10 h-10 shrink-0 flex items-center justify-center border transition-colors ${
                     isFailed
-                      ? "border-accent-red bg-accent-red text-background"
+                      ? "border-accent-red bg-surface/50 text-accent-red"
                       : "border-border bg-transparent text-transparent hover:border-accent-red/50"
-                  } ${isDisabled ? "cursor-not-allowed" : "cursor-pointer"}`}
-                  title="Yapamadım"
+                  } ${isDisabled ? "cursor-not-allowed" : "cursor-pointer rounded-sm"}`}
+                  title="Eksik Kaldı"
                 >
                   <span className="text-xl font-bold">✗</span>
                 </button>
 
                 {/* Label */}
-                <span
-                  className={`text-sm md:text-base font-bold select-none flex-1 ${
-                    isDone 
-                      ? "line-through text-text-muted opacity-70" 
-                      : isFailed
-                        ? "text-accent-red/80"
-                        : "text-text"
-                  }`}
-                >
-                  {item.label}
-                </span>
+                <div className="flex flex-col flex-1">
+                  <span
+                    className={`text-[15px] font-medium select-none ${
+                        isDone 
+                        ? "line-through text-text-muted opacity-50" 
+                        : isFailed
+                            ? "text-text-muted"
+                            : "text-text"
+                    }`}
+                  >
+                    {item.label}
+                  </span>
+                  {isDisabled && (
+                    <span className="text-[10px] text-text-muted uppercase tracking-wider mt-1">Bugün dinlenme / Deaktif</span>
+                  )}
+                </div>
               </div>
 
               {/* Reason Picker - Inline */}
               {isFailed && showReasonPicker === item.id && !currentReason && (
-                <div className="ml-4 p-3 border border-accent-red/30 bg-surface/50 space-y-2">
-                  <p className="text-[10px] uppercase tracking-wider text-accent-red font-bold">
-                    Neden yapamadın?
+                <div className="ml-4 p-4 border border-border bg-surface mt-2 space-y-3">
+                  <p className="text-xs text-text-muted font-bold">
+                    Neden eksik kaldı? (Zinciri onar)
                   </p>
                   <div className="space-y-1">
                     {FAIL_REASONS.map((reason) => (
                       <button
                         key={reason.value}
                         onClick={() => selectReason(item.id, reason.value, item.label)}
-                        className="w-full text-left px-3 py-2 text-xs text-text-muted hover:text-text hover:bg-surface/80 border border-border hover:border-text-muted transition-colors"
+                        className="w-full text-left px-4 py-2.5 text-sm text-text-muted hover:text-text hover:bg-surface-hover transition-colors"
                       >
                         {reason.label}
                       </button>
@@ -242,12 +246,12 @@ export default function NeverBreak({ streak = 0 }: { streak?: number }) {
 
               {/* Selected Reason + Suggestion */}
               {isFailed && currentReason && reasonData && (
-                <div className="ml-4 p-3 border border-accent-red/20 bg-surface/30 space-y-2">
-                  <p className="text-[10px] text-accent-red/70">
-                    <span className="font-bold">Sebep:</span> {reasonData.label}
+                <div className="ml-4 p-4 bg-surface mt-2 space-y-2 border-l-[3px] border-text-muted">
+                  <p className="text-xs text-text-muted">
+                    <span className="font-bold text-text">Sebep:</span> {reasonData.label}
                   </p>
-                  <p className="text-[11px] text-accent-green italic">
-                    💡 {reasonData.suggestion}
+                  <p className="text-sm text-text">
+                    💡 <span className="opacity-80">{reasonData.suggestion}</span>
                   </p>
                 </div>
               )}

@@ -66,15 +66,12 @@ function getWeekNumber(d: Date) {
 }
 
 export default function WeeklyScreen() {
-    const [focus, setFocus] = useState("");
     const [weeklyTasks, setWeeklyTasks] = useState([
         { id: "wt-sat-1", text: "Cumartesi: Haftalık gelir/gider takibi", icon: "💰", done: false },
         { id: "wt-sat-2", text: "Cumartesi: Müşteri pipeline kontrolü", icon: "📊", done: false },
-        { id: "wt-sat-3", text: "Cumartesi: Gönenç Akademi video izlemeleri", icon: "🧠", done: false },
         { id: "wt-sat-4", text: "Cumartesi: Neo Skala 1 kurs progresyonu", icon: "🎓", done: false },
         { id: "wt-sun-1", text: "Pazar: Hafta içi her gün için 1 potansiyel müşteri ayarla (Pzt, Sal, vs)", icon: "📞", done: false },
-        { id: "wt-sun-2", text: "Pazar: Haftanın içerik kontrollerini tamamla", icon: "📱", done: false },
-        { id: "wt-sun-3", text: "Pazar: Haftanın edit/kurgu revizyonlarını yap", icon: "🎬", done: false }
+        { id: "wt-sun-2", text: "Pazar: Haftanın içerik kontrollerini tamamla", icon: "📱", done: false }
     ]);
     const [isClient, setIsClient] = useState(false);
 
@@ -103,8 +100,7 @@ export default function WeeklyScreen() {
 
                 if (!isNewWeek) {
                     setTimeout(() => {
-                        setFocus(parsed.focus || "");
-                        if (parsed.weeklyTasks && parsed.weeklyTasks.length === 4 && parsed.weeklyTasks[0].id === "wt-sat-1") {
+                        if (parsed.weeklyTasks && parsed.weeklyTasks.length === 5 && parsed.weeklyTasks[0].id === "wt-sat-1") {
                             setWeeklyTasks(parsed.weeklyTasks);
                         }
                     }, 0);
@@ -116,9 +112,9 @@ export default function WeeklyScreen() {
     useEffect(() => {
         if (!isClient) return;
         localStorage.setItem("goat-weekly-v3", JSON.stringify({
-            focus, weeklyTasks, lastUpdated: new Date().toISOString()
+            weeklyTasks, lastUpdated: new Date().toISOString()
         }));
-    }, [focus, weeklyTasks, isClient]);
+    }, [weeklyTasks, isClient]);
 
     const toggleWeeklyTask = (id: string) => {
         if (typeof window !== "undefined" && window.navigator && window.navigator.vibrate) {
@@ -133,52 +129,38 @@ export default function WeeklyScreen() {
 
     return (
         <section className="space-y-8 animate-in fade-in duration-300">
-            {/* Alan 1: Haftanın Odağı */}
-            <div className="brutalist-card p-4 border border-border bg-surface/10">
-                <label className="block text-[10px] uppercase font-bold tracking-[0.2em] text-accent-red mb-2">
-                    ALAN 1: HAFTANIN ODAĞI
-                </label>
-                <input
-                    type="text"
-                    value={focus}
-                    onChange={(e) => setFocus(e.target.value)}
-                    placeholder="Bu hafta neyin etrafında şekilleniyor?"
-                    className="w-full bg-background border px-4 py-3 text-sm md:text-base font-bold text-text outline-none focus:border-accent-red transition-colors placeholder:text-text-muted/50"
-                />
-            </div>
-
             {/* Haftalık Takip */}
-            <div className="brutalist-card p-4 border border-border bg-surface/10">
-                <div className="flex items-center justify-between mb-4">
-                    <label className="block text-[10px] uppercase font-bold tracking-[0.2em] text-text-muted">
-                        HAFTALIK TAKİP
-                    </label>
-                    <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-text-muted">{doneCount}/{weeklyTasks.length}</span>
+            <div className="p-6 border border-border bg-surface">
+                <div className="flex items-center justify-between mb-6 border-b border-border/50 pb-2">
+                    <h3 className="text-sm font-bold tracking-wide text-text flex items-center gap-2">
+                        Haftalık Görevler
+                    </h3>
+                    <span className="text-xs font-bold text-text-muted">{doneCount}/{weeklyTasks.length}</span>
                 </div>
                 
-                <div className="grid grid-cols-1 gap-4">
+                <div className="grid grid-cols-1 gap-3">
                     {weeklyTasks.map(task => (
                         <div 
                             key={task.id}
                             onClick={() => toggleWeeklyTask(task.id)}
-                            className={`flex items-start gap-4 p-4 border cursor-pointer transition-colors ${
+                            className={`flex items-center justify-between p-4 border transition-all cursor-pointer ${
                                 task.done 
-                                    ? "border-text bg-surface/5" 
-                                    : "border-border bg-surface/20 hover:border-text-muted"
+                                    ? "border-transparent bg-surface/30" 
+                                    : "border-border bg-background hover:bg-surface-hover hover:border-text-muted"
                             }`}
                         >
-                            <div className={`w-11 h-11 shrink-0 flex items-center justify-center border-2 transition-colors ${
-                                task.done 
-                                    ? "border-text bg-text text-background" 
-                                    : "border-border bg-transparent text-transparent"
-                            }`}>
-                                <span className="text-xl font-bold">✓</span>
-                            </div>
-                            <div className="flex-1 flex gap-3 items-center">
-                                <span className="shrink-0">{task.icon}</span>
-                                <span className={`text-[10px] md:text-xs uppercase tracking-wider font-bold leading-relaxed ${task.done ? 'line-through text-text-muted opacity-70' : 'text-text'}`}>
+                            <div className="flex-1 flex gap-3 items-center min-w-0 pr-4">
+                                <span className="shrink-0 text-lg opacity-80">{task.icon}</span>
+                                <span className={`text-[13px] font-medium leading-relaxed truncate ${task.done ? 'line-through text-text-muted opacity-50' : 'text-text'}`}>
                                     {task.text}
                                 </span>
+                            </div>
+                            <div className={`w-6 h-6 shrink-0 flex items-center justify-center border transition-colors ${
+                                task.done 
+                                    ? "border-accent-green bg-accent-green text-black" 
+                                    : "border-border bg-transparent text-transparent"
+                            }`}>
+                                <span className="text-sm font-bold">✓</span>
                             </div>
                         </div>
                     ))}
@@ -186,45 +168,49 @@ export default function WeeklyScreen() {
             </div>
 
             {/* PAZAR ŞARJ GÜNÜ */}
-            <div className="brutalist-card p-4 border border-border bg-black">
-                <label className="block text-[10px] uppercase font-bold tracking-[0.2em] text-accent-red mb-4 text-center">
-                    PAZAR — ŞARJ GÜNÜ
-                </label>
+            <div className="p-6 border border-border bg-background">
+                <div className="flex items-center justify-between mb-6 border-b border-border/50 pb-2">
+                    <h3 className="text-sm font-bold tracking-wide text-text-muted flex items-center gap-2">
+                        Pazar — Şarj Günü
+                    </h3>
+                </div>
 
                 <div className="space-y-4">
                     {/* Sabah */}
-                    <div className="p-3 border border-border/50 bg-surface/5">
-                        <h4 className="text-xs font-bold text-white mb-2 tracking-wider flex items-center gap-2">
-                            <span>☀️</span> SABAH (09:00-12:00)
+                    <div className="p-4 border border-border bg-surface/50 transition-colors hover:bg-surface">
+                        <h4 className="text-sm font-bold text-text mb-2 tracking-wide flex items-center gap-2">
+                            <span className="opacity-80">☀️</span> Sabah <span className="text-text-muted text-xs font-normal">(09:00-12:00)</span>
                         </h4>
-                        <ul className="space-y-1 text-[11px] text-text-muted ml-6 list-disc marker:text-border">
+                        <ul className="space-y-1.5 text-xs text-text-muted ml-7 list-disc">
                             <li>Sabah duası + görselleştirme</li>
                             <li>Haftalık meal prep (5 günlük tavuk hazırla)</li>
-                            <li>Haftalık gözden geçirme: Ne iyi gitti? Ne kötü gitti? Gelecek hafta ne değişecek?</li>
+                            <li>Haftalık gözden geçirme: Ne iyi gitti? Ne kötü gitti?</li>
                         </ul>
                     </div>
 
                     {/* Öğle */}
-                    <div className="p-3 border border-border/50 bg-surface/5">
-                        <h4 className="text-xs font-bold text-white mb-2 tracking-wider flex items-center gap-2">
-                            <span>📖</span> ÖĞLEDEN SONRA (14:00-17:00)
+                    <div className="p-4 border border-border bg-surface/50 transition-colors hover:bg-surface">
+                        <h4 className="text-sm font-bold text-text mb-2 tracking-wide flex items-center gap-2">
+                            <span className="opacity-80">📖</span> Öğleden Sonra <span className="text-text-muted text-xs font-normal">(14:00-17:00)</span>
                         </h4>
-                        <ul className="space-y-1 text-[11px] text-text-muted ml-6 list-disc marker:text-border">
+                        <ul className="space-y-1.5 text-xs text-text-muted ml-7 list-disc">
                             <li>Biyografi oku (minimum 50 sayfa veya 1 saat)</li>
                             <li>Not al: Bu insandan ne öğrendim? Hayatıma nasıl uygularım?</li>
                         </ul>
                     </div>
 
                     {/* Akşam */}
-                    <div className="p-3 border border-border/50 bg-surface/5">
-                        <h4 className="text-xs font-bold text-white mb-2 tracking-wider flex items-center justify-between">
-                            <span className="flex items-center gap-2"><span>🎬</span> AKŞAM (19:00-22:00)</span>
-                            <span className="text-[9px] text-accent-red font-medium tracking-widest border border-accent-red/30 px-2 py-0.5">HAFTA {weekNumber} FİLMİ</span>
+                    <div className="p-4 border border-border bg-surface/50 transition-colors hover:bg-surface">
+                        <h4 className="text-sm font-bold text-text mb-4 tracking-wide flex items-center justify-between">
+                            <span className="flex items-center gap-2"><span className="opacity-80">🎬</span> Akşam <span className="text-text-muted text-xs font-normal">(19:00-22:00)</span></span>
+                            <span className="text-[10px] text-accent-amber font-bold tracking-widest border border-accent-amber/30 px-2 py-1 bg-accent-amber/5">
+                                HAFTA {weekNumber} FİLMİ
+                            </span>
                         </h4>
                         
-                        <div className="ml-6 mt-3 border-l-[3px] border-accent-red pl-3 bg-surface/10 p-2">
-                            <div className="text-white font-bold text-xs">{todaysMovie.title}</div>
-                            <div className="text-[10px] text-text-muted mt-1 italic leading-relaxed">
+                        <div className="ml-7 border-l-2 border-border pl-4">
+                            <div className="text-text font-bold text-sm mb-1">{todaysMovie.title}</div>
+                            <div className="text-xs text-text-muted bg-surface-hover/50 p-2 italic leading-relaxed">
                                 {todaysMovie.reason}
                             </div>
                         </div>

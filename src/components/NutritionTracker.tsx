@@ -21,26 +21,27 @@ const MEALS: Meal[] = [
         id: "breakfast",
         icon: "☀️",
         title: "CEO'nun Güç Kahvaltısı",
-        subtitle: "Sebze yok. Kahve serbest, şekersiz.",
+        subtitle: "Sabahları yeşil çay eşliğinde.",
         calories: 350,
         protein: 37,
         items: [
-            { text: "2 tam yumurta" },
-            { text: "1 ölçek protein tozu + su" },
-            { text: "1 küçük muz" }
+            { text: "2 adet haşlanmış yumurta" },
+            { text: "Yulaf (toz haline getir), çiğ badem, tarçın, yarım muz ve yağsız sütten oluşan bir smoothie" },
+            { text: "1 fincan Yeşil Çay" }
         ]
     },
     {
         id: "snack",
         icon: "🥤",
         title: "Taktiksel Yakıt",
-        subtitle: "Alternatif: Ton balığı yerine 1 ölçek protein + 1 elma",
+        subtitle: "Öğün arası kiraz saplı çay içilecek.",
         calories: 250,
         protein: 28,
         items: [
             { text: "1 kutu light ton balığı" },
             { text: "2 adet pirinç patlağı" },
-            { text: "10 adet çiğ badem" }
+            { text: "10 adet çiğ badem" },
+            { text: "1 fincan Kiraz Saplı Çay" }
         ]
     },
     {
@@ -69,6 +70,17 @@ const MEALS: Meal[] = [
             { text: "15 g fıstık ezmesi VEYA 15 adet badem" },
         ]
     },
+    {
+        id: "water",
+        icon: "💧",
+        title: "Hidrasyon (Su)",
+        subtitle: "Günlük su tüketimini tüm güne yayarak tamamla.",
+        calories: 0,
+        protein: 0,
+        items: [
+            { text: "Hedef: Toplam 3-4 Litre Su" }
+        ]
+    }
 ];
 
 const TARGET_CALORIES = 1600;

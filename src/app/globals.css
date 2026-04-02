@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-bg: #0d0d0d;
-  --color-surface: #161616;
-  --color-surface-hover: #1e1e1e;
-  /* Adjust hover state to be slightly lighter than surface */
-  --color-border: #1e1e1e;
-  --color-text: #ffffff;
-  --color-text-muted: #666666;
-  --color-accent-red: #ff3b3b;
-  --color-accent-green: #00ff88;
-  --color-accent-amber: #ffb800;
+  --color-bg: #070707;
+  --color-surface: #111111;
+  --color-surface-hover: #1a1a1a;
+  --color-border: #222222;
+  --color-text: #eaeaea;
+  --color-text-muted: #888888;
+  --color-accent-red: #ea4335;
+  --color-accent-green: #34a853; /* desaturated slightly from 00ff88 */
+  --color-accent-amber: #fbbc04;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
+
 
 /* ── Global Reset ──────────────────────────────────────────── */
 * {
@@ -58,15 +58,15 @@ body {
 }
 
 .glow-green {
-  box-shadow: 0 0 12px rgba(0, 255, 94, 0.15);
+  box-shadow: 0 0 12px rgba(52, 168, 83, 0.05);
 }
 
 .glow-red {
-  box-shadow: 0 0 12px rgba(255, 59, 59, 0.15);
+  box-shadow: 0 0 12px rgba(234, 67, 53, 0.05);
 }
 
 .glow-amber {
-  box-shadow: 0 0 12px rgba(255, 184, 0, 0.15);
+  box-shadow: 0 0 12px rgba(251, 188, 4, 0.05);
 }
 
 /* Progress bar animation */
@@ -133,13 +133,13 @@ body {
 
 /* ── Glow Variants ────────────────────────────────────── */
 .glow-blue {
-  box-shadow: 0 0 12px rgba(59, 130, 246, 0.15);
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.05);
 }
 
 .glow-purple {
-  box-shadow: 0 0 12px rgba(168, 85, 247, 0.15);
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.05);
 }
 
 .glow-orange {
-  box-shadow: 0 0 12px rgba(249, 115, 22, 0.15);
+  box-shadow: 0 0 12px rgba(249, 115, 22, 0.05);
 }

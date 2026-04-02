@@ -4,17 +4,14 @@ import { useState, useCallback, useEffect } from "react";
 import MotivationCards from "@/components/MotivationCards";
 import EndDayButton from "@/components/EndDayButton";
 import ActiveTasks from "@/components/ActiveTasks";
-import GoalsDashboard from "@/components/GoalsDashboard";
-import VitaminTracker from "@/components/VitaminTracker";
-import NutritionTracker from "@/components/NutritionTracker";
+import CareerDashboard from "@/components/career/CareerDashboard";
 import DailyPrayer from "@/components/DailyPrayer";
 import NeverBreak from "@/components/NeverBreak";
 import BonusTasks from "@/components/BonusTasks";
-import DopamineDetox from "@/components/DopamineDetox";
 import WeeklyScreen from "@/components/WeeklyScreen";
 import WarFund from "@/components/WarFund";
-import SportsProgram from "@/components/SportsProgram";
 import RightPanel from "@/components/RightPanel";
+import HealthDashboard from "@/components/health/HealthDashboard";
 
 type Tab = "GUNLUK" | "HAFTALIK" | "STRATEJI" | "FINANS" | "SPOR_SAGLIK";
 
@@ -162,21 +159,21 @@ export default function Home() {
     <>
       <div className="min-h-screen">
         {/* ── Header ─────────────────────────────────────── */}
-        <header className="brutalist-border border-t-0 border-x-0 px-4 md:px-8 py-5 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
+        <header className="border-b border-border px-4 md:px-8 py-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 max-w-6xl mx-auto">
           <div>
-            <h1 className="text-2xl md:text-4xl font-bold uppercase tracking-[0.3em] text-text">
+            <h1 className="text-3xl font-bold tracking-wider text-text">
               FEED THE GOAT<span className="text-accent-red">.</span>
             </h1>
-            <p className="text-[10px] uppercase tracking-[0.2em] text-text-muted mt-1">
-              {activeTab === "GUNLUK" && "KARARGÂH — Bugün sadece ana savaşları kazan."}
-              {activeTab === "HAFTALIK" && "BU HAFTANIN 3 KAZANCI — Haftayı kazanmak için minimum sonuçlar."}
-              {activeTab === "STRATEJI" && "KARİYER — Az konu. Çok kanıt. Canlı sistem. Gelir odak."}
-              {activeTab === "FINANS" && "SAVAŞ FONU — Kan kaybetme. Kaynaklarını koru ve büyüt."}
-              {activeTab === "SPOR_SAGLIK" && "SPOR & SAĞLIK — Makineyi güçlü ve zinde tut."}
+            <p className="text-xs text-text-muted mt-2 tracking-wide font-medium">
+              {activeTab === "GUNLUK" && "Karargâh — Bugün sadece ana savaşları kazan."}
+              {activeTab === "HAFTALIK" && "Bu Haftanın 3 Kazancı — Haftayı kazanmak için minimum hedefler."}
+              {activeTab === "STRATEJI" && "Kariyer — Az konu. Çok kanıt. Canlı sistem."}
+              {activeTab === "FINANS" && "Savaş Fonu — Kan kaybetme. Kaynaklarını koru."}
+              {activeTab === "SPOR_SAGLIK" && "Spor & Sağlık — Makineyi güçlü ve zinde tut."}
             </p>
           </div>
           <div className="flex flex-col items-start sm:items-end gap-2">
-            <p className="text-[10px] uppercase tracking-[0.15em] text-text-muted tabular-nums">
+            <p className="text-xs text-text-muted font-medium tabular-nums px-3 py-1.5 bg-surface/50 border border-border">
               {dateStrTR}
             </p>
           </div>
@@ -185,8 +182,8 @@ export default function Home() {
         <RightPanel />
 
         {/* ── Tab Navigation ─────────────────────────────── */}
-        <nav className="px-4 md:px-8 pt-4 pb-2 max-w-6xl mx-auto">
-          <div className="flex gap-0 border border-border">
+        <nav className="px-4 md:px-8 max-w-6xl mx-auto border-b border-border">
+          <div className="flex overflow-x-auto hide-scrollbar">
             {TABS.map((tab) => {
               const isActive = activeTab === tab.key;
               return (
@@ -197,16 +194,17 @@ export default function Home() {
                     setActiveTab(tab.key);
                   }}
                   className={`
-                    flex-1 py-3 px-4 text-[11px] uppercase tracking-[0.25em] font-bold
-                    transition-all duration-200 flex items-center justify-center gap-2
+                    flex-1 min-w-[120px] py-4 px-4 text-xs font-bold tracking-wide transition-all border-b-2
                     ${isActive
-                      ? "bg-text text-bg border-text"
-                      : "bg-surface text-text-muted hover:bg-surface-hover hover:text-text border-r border-border last:border-r-0"
+                      ? "text-text border-text bg-surface/30"
+                      : "text-text-muted border-transparent hover:text-text hover:bg-surface/10"
                     }
                   `}
                 >
-                  <span className="text-base">{tab.icon}</span>
-                  {tab.label}
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="text-lg opacity-80">{tab.icon}</span>
+                    <span className={`${isActive ? '' : 'opacity-80'}`}>{tab.label}</span>
+                  </div>
                 </button>
               );
             })}
@@ -232,24 +230,11 @@ export default function Home() {
 
               <div className="h-px bg-border my-6" />
 
-              {/* 4. Dopamin Detoksu (Kompakt) */}
-              <DopamineDetox />
-
-              <div className="h-px bg-border my-8" />
-
               {/* Aktif Görevler */}
               <ActiveTasks />
 
               {/* Animasyonlu Motivasyon Kartları */}
               <MotivationCards />
-
-              {/* Manus Button */}
-              <section className="mb-4">
-                  <a href="#" className="flex items-center justify-center gap-2 p-3 border border-text text-text bg-surface hover:bg-text hover:text-black transition-colors font-bold uppercase tracking-widest text-xs">
-                      <span className="text-base">🤖</span>
-                      Manus Günlük Güncellemeleri Kontrol Et
-                  </a>
-              </section>
 
               {/* Günlük Skor */}
               <section className="flex flex-col items-center justify-center text-center space-y-2 py-4">
@@ -282,8 +267,8 @@ export default function Home() {
           {/* ── TAB: STRATEJİ ───────────────────────────── */}
           {activeTab === "STRATEJI" && (
             <>
-              {/* Goals Dashboard (Refactored) */}
-              <GoalsDashboard />
+              {/* Career Dashboard (Refactored) */}
+              <CareerDashboard />
             </>
           )}
 
@@ -297,10 +282,7 @@ export default function Home() {
           {/* ── TAB: SPOR & SAĞLIK ─────────────────────────────── */}
           {activeTab === "SPOR_SAGLIK" && (
             <>
-              <VitaminTracker />
-              <NutritionTracker />
-              <div className="h-px bg-border my-8" />
-              <SportsProgram />
+              <HealthDashboard />
             </>
           )}
 

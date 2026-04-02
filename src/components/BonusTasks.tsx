@@ -6,11 +6,57 @@ interface BonusItem {
   id: string;
   label: string;
   activeDays?: number[]; // Days of week (0=Sunday, 1=Monday, etc.)
+  hasModal?: boolean;
 }
+
+const ENGLISH_PLANS: Record<number, { title: string; duration: string; type: string; tasks: string[] }> = {
+  1: {
+    title: "Pazartesi | Hafif Başlangıç",
+    duration: "20–25 dk",
+    type: "Haftaya “başladım” hissi versin, yormasın.",
+    tasks: [
+      "10 dk: Felse A1/A2 dersi",
+      "5 dk: 5 yeni kelime",
+      "5–10 dk: O günkü konuyla 4–5 cümle kurarak konuşma"
+    ]
+  },
+  3: {
+    title: "Çarşamba | Ana Çalışma",
+    duration: "40–45 dk",
+    type: "Haftanın en verimli İngilizce günü.",
+    tasks: [
+      "15 dk: Felse Oxford / ana ders",
+      "10 dk: Not çıkarma",
+      "10 dk: Gemini ile konuşma pratiği",
+      "5–10 dk: Kısa yazı (Örn: Today I studied simple present...)"
+    ]
+  },
+  5: {
+    title: "Cuma | Pekiştirme",
+    duration: "35–45 dk",
+    type: "Yeni konu yükleme, öğrendiğini sağlamlaştır.",
+    tasks: [
+      "10 dk: Haftalık tekrar",
+      "10 dk: Eski kelimeleri test et",
+      "10–15 dk: Konuşma pratiği",
+      "5–10 dk: Hataları düzeltip yeniden söyleme/yazma"
+    ]
+  },
+  6: {
+    title: "Cumartesi | Opsiyonel Bonus",
+    duration: "15–20 dk",
+    type: "Enerjin varsa pratik yap.",
+    tasks: [
+      "Seçenek 1: Sadece konuşma pratiği",
+      "Seçenek 2: Sadece kısa yazma pratiği"
+    ]
+  }
+};
 
 export default function BonusTasks() {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [currentDay, setCurrentDay] = useState(new Date().getDay());
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
@@ -32,7 +78,11 @@ export default function BonusTasks() {
     }
   }, []);
 
-  const toggle = (id: string) => {
+  const toggle = (id: string, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    if (typeof window !== "undefined" && window.navigator && window.navigator.vibrate) {
+        window.navigator.vibrate(50);
+    }
     const newChecked = { ...checked, [id]: !checked[id] };
     setChecked(newChecked);
     localStorage.setItem(
@@ -45,80 +95,137 @@ export default function BonusTasks() {
     window.dispatchEvent(new Event("dailyScoreUpdated"));
   };
 
+  const openEnglishModal = () => {
+    setShowModal(true);
+  };
+
   const ITEMS: BonusItem[] = [
-    { id: "bn-walk", label: "Sabah 20 dk koşu bandı yürüyüş", activeDays: [2, 3, 5] }, // Salı, Çarşamba, Cuma
-    { id: "bn-english", label: "Fielse'den 1 ders İngilizce", activeDays: [0, 1, 4, 6] }, // Pzt, Per, Cmt, Pzr
-    { id: "bn-share", label: "2 hesabında tweet paylaşımları" },
-    { id: "bn-course", label: "Yüz bakımı yap" },
+    { id: "bn-walk", label: "Sabah 20 dk yürüyüş", activeDays: [2, 3, 5] },
+    { id: "bn-english", label: "İngilizce Programı", activeDays: [1, 3, 5, 6], hasModal: true },
+    { id: "bn-share", label: "2 hesaba tweet at" },
+    { id: "bn-course", label: "Kişisel bakım" },
   ];
 
-  return (
-    <section className="mt-6 border border-border bg-surface/10 p-4">
-      <div className="mb-4">
-        <h2 className="text-sm font-bold uppercase tracking-widest text-text">
-          Enerji Varsa
-        </h2>
-        <p className="text-[10px] uppercase tracking-widest text-text-muted mt-1">
-          &ldquo;Bunlar bonus. Zorunlu değil.&rdquo;
-        </p>
-      </div>
+  const todayEnglishPlan = ENGLISH_PLANS[currentDay];
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {ITEMS.map((item) => {
-          const isDisabled = item.activeDays && !item.activeDays.includes(currentDay);
-          const needsAction = item.activeDays && !isDisabled && !checked[item.id];
-          
-          return (
-            <div
-              key={item.id}
-              onClick={() => !isDisabled && toggle(item.id)}
-              className={`relative flex items-center gap-3 p-3 border transition-colors ${
-                isDisabled 
-                  ? "opacity-50 cursor-not-allowed border-border bg-surface/10" 
-                  : "cursor-pointer"
-              } ${
-                !isDisabled && checked[item.id]
-                  ? "border-text bg-surface/5"
-                  : !isDisabled 
-                    ? `border-border bg-surface/20 hover:border-text-muted ${needsAction ? 'animate-pulse border-accent-red/50 shadow-[0_0_10px_rgba(255,59,59,0.2)]' : ''}`
-                    : ""
-              }`}
-            >
+  return (
+    <>
+      <section className="mt-8 border-t border-border pt-4">
+        <div className="mb-4">
+          <h2 className="text-xl font-bold tracking-wide text-text mb-1 flex items-center gap-2">
+            İkincil Aksiyonlar
+          </h2>
+          <p className="text-xs text-text-muted">
+            Bu bölüm opsiyoneldir. Sadece enerji fazlası varsa uygulanır.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {ITEMS.map((item) => {
+            const isDisabled = item.activeDays && !item.activeDays.includes(currentDay);
+            const isDone = checked[item.id];
+            
+            return (
               <div
-                className={`w-6 h-6 shrink-0 flex items-center justify-center border-2 transition-colors ${
-                  checked[item.id] && !isDisabled
-                    ? "border-text bg-text text-background"
-                    : "border-border bg-transparent text-transparent"
+                key={item.id}
+                onClick={item.hasModal && !isDisabled ? openEnglishModal : () => !isDisabled && toggle(item.id)}
+                className={`relative flex items-center justify-between p-4 border transition-all ${
+                  isDisabled 
+                    ? "opacity-30 cursor-not-allowed border-transparent bg-transparent" 
+                    : "cursor-pointer border-border bg-surface hover:bg-surface-hover"
+                } ${
+                  isDone && !isDisabled
+                    ? "border-transparent bg-surface/30"
+                    : ""
                 }`}
               >
-                <span className="text-xs font-bold">✓</span>
-              </div>
-              <div className="flex flex-col flex-1 min-w-0">
-                <span
-                  className={`text-xs md:text-sm font-bold select-none truncate ${
-                    isDisabled 
-                      ? "text-text-muted" 
-                      : checked[item.id] 
-                        ? "line-through text-text-muted opacity-70" 
-                        : "text-text"
-                  }`}
-                >
-                  {item.label}
-                </span>
-                {/* "Bugün değil" label for disabled days */}
-                {isDisabled && (
-                  <span 
-                    className="text-[10px] font-medium mt-0.5"
-                    style={{ color: "#666666" }}
+                <div className="flex flex-col flex-1 min-w-0 pr-4">
+                  <span
+                    className={`text-sm font-medium truncate ${
+                      isDisabled 
+                        ? "text-text-muted" 
+                        : isDone 
+                          ? "line-through text-text-muted opacity-50" 
+                          : "text-text"
+                    }`}
                   >
-                    Bugün değil
+                    {item.label}
                   </span>
+                  {isDisabled && (
+                    <span className="text-[10px] text-text-muted uppercase tracking-wider mt-1">Bugün Deaktif</span>
+                  )}
+                  {item.hasModal && !isDisabled && (
+                    <span className="text-[10px] text-accent-amber mt-1 flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-accent-amber animate-pulse block"></span> 
+                      {todayEnglishPlan ? todayEnglishPlan.duration : "Programı Gör"}
+                    </span>
+                  )}
+                </div>
+
+                {!isDisabled && (
+                  <button
+                    onClick={(e) => toggle(item.id, e)}
+                    className={`w-8 h-8 shrink-0 flex items-center justify-center border transition-colors ${
+                      isDone
+                        ? "border-accent-green bg-accent-green text-black"
+                        : "border-border bg-transparent text-transparent hover:border-text-muted"
+                    } rounded-sm`}
+                  >
+                    <span className="text-sm font-bold">✓</span>
+                  </button>
                 )}
               </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* English Modal Overlay */}
+      {showModal && todayEnglishPlan && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in">
+          <div className="bg-surface border border-border w-full max-w-sm rounded p-6 shadow-2xl">
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h3 className="text-sm font-bold uppercase tracking-widest text-text mb-1">
+                  İngilizce
+                </h3>
+                <h4 className="text-lg font-bold text-accent-green">
+                  {todayEnglishPlan.title}
+                </h4>
+              </div>
+              <button 
+                onClick={() => setShowModal(false)}
+                className="text-text-muted hover:text-white p-1"
+              >
+                ✕
+              </button>
             </div>
-          );
-        })}
-      </div>
-    </section>
+            
+            <p className="text-xs text-text-muted italic bg-surface-hover p-2 border-l-2 border-border mb-4">
+              {todayEnglishPlan.type}
+            </p>
+
+            <ul className="space-y-3 mb-6">
+              {todayEnglishPlan.tasks.map((t, idx) => (
+                <li key={idx} className="text-sm text-text flex items-start gap-2">
+                  <span className="text-accent-amber mt-0.5">•</span>
+                  {t}
+                </li>
+              ))}
+            </ul>
+
+            <button 
+              onClick={() => {
+                 toggle("bn-english");
+                 setShowModal(false);
+              }}
+              className="w-full py-3 bg-text text-black font-bold text-sm tracking-wider uppercase hover:opacity-90 transition-opacity"
+            >
+              TAMAMLANDI İŞARETLE
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

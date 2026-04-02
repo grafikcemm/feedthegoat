@@ -297,24 +297,21 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
     if (!isLoaded) return null;
 
     return (
-        <section>
-            <div 
-                className="flex items-center justify-between mb-4 px-3 py-2 -mx-1"
-                style={{ backgroundColor: "#0F0F1A" }}
-            >
-                <h2 className="text-xs uppercase tracking-[0.25em] text-text font-mono font-bold">
-                    ⚡ AKTİF GÖREVLER
+        <section className="mt-8">
+            <div className="flex items-center justify-between mb-4 border-b border-border pb-2">
+                <h2 className="text-xl font-bold tracking-wide text-text mb-1 flex items-center gap-2">
+                    Aktif Görevler
                 </h2>
             </div>
 
-            <div className="brutalist-card p-4 space-y-4 bg-surface/10 border-border">
+            <div className="bg-surface border border-border p-5 space-y-5">
 
                 {/* Add Task Form */}
-                <form onSubmit={handleAddTask} className="flex gap-2 items-center flex-wrap">
+                <form onSubmit={handleAddTask} className="flex gap-3 items-center flex-wrap border-b border-border/50 pb-5">
                     <select
                         value={newPriority}
                         onChange={(e) => setNewPriority(e.target.value as "P1" | "P2" | "P3")}
-                        className="bg-background border border-border px-2 py-2 text-[10px] font-bold text-text outline-none focus:border-accent-green uppercase tracking-wider"
+                        className="bg-background border border-border px-3 py-2.5 text-xs font-medium text-text outline-none focus:border-text transition-colors"
                     >
                         <option value="P1">P1</option>
                         <option value="P2">P2</option>
@@ -324,13 +321,13 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
                         type="text"
                         value={newTaskTitle}
                         onChange={(e) => setNewTaskTitle(e.target.value)}
-                        placeholder="Yeni görev ekle..."
-                        className="flex-1 bg-background border border-border px-3 py-2 text-sm font-mono text-text outline-none focus:border-accent-green transition-colors min-w-[150px]"
+                        placeholder="Görev tanımlayın..."
+                        className="flex-1 bg-background border border-border px-4 py-2.5 text-sm text-text outline-none focus:border-text transition-colors min-w-[200px]"
                     />
                     <button
                         type="submit"
                         disabled={!newTaskTitle.trim()}
-                        className="bg-text text-black px-4 py-2 text-[10px] font-bold font-mono tracking-widest uppercase hover:bg-text-muted transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                        className="bg-text text-black px-6 py-2.5 text-xs font-bold tracking-wider uppercase hover:opacity-90 transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
                     >
                         EKLE
                     </button>
@@ -344,32 +341,30 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
                             : "AKTİF GÖREV BULUNAMADI."}
                     </div>
                 ) : (
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                         {activeTasksList.map((task) => {
                             return (
                                 <div 
                                     key={task.id} 
-                                    className={`brutalist-border border-border group overflow-hidden transition-all duration-200 p-3 flex items-center gap-3 ${task.is_urgent ? "border-accent-green glow-green" : ""}`}
+                                    className={`group overflow-hidden transition-all duration-200 p-4 flex items-center gap-4 bg-background border ${task.is_urgent ? "border-accent-green/50" : "border-border hover:border-text-muted"}`}
                                     style={{
-                                        borderLeftWidth: "3px",
+                                        borderLeftWidth: "4px",
                                         borderLeftColor: PRIORITY_LEFT_BORDER[task.priority],
-                                        backgroundColor: task.is_urgent ? "rgba(0, 255, 136, 0.05)" : PRIORITY_BG[task.priority]
                                     }}
                                 >
                                     <button
                                         onClick={() => toggleTask(task.id)}
-                                        className="w-4 h-4 shrink-0 border-2 border-border flex items-center justify-center text-[9px] font-bold transition-colors bg-transparent text-transparent hover:border-text-muted"
+                                        className="w-5 h-5 shrink-0 border flex items-center justify-center text-[10px] font-bold transition-colors bg-transparent border-border text-transparent hover:border-text-muted"
                                     >
                                         ✓
                                     </button>
 
-                                    <span className={`px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-widest border shrink-0 ${PRIORITY_STYLES[task.priority]}`}>
+                                    <span className={`px-2 py-1 text-[10px] font-bold uppercase tracking-widest border shrink-0 ${PRIORITY_STYLES[task.priority]}`}>
                                         {task.priority}
                                     </span>
 
                                     <span 
-                                        className={`text-sm text-text flex-1 min-w-0 truncate ${task.is_urgent ? 'text-accent-green' : (task.priority === 'P1' ? 'text-accent-red' : '')}`}
-                                        style={{ fontWeight: 600 }}
+                                        className={`text-[15px] font-medium text-text flex-1 min-w-0 truncate ${task.is_urgent ? 'text-text' : (task.priority === 'P1' ? 'text-text' : '')}`}
                                     >
                                         {task.title}
                                     </span>
@@ -398,24 +393,24 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
 
             {/* COMPLETED ARCHIVE */}
             {completedTasksList.length > 0 && (
-                <div className="mt-4 border-t border-dashed border-border/50 pt-3">
-                    <div className="flex justify-between items-center mb-2">
-                        <h3 className="text-[10px] uppercase font-bold tracking-[0.2em] text-accent-green">
-                            ✅ Tamamlananlar
+                <div className="mt-8">
+                    <div className="flex justify-between items-center mb-3">
+                        <h3 className="text-sm font-bold tracking-wide text-text-muted flex items-center gap-2">
+                            Tamamlananlar
                         </h3>
-                        <span className="text-[9px] text-text-muted uppercase tracking-widest">
+                        <span className="text-xs text-text-muted/50">
                             {completedTasksList.length} görev
                         </span>
                     </div>
-                    <div className="space-y-1 opacity-50 hover:opacity-100 transition-opacity">
+                    <div className="space-y-2 opacity-60 hover:opacity-100 transition-opacity">
                         {completedTasksList.map((task) => (
-                            <div key={task.id} className="flex items-center gap-2 p-1.5 bg-surface/5 border border-border">
-                                <span className="text-accent-green text-[10px] font-bold">✓</span>
-                                <span className="text-[11px] text-text-muted line-through flex-1 truncate">{task.title}</span>
-                                <span className="text-[9px] text-text-muted/50 tracking-widest">
+                            <div key={task.id} className="flex items-center gap-3 p-3 bg-surface/30 border border-border">
+                                <span className="text-text-muted text-xs font-bold">✓</span>
+                                <span className="text-sm text-text-muted line-through flex-1 truncate">{task.title}</span>
+                                <span className="text-[10px] text-text-muted/60 tracking-wider">
                                     {task.completed_at ? new Date(task.completed_at).toLocaleDateString("tr-TR") : ''}
                                 </span>
-                                <button onClick={(e) => deleteTask(task.id, e)} className="text-text-muted hover:text-accent-red text-xs px-1">✕</button>
+                                <button onClick={(e) => deleteTask(task.id, e)} className="text-text-muted/50 hover:text-text text-sm px-2">✕</button>
                             </div>
                         ))}
                     </div>

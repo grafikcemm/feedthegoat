@@ -101,21 +101,21 @@ export default function WarFund() {
 
             {/* Warn message if negative */}
             {netCashflow < 0 && (
-                <div className="mb-4 p-3 border border-accent-red bg-accent-red/5 flex items-start gap-3 glow-red">
-                    <span className="text-accent-red text-lg font-bold">!</span>
+                <div className="mb-6 p-4 border-l-[3px] border-accent-amber/70 bg-surface flex items-start gap-3">
+                    <span className="text-accent-amber text-lg font-bold mt-0.5">!</span>
                     <div>
-                        <span className="text-xs text-accent-red uppercase tracking-wide font-bold block mb-1">Ağır Kan Kaybı Uyarısı</span>
-                        <p className="text-[10px] text-text-muted uppercase tracking-wider">Giderler gelirini aştı. Kanamayı durdur.</p>
+                        <span className="text-sm text-text uppercase tracking-wide font-bold block mb-1">Negatif Nakit Akışı</span>
+                        <p className="text-xs text-text-muted">Giderler gelirini aştı. Abonelikleri ve gereksiz harcamaları optimize et.</p>
                     </div>
                 </div>
             )}
 
             {/* Add New Form */}
-            <form onSubmit={handleAdd} className="brutalist-card border-border p-4 bg-surface/20 mb-4 flex flex-col md:flex-row gap-2">
+            <form onSubmit={handleAdd} className="border border-border p-5 bg-surface mb-6 flex flex-col md:flex-row gap-3">
                 <select
                     value={newType}
                     onChange={e => setNewType(e.target.value as "income" | "expense" | "subscription")}
-                    className="bg-background border border-border p-2 text-xs focus:outline-none"
+                    className="bg-background border border-border px-3 py-2.5 text-xs text-text focus:border-text transition-colors outline-none"
                 >
                     <option value="income">Gelir (+)</option>
                     <option value="expense">Gider (-)</option>
@@ -123,37 +123,37 @@ export default function WarFund() {
                 </select>
                 <input
                     type="text"
-                    placeholder="Açıklama"
+                    placeholder="Gösterge / Açıklama"
                     value={newLabel}
                     onChange={e => setNewLabel(e.target.value)}
-                    className="flex-1 bg-background border border-border p-2 text-xs focus:outline-none"
+                    className="flex-1 bg-background border border-border px-4 py-2.5 text-sm text-text focus:border-text transition-colors outline-none"
                 />
                 <input
                     type="number"
                     placeholder="Miktar (₺) / Aylık"
                     value={newAmount}
                     onChange={e => setNewAmount(e.target.value)}
-                    className="w-full md:w-32 bg-background border border-border p-2 text-xs focus:outline-none"
+                    className="w-full md:w-40 bg-background border border-border px-4 py-2.5 text-sm text-text focus:border-text transition-colors outline-none"
                 />
-                <button type="submit" className="bg-text text-black px-4 py-2 text-xs uppercase font-bold hover:bg-text-muted transition-colors">
-                    Ekle
+                <button type="submit" className="bg-text text-black px-6 py-2.5 text-xs tracking-wider uppercase font-bold hover:opacity-90 transition-opacity">
+                    EKLE
                 </button>
             </form>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Gelirler */}
-                <div className="brutalist-card border-border p-4 bg-surface/30">
-                    <h3 className="text-xs uppercase tracking-wider text-accent-green mb-3 flex justify-between">
-                        <span>Gelir (Cephane)</span>
+                <div className="border border-border p-5 bg-surface/30">
+                    <h3 className="text-xs uppercase tracking-wider text-accent-green/80 flex justify-between mb-4 pb-2 border-b border-border/50">
+                        <span>Gelir</span>
                         <span className="font-bold">{totalIncome.toLocaleString("tr-TR")} ₺</span>
                     </h3>
-                    <div className="space-y-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
+                    <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                         {incomes.map((item) => (
-                            <div key={item.id} className="group flex justify-between items-center text-[11px] pb-2 border-b border-border/50 last:border-0 last:pb-0">
-                                <span className="text-text-muted truncate mr-2">{item.label}</span>
-                                <div className="flex items-center gap-2 shrink-0">
-                                    <span className="text-text font-mono">{item.amount.toLocaleString("tr-TR")} ₺</span>
-                                    <button onClick={() => handleDelete(item.id)} className="opacity-0 group-hover:opacity-100 text-accent-red hover:text-red-400 transition-opacity">×</button>
+                            <div key={item.id} className="group flex justify-between items-start text-xs border-b border-border/30 pb-2">
+                                <span className="text-text-muted pr-2 leading-relaxed">{item.label}</span>
+                                <div className="flex items-center gap-3 shrink-0 mt-0.5">
+                                    <span className="text-text font-mono font-medium">{item.amount.toLocaleString("tr-TR")} ₺</span>
+                                    <button onClick={() => handleDelete(item.id)} className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-accent-red transition-opacity">✕</button>
                                 </div>
                             </div>
                         ))}
@@ -161,18 +161,18 @@ export default function WarFund() {
                 </div>
 
                 {/* Giderler */}
-                <div className="brutalist-card border-border p-4 bg-surface/30">
-                    <h3 className="text-xs uppercase tracking-wider text-accent-red mb-3 flex justify-between">
-                        <span>Gider (Kan Kaybı)</span>
+                <div className="border border-border p-5 bg-surface/30">
+                    <h3 className="text-xs uppercase tracking-wider text-accent-amber/80 flex justify-between mb-4 pb-2 border-b border-border/50">
+                        <span>Gider</span>
                         <span className="font-bold">{totalExpense.toLocaleString("tr-TR")} ₺</span>
                     </h3>
-                    <div className="space-y-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
+                    <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                         {expenses.map((item) => (
-                            <div key={item.id} className="group flex justify-between items-center text-[11px] pb-2 border-b border-border/50 last:border-0 last:pb-0">
-                                <span className="text-text-muted truncate mr-2">{item.label}</span>
-                                <div className="flex items-center gap-2 shrink-0">
-                                    <span className="text-text font-mono">{item.amount.toLocaleString("tr-TR")} ₺</span>
-                                    <button onClick={() => handleDelete(item.id)} className="opacity-0 group-hover:opacity-100 text-accent-red hover:text-red-400 transition-opacity">×</button>
+                            <div key={item.id} className="group flex justify-between items-start text-xs border-b border-border/30 pb-2">
+                                <span className="text-text-muted pr-2 leading-relaxed">{item.label}</span>
+                                <div className="flex items-center gap-3 shrink-0 mt-0.5">
+                                    <span className="text-text font-mono font-medium">{item.amount.toLocaleString("tr-TR")} ₺</span>
+                                    <button onClick={() => handleDelete(item.id)} className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-accent-red transition-opacity">✕</button>
                                 </div>
                             </div>
                         ))}
@@ -180,18 +180,18 @@ export default function WarFund() {
                 </div>
 
                 {/* Abonelikler */}
-                <div className="brutalist-card border-border p-4 bg-surface/30">
-                    <h3 className="text-xs uppercase tracking-wider text-accent-red/80 mb-3 flex justify-between">
-                        <span>Abonelikler (Aylık)</span>
+                <div className="border border-border p-5 bg-surface/30">
+                    <h3 className="text-xs uppercase tracking-wider text-text-muted flex justify-between mb-4 pb-2 border-b border-border/50">
+                        <span>Abonelikler & Sabitler</span>
                         <span className="font-bold">{totalSubs.toLocaleString("tr-TR")} ₺</span>
                     </h3>
-                    <div className="space-y-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
+                    <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                         {subscriptions.map((item) => (
-                            <div key={item.id} className="group flex justify-between items-center text-[11px] pb-2 border-b border-border/50 last:border-0 last:pb-0">
-                                <span className="text-text-muted truncate mr-2">{item.label}</span>
-                                <div className="flex items-center gap-2 shrink-0">
-                                    <span className="text-text font-mono">{item.amount.toLocaleString("tr-TR")} ₺</span>
-                                    <button onClick={() => handleDelete(item.id)} className="opacity-0 group-hover:opacity-100 text-accent-red hover:text-red-400 transition-opacity">×</button>
+                            <div key={item.id} className="group flex justify-between items-start text-xs border-b border-border/30 pb-2">
+                                <span className="text-text-muted pr-2 leading-relaxed">{item.label}</span>
+                                <div className="flex items-center gap-3 shrink-0 mt-0.5">
+                                    <span className="text-text font-mono font-medium">{item.amount.toLocaleString("tr-TR")} ₺</span>
+                                    <button onClick={() => handleDelete(item.id)} className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-accent-red transition-opacity">✕</button>
                                 </div>
                             </div>
                         ))}
