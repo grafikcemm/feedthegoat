@@ -102,7 +102,6 @@ export default function BonusTasks() {
   const ITEMS: BonusItem[] = [
     { id: "bn-walk", label: "Sabah 20 dk yürüyüş", activeDays: [2, 3, 5] },
     { id: "bn-english", label: "İngilizce Programı", activeDays: [1, 3, 5, 6], hasModal: true },
-    { id: "bn-share", label: "2 hesaba tweet at" },
     { id: "bn-course", label: "Kişisel bakım" },
   ];
 

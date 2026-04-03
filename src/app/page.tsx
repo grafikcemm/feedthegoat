@@ -7,6 +7,7 @@ import ActiveTasks from "@/components/ActiveTasks";
 import CareerDashboard from "@/components/career/CareerDashboard";
 import DailyPrayer from "@/components/DailyPrayer";
 import NeverBreak from "@/components/NeverBreak";
+import ContentSharing from "@/components/ContentSharing";
 import BonusTasks from "@/components/BonusTasks";
 import WeeklyScreen from "@/components/WeeklyScreen";
 import WarFund from "@/components/WarFund";
@@ -229,7 +230,12 @@ export default function Home() {
 
               <div className="h-px bg-border my-6" />
 
-              {/* 2. Enerji Varsa (İkinci Öncelik) */}
+              {/* 2. İçerik Paylaşımı */}
+              <ContentSharing />
+
+              <div className="h-px bg-border my-6" />
+
+              {/* 3. Enerji Varsa (Bonus) */}
               <BonusTasks />
 
               <div className="h-px bg-border my-6" />
