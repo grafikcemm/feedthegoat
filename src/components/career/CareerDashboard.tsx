@@ -9,6 +9,7 @@ import CareerFilters, { FilterState } from "./CareerFilters";
 import CareerRoadmap from "./CareerRoadmap";
 import CareerPhaseSection from "./CareerPhaseSection";
 import CareerArchive from "./CareerArchive";
+import CollapsibleBlock from "../CollapsibleBlock";
 
 import { CAREER_GOALS, PHASES, Goal, Status } from "@/data/careerGoals";
 
@@ -37,12 +38,12 @@ export default function CareerDashboard() {
           }
           return g;
         });
-        setGoals(mergedGoals);
+        setTimeout(() => setGoals(mergedGoals), 0);
       } catch {
-        setGoals(CAREER_GOALS);
+        setTimeout(() => setGoals(CAREER_GOALS), 0);
       }
     } else {
-      setGoals(CAREER_GOALS);
+      setTimeout(() => setGoals(CAREER_GOALS), 0);
     }
   }, []);
 
@@ -87,7 +88,11 @@ export default function CareerDashboard() {
       <CareerFocusPanel goals={goals} />
       <CareerMetrics />
       
-      <CareerFilters filters={filters} setFilters={setFilters} />
+      <div className="my-4">
+        <CollapsibleBlock title="Filtrele & Ara" icon="🔍">
+            <CareerFilters filters={filters} setFilters={setFilters} />
+        </CollapsibleBlock>
+      </div>
       
       <div className="h-px bg-border my-10 hidden md:block" />
 
@@ -95,18 +100,25 @@ export default function CareerDashboard() {
       <CareerRoadmap phases={PHASES} goals={goals} />
 
       {/* Phase Detailed Sections */}
-      <div className="space-y-6 mt-12 pt-8 border-t border-border">
-         <h2 className="text-xl font-bold uppercase tracking-[0.2em] mb-8 text-white">Faz Detayları & Uygulama</h2>
+      <div className="space-y-4 mt-12 pt-8 border-t border-border">
+         <h2 className="text-sm font-bold uppercase tracking-[0.2em] mb-4 text-text-muted">Faz Detayları & Uygulama</h2>
          
          {PHASES.map(phase => {
             const phaseGoals = filteredGoals.filter(g => g.phase === phase.number && g.status !== "removed");
+            const hasActiveGoal = phaseGoals.some(g => g.status === "active");
+            
             return phaseGoals.length > 0 ? (
-              <CareerPhaseSection 
+               <CollapsibleBlock 
                  key={phase.number} 
-                 phase={phase} 
-                 goals={phaseGoals} 
-                 onUpdateStatus={handleUpdateStatus} 
-              />
+                 title={`FAZ ${phase.number}: ${phase.title}`} 
+                 defaultOpen={hasActiveGoal}
+               >
+                 <CareerPhaseSection 
+                    phase={phase} 
+                    goals={phaseGoals} 
+                    onUpdateStatus={handleUpdateStatus} 
+                 />
+               </CollapsibleBlock>
             ) : null;
          })}
       </div>

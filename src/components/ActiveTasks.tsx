@@ -61,6 +61,9 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
     const [newTaskTitle, setNewTaskTitle] = useState("");
     const [newPriority, setNewPriority] = useState<"P1" | "P2" | "P3">("P2");
     const [newQuadrant] = useState<Quadrant>("VOCATION");
+    
+    // UI state
+    const [showAllTasks, setShowAllTasks] = useState(false);
 
     // Load Data with migration
     useEffect(() => {
@@ -260,11 +263,6 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
         "P3": "#444444"
     };
 
-    const PRIORITY_BG = {
-        "P1": "#1A0808",
-        "P2": "#1A1200",
-        "P3": "transparent"
-    };
 
     const activeTasksList = useMemo(() => {
         let active = tasks.filter(t => !t.is_completed);
@@ -278,6 +276,8 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
             return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
         });
     }, [tasks, activeQuadrantFilter]);
+
+    const visibleTasksList = showAllTasks ? activeTasksList : activeTasksList.slice(0, 3);
 
     const completedTasksList = useMemo(() => {
         const completed = tasks.filter(t => t.is_completed);
@@ -299,9 +299,12 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
     return (
         <section className="mt-8">
             <div className="flex items-center justify-between mb-4 border-b border-border pb-2">
-                <h2 className="text-xl font-bold tracking-wide text-text mb-1 flex items-center gap-2">
-                    Aktif Görevler
-                </h2>
+                <div>
+                  <h2 className="text-xl font-bold tracking-wide text-text mb-1 flex items-center gap-2">
+                      Aktif Görevler
+                  </h2>
+                  <p className="text-xs text-text-muted">Önce en önemliden başla. Hepsini aynı anda düşünme.</p>
+                </div>
             </div>
 
             <div className="bg-surface border border-border p-5 space-y-5">
@@ -341,8 +344,9 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
                             : "AKTİF GÖREV BULUNAMADI."}
                     </div>
                 ) : (
-                    <div className="space-y-3">
-                        {activeTasksList.map((task) => {
+                    <div className="space-y-4">
+                        <div className="space-y-3">
+                            {visibleTasksList.map((task) => {
                             return (
                                 <div 
                                     key={task.id} 
@@ -387,6 +391,15 @@ export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) 
                                 </div>
                             );
                         })}
+                        </div>
+                        {activeTasksList.length > 3 && (
+                            <button
+                                onClick={() => setShowAllTasks(!showAllTasks)}
+                                className="w-full text-xs py-3 border border-border bg-surface/30 hover:bg-surface/50 text-text-muted hover:text-text transition-colors font-bold uppercase tracking-wider"
+                            >
+                                {showAllTasks ? "SADECE ÖNEMLİ 3 GÖREVİ GÖSTER" : `TÜMÜNÜ GÖSTER (+${activeTasksList.length - 3})`}
+                            </button>
+                        )}
                     </div>
                 )}
             </div>

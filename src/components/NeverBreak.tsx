@@ -11,11 +11,11 @@ interface FailRecord {
 }
 
 const FAIL_REASONS = [
-  { value: "no-time", label: "Zamanım olmadı", suggestion: "Yarın 15 dk erken başla. Hangi görevi kısaltabilirsin?" },
+  { value: "no-time", label: "Zamanım olmadı", suggestion: "Sorun değil. Yarın 15 dk erken başla veya görevi kısalt." },
   { value: "no-energy", label: "Enerjim yoktu / hasta hissettim", suggestion: "Bu geçici. Yarın mini versiyon: sadece 5 dakika bile yap." },
   { value: "forgot", label: "Unuttum", suggestion: "Tetikleyici kur: Kahve = İngilizce, Spor çantası = Antrenman." },
-  { value: "external", label: "Dış etken (seyahat, acil durum)", suggestion: "Mücbir sebep. Zincir kırılmadı, duraklatıldı. Yarın devam." },
-  { value: "motivation", label: "İsteksizlik / motivasyon eksikliği", suggestion: "Sistemi hislerine bırakma. 2 dakika kural: Sadece başla." },
+  { value: "external", label: "Dış etken (seyahat, acil durum)", suggestion: "Olağanüstü durum. Zincir kopmadı, sadece durakladı. Yarın devam." },
+  { value: "motivation", label: "İsteksizlik / dikkat dağınıklığı", suggestion: "Olur böyle günler. Yarın 2 dakika kuralıyla sadece başlamayı dene." },
 ];
 
 export default function NeverBreak({ streak = 0 }: { streak?: number }) {
@@ -143,11 +143,11 @@ export default function NeverBreak({ streak = 0 }: { streak?: number }) {
     <section className="mt-8">
       <div className="mb-4 flex items-end justify-between border-b border-border pb-2">
         <div>
-            <h2 className="text-xl font-bold tracking-wide text-text mb-1">
-              Kritik Rutinler
+            <h2 className="text-xl font-bold tracking-wide text-text mb-1 flex items-center gap-2">
+              <span className="opacity-80 text-lg">🛡️</span> Kritik Rutinler
             </h2>
             <p className="text-xs text-text-muted">
-              Zinciri değil, kimliğini koru. Sadece ana savaşları kazan.
+              Günü kurtaracak temel adımlar. Yarım kalsa da devam et.
             </p>
         </div>
         <div className="text-right">
@@ -227,8 +227,8 @@ export default function NeverBreak({ streak = 0 }: { streak?: number }) {
               {/* Reason Picker - Inline */}
               {isFailed && showReasonPicker === item.id && !currentReason && (
                 <div className="ml-4 p-4 border border-border bg-surface mt-2 space-y-3">
-                  <p className="text-xs text-text-muted font-bold">
-                    Neden eksik kaldı? (Zinciri onar)
+                  <p className="text-xs text-text-muted font-bold mb-2">
+                    Neden eksik kaldı? (Zinciri onarmaya başlayalım)
                   </p>
                   <div className="space-y-1">
                     {FAIL_REASONS.map((reason) => (

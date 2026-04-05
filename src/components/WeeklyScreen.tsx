@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import CollapsibleBlock from "./CollapsibleBlock";
 
 const MOVIES = [
   { id: 1, title: "The Social Network (2010)", reason: "Bir fikri sıfırdan küresel ürüne dönüştürme hikayesi. Obsesyon vs ilişkiler dengesi." },
@@ -129,13 +130,22 @@ export default function WeeklyScreen() {
 
     return (
         <section className="space-y-8 animate-in fade-in duration-300">
+            <div>
+                <h2 className="text-xl font-bold tracking-wide text-text mb-1 flex items-center gap-2">
+                    Bu Haftanın Odakları
+                </h2>
+                <p className="text-xs text-text-muted">
+                    Haftayı kazanmak için tamamlaman gereken minimum hedefler.
+                </p>
+            </div>
+
             {/* Haftalık Takip */}
-            <div className="p-6 border border-border bg-surface">
-                <div className="flex items-center justify-between mb-6 border-b border-border/50 pb-2">
-                    <h3 className="text-sm font-bold tracking-wide text-text flex items-center gap-2">
-                        Haftalık Görevler
+            <div className="p-5 sm:p-6 border border-border/50 bg-surface/30">
+                <div className="flex items-center justify-between mb-5 border-b border-border/50 pb-2">
+                    <h3 className="text-xs uppercase tracking-widest font-bold text-text-muted flex items-center gap-2">
+                        Minimum Kazanımlar
                     </h3>
-                    <span className="text-xs font-bold text-text-muted">{doneCount}/{weeklyTasks.length}</span>
+                    <span className="text-[10px] font-bold text-text-muted bg-background px-2 py-1 rounded-sm border border-border/50">{doneCount}/{weeklyTasks.length} Tamamlandı</span>
                 </div>
                 
                 <div className="grid grid-cols-1 gap-3">
@@ -168,18 +178,12 @@ export default function WeeklyScreen() {
             </div>
 
             {/* PAZAR ŞARJ GÜNÜ */}
-            <div className="p-6 border border-border bg-background">
-                <div className="flex items-center justify-between mb-6 border-b border-border/50 pb-2">
-                    <h3 className="text-sm font-bold tracking-wide text-text-muted flex items-center gap-2">
-                        Pazar — Şarj Günü
-                    </h3>
-                </div>
-
-                <div className="space-y-4">
+            <CollapsibleBlock title="Pazar — Şarj Günü" icon="🔋">
+                <div className="space-y-3">
                     {/* Sabah */}
-                    <div className="p-4 border border-border bg-surface/50 transition-colors hover:bg-surface">
+                    <div className="p-3 sm:p-4 border border-border/40 bg-background/50 transition-colors">
                         <h4 className="text-sm font-bold text-text mb-2 tracking-wide flex items-center gap-2">
-                            <span className="opacity-80">☀️</span> Sabah <span className="text-text-muted text-xs font-normal">(09:00-12:00)</span>
+                            <span className="opacity-80">☀️</span> Sabah <span className="text-text-muted text-[10px] uppercase font-normal tracking-wider">(09:00-12:00)</span>
                         </h4>
                         <ul className="space-y-1.5 text-xs text-text-muted ml-7 list-disc">
                             <li>Sabah duası + görselleştirme</li>
@@ -189,9 +193,9 @@ export default function WeeklyScreen() {
                     </div>
 
                     {/* Öğle */}
-                    <div className="p-4 border border-border bg-surface/50 transition-colors hover:bg-surface">
+                    <div className="p-3 sm:p-4 border border-border/40 bg-background/50 transition-colors">
                         <h4 className="text-sm font-bold text-text mb-2 tracking-wide flex items-center gap-2">
-                            <span className="opacity-80">📖</span> Öğleden Sonra <span className="text-text-muted text-xs font-normal">(14:00-17:00)</span>
+                            <span className="opacity-80">📖</span> Öğleden Sonra <span className="text-text-muted text-[10px] uppercase font-normal tracking-wider">(14:00-17:00)</span>
                         </h4>
                         <ul className="space-y-1.5 text-xs text-text-muted ml-7 list-disc">
                             <li>Biyografi oku (minimum 50 sayfa veya 1 saat)</li>
@@ -200,23 +204,25 @@ export default function WeeklyScreen() {
                     </div>
 
                     {/* Akşam */}
-                    <div className="p-4 border border-border bg-surface/50 transition-colors hover:bg-surface">
-                        <h4 className="text-sm font-bold text-text mb-4 tracking-wide flex items-center justify-between">
-                            <span className="flex items-center gap-2"><span className="opacity-80">🎬</span> Akşam <span className="text-text-muted text-xs font-normal">(19:00-22:00)</span></span>
-                            <span className="text-[10px] text-accent-amber font-bold tracking-widest border border-accent-amber/30 px-2 py-1 bg-accent-amber/5">
-                                HAFTA {weekNumber} FİLMİ
+                    <div className="p-3 sm:p-4 border border-border/40 bg-background/50 transition-colors group">
+                        <h4 className="text-sm font-bold text-text tracking-wide flex items-center justify-between">
+                            <span className="flex items-center gap-2">
+                                <span className="opacity-80">🎬</span> Akşam <span className="text-text-muted text-[10px] uppercase font-normal tracking-wider">(19:00-22:00)</span>
+                            </span>
+                            <span className="text-[9px] text-accent-amber font-bold tracking-widest border border-accent-amber/30 px-1.5 py-0.5 bg-accent-amber/5">
+                                FİLM ZAMANI
                             </span>
                         </h4>
                         
-                        <div className="ml-7 border-l-2 border-border pl-4">
-                            <div className="text-text font-bold text-sm mb-1">{todaysMovie.title}</div>
-                            <div className="text-xs text-text-muted bg-surface-hover/50 p-2 italic leading-relaxed">
-                                {todaysMovie.reason}
+                        <div className="ml-7 mt-3">
+                            <div className="text-text font-medium text-xs mb-1">» {todaysMovie.title}</div>
+                            <div className="text-[11px] text-text-muted/80 italic leading-relaxed">
+                                Neden izliyoruz: {todaysMovie.reason}
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </CollapsibleBlock>
         </section>
     );
 }

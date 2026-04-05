@@ -28,7 +28,7 @@ export default function WakeUpMessageCard() {
   if (!isClient || !message) return null;
 
   return (
-    <div className="mb-6 border-l-4 border-l-text border border-border bg-surface p-5 sm:p-6 shadow-xl relative group">
+    <div className="mb-6 border-l-4 border-l-accent-amber/50 border border-border bg-surface/30 p-5 sm:p-6 relative group">
        <div className="flex justify-between items-start mb-3">
            <div className="text-[10px] uppercase tracking-[0.2em] font-bold text-text-muted">
                <span className="opacity-60 mr-1">TEMA:</span> 
@@ -44,7 +44,7 @@ export default function WakeUpMessageCard() {
        </div>
 
        <div className="space-y-4">
-           <h2 className="text-lg md:text-xl font-bold tracking-wide text-text leading-snug">
+           <h2 className="text-lg font-bold tracking-wide text-text leading-snug">
                &quot;{message.text}&quot;
            </h2>
            

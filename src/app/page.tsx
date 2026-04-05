@@ -14,6 +14,7 @@ import WarFund from "@/components/WarFund";
 import RightPanel from "@/components/RightPanel";
 import HealthDashboard from "@/components/health/HealthDashboard";
 import WakeUpMessageCard from "@/components/daily/WakeUpMessageCard";
+import CollapsibleBlock from "@/components/CollapsibleBlock";
 
 type Tab = "GUNLUK" | "HAFTALIK" | "STRATEJI" | "FINANS" | "SPOR_SAGLIK";
 
@@ -167,11 +168,11 @@ export default function Home() {
               FEED THE GOAT<span className="text-accent-red">.</span>
             </h1>
             <p className="text-xs text-text-muted mt-2 tracking-wide font-medium">
-              {activeTab === "GUNLUK" && "Karargâh — Bugün sadece ana savaşları kazan."}
+              {activeTab === "GUNLUK" && "Karargâh — Bugün sadece ana hedeflerine odaklan."}
               {activeTab === "HAFTALIK" && "Bu Haftanın 3 Kazancı — Haftayı kazanmak için minimum hedefler."}
-              {activeTab === "STRATEJI" && "Kariyer — Az konu. Çok kanıt. Canlı sistem."}
-              {activeTab === "FINANS" && "Savaş Fonu — Kan kaybetme. Kaynaklarını koru."}
-              {activeTab === "SPOR_SAGLIK" && "Spor & Sağlık — Makineyi güçlü ve zinde tut."}
+              {activeTab === "STRATEJI" && "Kariyer — Odaklan, tasarla ve inşa et."}
+              {activeTab === "FINANS" && "Savaş Fonu — Kaynaklarını koru, israfı önle."}
+              {activeTab === "SPOR_SAGLIK" && "Spor & Sağlık — Kendine iyi bak ve harekette kal."}
             </p>
           </div>
           <div className="flex flex-col items-start sm:items-end gap-2">
@@ -218,30 +219,32 @@ export default function Home() {
 
           {/* ── TAB: GÜNLÜK ────────────────────────────── */}
           {activeTab === "GUNLUK" && (
-            <div className="animate-in fade-in duration-300">
+            <div className="animate-in fade-in duration-300 space-y-8">
               {/* 0. Günün Gerçeği (Reality Check) */}
               <WakeUpMessageCard />
 
-              {/* 5. Günü Kapatış Ritüeli (Taşındı) */}
-              <DailyPrayer />
-
-              {/* 1. Asla Kırma (En Yüksek Öncelik) */}
+              {/* 1. Asla Kırma (En Yüksek Öncelik) - Her zaman açık */}
               <NeverBreak streak={streak} />
 
-              <div className="h-px bg-border my-6" />
-
-              {/* 2. İçerik Paylaşımı */}
-              <ContentSharing />
-
-              <div className="h-px bg-border my-6" />
-
-              {/* 3. Enerji Varsa (Bonus) */}
-              <BonusTasks />
-
-              <div className="h-px bg-border my-6" />
-
-              {/* Aktif Görevler */}
+              {/* Aktif Görevler - Her zaman açık */}
               <ActiveTasks />
+
+              {/* İkincil Ritüeller ve Görevler (Collapsible) */}
+              <div className="space-y-4 pt-4 border-t border-border/30">
+                <h3 className="text-[10px] uppercase tracking-[0.25em] text-text-muted font-bold mb-2">İkincil Aksiyonlar</h3>
+                
+                <CollapsibleBlock title="Günü Kapatış Ritüeli (Akşam)" icon="🌙">
+                  <DailyPrayer />
+                </CollapsibleBlock>
+
+                <CollapsibleBlock title="İçerik Paylaşımı (Opsiyonel)" icon="📱">
+                  <ContentSharing />
+                </CollapsibleBlock>
+
+                <CollapsibleBlock title="Bonus Görevler (Enerji Varsa)" icon="⚡">
+                  <BonusTasks />
+                </CollapsibleBlock>
+              </div>
 
               {/* Animasyonlu Motivasyon Kartları */}
               <MotivationCards />

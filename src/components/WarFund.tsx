@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import AlertBanner from "./AlertBanner";
 
 type FinRecord = {
     id: string;
@@ -44,7 +45,7 @@ export default function WarFund() {
                 try {
                     const parsed = JSON.parse(oldSaved);
                     setTimeout(() => setRecords(parsed), 0);
-                } catch(e) {}
+                } catch {}
             }
         }
         setTimeout(() => setIsLoaded(true), 0);
@@ -101,17 +102,16 @@ export default function WarFund() {
 
             {/* Warn message if negative */}
             {netCashflow < 0 && (
-                <div className="mb-6 p-4 border-l-[3px] border-accent-amber/70 bg-surface flex items-start gap-3">
-                    <span className="text-accent-amber text-lg font-bold mt-0.5">!</span>
-                    <div>
-                        <span className="text-sm text-text uppercase tracking-wide font-bold block mb-1">Negatif Nakit Akışı</span>
-                        <p className="text-xs text-text-muted">Giderler gelirini aştı. Abonelikleri ve gereksiz harcamaları optimize et.</p>
-                    </div>
-                </div>
+                <AlertBanner 
+                    variant="warning"
+                    title="Durum Bilgisi: Nakit Açığı"
+                    description="Giderler geçici olarak gelirini aşmış durumda. Panik yapmadan önce abonelikleri ve gereksiz küçük harcamaları optimize edebilirsin."
+                    className="mb-6"
+                />
             )}
 
             {/* Add New Form */}
-            <form onSubmit={handleAdd} className="border border-border p-5 bg-surface mb-6 flex flex-col md:flex-row gap-3">
+            <form onSubmit={handleAdd} className="border border-border/50 p-4 sm:p-5 bg-surface/30 mb-6 flex flex-col md:flex-row gap-3">
                 <select
                     value={newType}
                     onChange={e => setNewType(e.target.value as "income" | "expense" | "subscription")}

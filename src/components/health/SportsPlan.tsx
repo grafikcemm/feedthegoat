@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import CollapsibleBlock from "../CollapsibleBlock";
 
 type DayPlan = {
   dayId: number; // 1=Mon, 2=Tue, 3=Wed... 0=Sun
@@ -199,12 +200,13 @@ export default function SportsPlan() {
           </div>
        </div>
 
-       <div className="border border-border/50 bg-black/50 p-4 space-y-2 text-xs text-text-muted">
-         <div className="font-bold text-text uppercase tracking-widest mb-2 border-b border-border/50 pb-2">Kurallar</div>
-         <p>• İlk 3 hafta hedef mükemmel antrenman değil, devamlılık.</p>
-         <p>• Tükenişe gitme. Set sonunda 1-3 tekrar daha çıkarabilecek gibi kal.</p>
-         <p>• Ağırlık artışı: Tüm setlerde üst tekrar sınırına ulaşınca küçük kilo artır.</p>
-       </div>
+       <CollapsibleBlock title="Temel Kurallar & Hatırlatmalar" icon="📋">
+         <div className="space-y-2 text-xs text-text-muted">
+           <p>• İlk 3 hafta hedef mükemmel antrenman değil, devamlılık.</p>
+           <p>• Tükenişe gitme. Set sonunda 1-3 tekrar daha çıkarabilecek gibi kal.</p>
+           <p>• Ağırlık artışı: Tüm setlerde üst tekrar sınırına ulaşınca küçük kilo artır.</p>
+         </div>
+       </CollapsibleBlock>
 
        <div className="space-y-4">
          {/* Sort putting Sunday at the end */}
