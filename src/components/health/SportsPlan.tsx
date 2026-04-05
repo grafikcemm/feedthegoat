@@ -15,17 +15,17 @@ const PLAN: DayPlan[] = [
     dayId: 1,
     title: "PAZARTESİ — Upper A",
     type: "MANDATORY",
-    successRule: "Isınma + ilk 3 hareket tamamlandıysa gün başarılı sayılır.",
+    successRule: "Isınma + ilk 2 hareket tamamlandıysa gün başarılı sayılır.",
     items: [
-      "ISINMA: Koşu bandında 7 dakika hafif tempo yürüyüş",
-      "Machine Chest Press: 4 set x 10-12 tekrar",
-      "Lat Pulldown: 3 set x 10-12 tekrar",
-      "Chest Supported Row: 3 set x 10-12 tekrar",
-      "Machine Shoulder Press: 3 set x 10-12 tekrar",
-      "Rope Pushdown: 3 set x 12-15 tekrar",
-      "Hammer Curl: 3 set x 12-15 tekrar",
-      "Face Pull: 3 set x 15-20 tekrar",
-      "ANTRENMAN SONU: 10-15 dakika eğimli kardiyo"
+      "ISINMA: 7 dk hafif tempo yürüyüş",
+      "Machine Chest Press: 3x8-10",
+      "Lat Pulldown: 3x10-12",
+      "Chest Supported Row: 3x10-12",
+      "Machine Shoulder Press: 2x10-12",
+      "Rope Pushdown: 2x12-15",
+      "Hammer Curl: 2x12-15",
+      "Face Pull: 2x15-20",
+      "ANTRENMAN SONU: 10-15 dk eğimli kardiyo"
     ]
   },
   {
@@ -34,14 +34,14 @@ const PLAN: DayPlan[] = [
     type: "MANDATORY",
     successRule: "Isınma + Leg Press + Seated Leg Curl + Leg Extension tamamlandıysa gün başarılı sayılır.",
     items: [
-      "ISINMA: Koşu bandında 7 dakika hafif tempo yürüyüş",
-      "Leg Press: 4 set x 10-12 tekrar",
-      "Seated Leg Curl: 4 set x 10-12 tekrar",
-      "Leg Extension: 3 set x 12-15 tekrar",
-      "Seated Calf Raise: 4 set x 12-15 tekrar",
-      "Pallof Press: 3 set x 12-15 tekrar",
-      "Side Plank: 2-3 set",
-      "ANTRENMAN SONU: 10-15 dakika eğimli kardiyo"
+      "ISINMA: 7 dk hafif tempo yürüyüş",
+      "Leg Press: 3x8-10",
+      "Seated Leg Curl: 3x10-12",
+      "Leg Extension: 2x12-15",
+      "Seated Calf Raise: 3x12-15",
+      "Pallof Press: 2x10-12",
+      "Side Plank: 2 set",
+      "ANTRENMAN SONU: 10-15 dk eğimli kardiyo"
     ]
   },
   {
@@ -50,8 +50,8 @@ const PLAN: DayPlan[] = [
     type: "ACTIVE_REST",
     successRule: "Bugün boş gün değil, aktif toparlanma günü.",
     items: [
-       "20-30 dakika hafif tempo yürüyüş",
-       "İstersen bilek aleti: 2-3 set",
+       "20-30 dk hafif tempo yürüyüş",
+       "İstersen bilek aleti: 2 set",
        "Amaç: sistemi koparmamak"
     ]
   },
@@ -59,18 +59,18 @@ const PLAN: DayPlan[] = [
     dayId: 4,
     title: "PERŞEMBE — Upper B",
     type: "MANDATORY",
-    successRule: "Isınma + ilk 3 hareket yeterlidir.",
+    successRule: "Isınma + ilk 2 hareket yeterlidir.",
     items: [
-      "ISINMA: Koşu bandında 7 dakika hafif tempo yürüyüş",
-      "Incline Press: 4 set x 8-10 tekrar",
-      "Seated Cable Row: 4 set x 12-15 tekrar",
-      "Lat Pulldown: 3 set x 12-15 tekrar",
-      "Seated Lateral Raise: 3 set x 15-20 tekrar",
-      "Pec Deck: 2 set x 12-15 tekrar",
-      "Cable Curl: 3 set x 12-15 tekrar",
-      "Rope Pushdown: 3 set x 12-15 tekrar",
-      "Face Pull: 2 set x 15-20 tekrar",
-      "ANTRENMAN SONU: 10-15 dakika eğimli kardiyo"
+      "ISINMA: 7 dk hafif tempo yürüyüş",
+      "Incline Press: 3x8-10",
+      "Seated Cable Row: 3x10-12",
+      "Lat Pulldown: 2x12-15",
+      "Seated Lateral Raise: 3x15-20",
+      "Pec Deck: 2x12-15",
+      "Cable Curl: 2x12-15",
+      "Rope Pushdown: 2x12-15",
+      "Face Pull: 2x15-20",
+      "ANTRENMAN SONU: 10-15 dk eğimli kardiyo"
     ]
   },
   {
@@ -79,7 +79,7 @@ const PLAN: DayPlan[] = [
     type: "ACTIVE_REST",
     successRule: "Amaç: sıfır çekmemek",
     items: [
-      "20-30 dakika yürüyüş",
+      "20-30 dk yürüyüş",
       "Yoğun günse minimum 15-20 dakika"
     ]
   },
@@ -87,15 +87,16 @@ const PLAN: DayPlan[] = [
     dayId: 6,
     title: "CUMARTESİ — Lower B",
     type: "BONUS",
-    successRule: "Bel rahatsız ederse Supported Split Squat yerine Leg ext. yapılabilir.",
+    successRule: "Isınma + Leg Press + Lying Leg Curl tamamlandıysa gün başarılı sayılır.",
     items: [
-      "Leg Press: 3 set x 10-12 tekrar",
-      "Lying Leg Curl: 4 set x 10-12 tekrar",
-      "Supported Split Squat: 2-3 set x 10-12 tekrar",
-      "Seated Calf Raise: 4 set x 15-20 tekrar",
-      "Dead Bug: 3 set",
-      "Pallof Press: 2-3 set x 10-12 tekrar",
-      "ANTRENMAN SONU: 10-15 dakika eğimli kardiyo"
+      "ISINMA: 5-7 dk hafif tempo yürüyüş",
+      "Leg Press: 3x10-12",
+      "Lying Leg Curl: 3x10-12",
+      "Leg Extension: 2x12-15",
+      "Seated Calf Raise: 3x15-20",
+      "Dead Bug: 2-3 set",
+      "Pallof Press: 2x10-12",
+      "ANTRENMAN SONU: 10 dk eğimli kardiyo"
     ]
   },
   {
@@ -104,11 +105,12 @@ const PLAN: DayPlan[] = [
     type: "REST",
     items: [
       "Salon yok",
-      "İsteğe bağlı 15-20 dakika hafif yürüyüş",
+      "Tam dinlenme",
       "Erken uyku / haftaya hazırlık"
     ]
   }
 ];
+
 
 export default function SportsPlan() {
   const [expandedDay, setExpandedDay] = useState<number>(new Date().getDay());

@@ -8,81 +8,81 @@ const SPOR_PROGRAMI = [
     day: 1, // Monday
     title: "PAZARTESİ: Upper A",
     items: [
-      "ISINMA: Koşu bandında 7 dakika hafif tempo yürüyüş.",
-      "Machine Chest Press: 4 Set x 10-12 Tekrar",
-      "Lat Pulldown: 3 Set x 10-12 Tekrar",
-      "Chest Supported Row: 3 Set x 10-12 Tekrar",
-      "Machine Shoulder Press: 3 Set x 10-12 Tekrar",
-      "Rope Pushdown: 3 Set x 12-15 Tekrar",
-      "Hammer Curl: 3 Set x 12-15 Tekrar",
-      "Face Pull: 3 Set x 15-20 Tekrar. (Tükeniş)",
-      "ANTRENMAN SONU: 20 Dakika Eğimli Kardiyo",
+      "ISINMA: 7 dk hafif tempo yürüyüş",
+      "Machine Chest Press: 3x8-10",
+      "Lat Pulldown: 3x10-12",
+      "Chest Supported Row: 3x10-12",
+      "Machine Shoulder Press: 2x10-12",
+      "Rope Pushdown: 2x12-15",
+      "Hammer Curl: 2x12-15",
+      "Face Pull: 2x15-20",
+      "ANTRENMAN SONU: 10-15 dk eğimli kardiyo"
     ]
   },
   {
     day: 2, // Tuesday
     title: "SALI: Lower A",
     items: [
-      "ISINMA: Koşu bandında 7 dakika hafif tempo yürüyüş.",
-      "Leg Press: 4 Set x 10-12 Tekrar",
-      "Seated Leg Curl: 4 Set x 10-12 Tekrar",
-      "Leg Extension: 3 Set x 12-15 Tekrar",
-      "Seated Calf Raise: 4 Set x 12-15 Tekrar",
-      "Pall of Press: 3 Set x 12-15 Tekrar",
-      "Side Plank: 2-3 Set",
-      "ANTRENMAN SONU: 20 Dakika Eğimli Kardiyo"
+      "ISINMA: 7 dk hafif tempo yürüyüş",
+      "Leg Press: 3x8-10",
+      "Seated Leg Curl: 3x10-12",
+      "Leg Extension: 2x12-15",
+      "Seated Calf Raise: 3x12-15",
+      "Pallof Press: 2x10-12",
+      "Side Plank: 2 set",
+      "ANTRENMAN SONU: 10-15 dk eğimli kardiyo"
     ]
   },
   {
     day: 3, // Wednesday
-    title: "ÇARŞAMBA: AKTİF DİNLENME",
+    title: "ÇARŞAMBA: Aktif Dinlenme",
     items: [
-      "Koşu bandında 35-45 dakika hafif tempo yürüyüş.",
-      "Bilek Aleti – 3x (tükenene kadar)"
+      "20-30 dk hafif tempo yürüyüş",
+      "İstersen bilek aleti: 2 set"
     ]
   },
   {
     day: 4, // Thursday
     title: "PERŞEMBE: Upper B",
     items: [
-      "ISINMA: Koşu bandında 7 dakika hafif tempo yürüyüş.",
-      "Incline Press: 4 Set x 8-10 Tekrar",
-      "Seated Cable Row: 4 Set x 12-15 Tekrar",
-      "Lat Pulldown: 3 Set x 15-20 Tekrar",
+      "ISINMA: 7 dk hafif tempo yürüyüş",
+      "Incline Press: 3x8-10",
+      "Seated Cable Row: 3x10-12",
+      "Lat Pulldown: 2x12-15",
       "Seated Lateral Raise: 3x15-20",
       "Pec Deck: 2x12-15",
-      "Cable Curl: 3x12-15",
-      "Rope Pushdown: 3x12-15",
+      "Cable Curl: 2x12-15",
+      "Rope Pushdown: 2x12-15",
       "Face Pull: 2x15-20",
-      "ANTRENMAN SONU: 20 Dakika Eğimli Kardiyo"
+      "ANTRENMAN SONU: 10-15 dk eğimli kardiyo"
     ]
   },
   {
     day: 5, // Friday
-    title: "CUMA: AKTİF DİNLENME",
+    title: "CUMA: Aktif Dinlenme",
     items: [
-      "Koşu bandında 35-45 dakika hafif tempo yürüyüş.",
-      "Bilek Aleti – 3x (tükenene kadar)"
+      "20-30 dk yürüyüş"
     ]
   },
   {
     day: 6, // Saturday
-    title: "CUMARTESİ: Lower B",
+    title: "CUMARTESİ: Lower B (Bonus)",
     items: [
+      "ISINMA: 5-7 dk hafif tempo yürüyüş",
       "Leg Press: 3x10-12",
-      "Lying Leg Curl: 4x10-12",
-      "Supported Split Squat: 2-3x10-12",
-      "Seated Calf Raise: 4x15-20",
-      "Dead Bug: 3 set",
-      "Pallof Press: 2-3x10-12",
-      "ANTRENMAN SONU: 20 Dakika Eğimli Kardiyo"
+      "Lying Leg Curl: 3x10-12",
+      "Leg Extension: 2x12-15",
+      "Seated Calf Raise: 3x15-20",
+      "Dead Bug: 2-3 set",
+      "Pallof Press: 2x10-12",
+      "ANTRENMAN SONU: 10 dk eğimli kardiyo"
     ]
   },
   {
     day: 0, // Sunday
-    title: "PAZAR: SADECE DİNLENME",
+    title: "PAZAR: Dinlenme",
     items: [
-      "Tam Dinlenme Günü"
+      "Tam dinlenme"
     ]
   }
 ];
