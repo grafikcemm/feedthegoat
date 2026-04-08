@@ -96,7 +96,7 @@ export default function DopamineDetox() {
                         <div className="space-y-2">
                             {DETOX_RULES.red.map(item => (
                                 <div key={item.id} onClick={(e) => toggle(item.id, e)} className="flex items-start gap-2 cursor-pointer group">
-                                    <div className={`w-4 h-4 mt-0.5 shrink-0 border flex items-center justify-center text-[10px] ${checked[item.id] ? 'bg-accent-red border-accent-red text-black' : 'border-border bg-black group-hover:border-accent-red/50'}`}>
+                                    <div className={`w-4 h-4 mt-0.5 shrink-0 border flex items-center justify-center text-[8px] rounded-full transition-all ${checked[item.id] ? 'bg-accent-red border-accent-red text-black' : 'border-border bg-black group-hover:border-accent-red/50'}`}>
                                         {checked[item.id] && '✓'}
                                     </div>
                                     <span className={`text-[11px] font-medium leading-tight select-none ${checked[item.id] ? 'line-through text-text-muted' : 'text-text'}`}>
@@ -115,7 +115,7 @@ export default function DopamineDetox() {
                         <div className="space-y-2">
                             {DETOX_RULES.yellow.map(item => (
                                 <div key={item.id} onClick={(e) => toggle(item.id, e)} className="flex items-start gap-2 cursor-pointer group">
-                                    <div className={`w-4 h-4 mt-0.5 shrink-0 border flex items-center justify-center text-[10px] ${checked[item.id] ? 'bg-accent-amber border-accent-amber text-black' : 'border-border bg-black group-hover:border-accent-amber/50'}`}>
+                                    <div className={`w-4 h-4 mt-0.5 shrink-0 border flex items-center justify-center text-[8px] rounded-full transition-all ${checked[item.id] ? 'bg-accent-amber border-accent-amber text-black' : 'border-border bg-black group-hover:border-accent-amber/50'}`}>
                                         {checked[item.id] && '✓'}
                                     </div>
                                     <span className={`text-[11px] font-medium leading-tight select-none ${checked[item.id] ? 'line-through text-text-muted' : 'text-text'}`}>
@@ -134,7 +134,7 @@ export default function DopamineDetox() {
                         <div className="space-y-2">
                             {DETOX_RULES.green.map(item => (
                                 <div key={item.id} onClick={(e) => toggle(item.id, e)} className="flex items-start gap-2 cursor-pointer group">
-                                    <div className={`w-4 h-4 mt-0.5 shrink-0 border flex items-center justify-center text-[10px] ${checked[item.id] ? 'bg-accent-green border-accent-green text-black' : 'border-border bg-black group-hover:border-accent-green/50'}`}>
+                                    <div className={`w-4 h-4 mt-0.5 shrink-0 border flex items-center justify-center text-[8px] rounded-full transition-all ${checked[item.id] ? 'bg-accent-green border-accent-green text-black' : 'border-border bg-black group-hover:border-accent-green/50'}`}>
                                         {checked[item.id] && '✓'}
                                     </div>
                                     <span className={`text-[11px] font-medium leading-tight select-none ${checked[item.id] ? 'line-through text-text-muted' : 'text-text'}`}>

@@ -162,16 +162,9 @@ export default function BonusTasks() {
                 </div>
 
                 {!isDisabled && (
-                  <button
-                    onClick={(e) => toggle(item.id, e)}
-                    className={`w-8 h-8 shrink-0 flex items-center justify-center border transition-colors ${
-                      isDone
-                        ? "border-accent-green bg-accent-green text-black"
-                        : "border-border bg-transparent text-transparent hover:border-text-muted"
-                    } rounded-sm`}
-                  >
-                    <span className="text-sm font-bold">✓</span>
-                  </button>
+                  <div className={`w-6 h-6 shrink-0 border flex items-center justify-center text-sm rounded-full transition-all ${checked[item.id] ? 'bg-accent-green border-accent-green text-black' : 'border-border bg-transparent'}`}>
+                    {checked[item.id] && '✓'}
+                  </div>
                 )}
               </div>
             );

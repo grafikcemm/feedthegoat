@@ -63,22 +63,47 @@ export default function CareerMetrics() {
 
   return (
     <div className="mb-10 overflow-x-auto pb-4 scrollbar-thin">
-      <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-text-muted mb-4 flex items-center gap-2">
+      <div
+        style={{
+          fontFamily: "var(--font-mono)",
+          fontSize: "var(--size-xs)",
+          color: "var(--text-2)",
+          letterSpacing: "0.12em",
+          textTransform: "uppercase",
+          borderBottom: "1px solid var(--border-1)",
+          paddingBottom: "12px",
+          marginBottom: "16px",
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+        }}
+      >
         <span>📊</span> KPI METRİKLERİ
-      </h3>
+      </div>
       <div className="flex gap-4">
         {metrics.map(metric => (
           <div 
             key={metric.id} 
-            className="shrink-0 w-40 brutalist-card border-border hover:border-text-muted transition-colors cursor-pointer p-4 flex flex-col justify-between"
+            className="shrink-0 w-40 hover:bg-(--bg-hover) transition-colors cursor-pointer flex flex-col justify-between"
+            style={{
+              background: "var(--bg-raised)",
+              border: "1px solid var(--border-0)",
+              borderRadius: "0px",
+              padding: "16px",
+              minHeight: "120px",
+            }}
             onClick={() => updateValue(metric.id)}
             title={metric.description}
           >
             <div>
-              <span className="text-[9px] uppercase tracking-widest text-text-muted block mb-1">{metric.label}</span>
-              <p className="text-2xl font-black text-white">{metric.value} <span className="text-[10px] text-text-muted font-normal ml-0.5">{metric.unit}</span></p>
+              <span style={{ display: "block", fontFamily: "var(--font-mono)", fontSize: "9px", color: "var(--text-3)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "8px" }}>
+                {metric.label}
+              </span>
+              <p style={{ fontFamily: "var(--font-mono)", fontSize: "24px", color: "var(--text-0)", lineHeight: 1 }}>
+                {metric.value} <span style={{ fontFamily: "var(--font-mono)", fontSize: "10px", color: "var(--text-3)", marginLeft: "2px" }}>{metric.unit}</span>
+              </p>
             </div>
-            <span className="text-[8px] uppercase mt-4 text-text-muted opacity-50 block hover:opacity-100 transition-opacity">
+            <span style={{ display: "block", fontFamily: "var(--font-mono)", fontSize: "8px", color: "var(--text-3)", letterSpacing: "0.1em", textTransform: "uppercase", marginTop: "16px", opacity: 0.5 }}>
               Düzenle ✎
             </span>
           </div>

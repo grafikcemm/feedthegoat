@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import CollapsibleBlock from "./CollapsibleBlock";
+import { supabase } from "@/utils/supabase";
 
 const MOVIES = [
   { id: 1, title: "The Social Network (2010)", reason: "Bir fikri sıfırdan küresel ürüne dönüştürme hikayesi. Obsesyon vs ilişkiler dengesi." },
@@ -66,7 +67,38 @@ function getWeekNumber(d: Date) {
     return Math.min(Math.max(weekNo, 1), 52); // clamped between 1 and 52
 }
 
+interface WeeklySummary {
+    completedDays: number;
+    totalScore: number;
+    trainingDays: number;
+    bestDayScore: number;
+    bestDayDate: string;
+}
+
+interface DayScore {
+    date: string;
+    total_score: number;
+}
+
+// Haftanın Pazartesi tarihini döndürür (YYYY-MM-DD)
+function getMondayOfWeek(d: Date): string {
+    const date = new Date(d);
+    const day = date.getDay();
+    const diff = day === 0 ? -6 : 1 - day;
+    date.setDate(date.getDate() + diff);
+    return date.toISOString().split("T")[0];
+}
+
 export default function WeeklyScreen() {
+    const [weeklySummary, setWeeklySummary] = useState<WeeklySummary>({
+        completedDays: 0,
+        totalScore: 0,
+        trainingDays: 0,
+        bestDayScore: 0,
+        bestDayDate: "",
+    });
+    const [summaryLoaded, setSummaryLoaded] = useState(false);
+    const [weekDayScores, setWeekDayScores] = useState<DayScore[]>([]);
     const [weeklyTasks, setWeeklyTasks] = useState([
         { id: "wt-sat-1", text: "Cumartesi: Haftalık gelir/gider takibi", icon: "💰", done: false },
         { id: "wt-sat-2", text: "Cumartesi: Müşteri pipeline kontrolü", icon: "📊", done: false },
@@ -117,6 +149,50 @@ export default function WeeklyScreen() {
         }));
     }, [weeklyTasks, isClient]);
 
+    // Haftalık özet — Supabase'den çek
+    useEffect(() => {
+        if (!isClient) return;
+        const monday = getMondayOfWeek(new Date());
+        const sunday = new Date(monday);
+        sunday.setDate(sunday.getDate() + 6);
+        const sundayStr = sunday.toISOString().split("T")[0];
+
+        async function loadSummary() {
+            const { data, error } = await supabase
+                .from("daily_scores")
+                .select("date, total_score, routines_completed")
+                .gte("date", monday)
+                .lte("date", sundayStr);
+
+            if (error || !data) {
+                setSummaryLoaded(true);
+                return;
+            }
+
+            const completedDays = data.filter(r => (r.total_score ?? 0) > 0).length;
+            const totalScore = data.reduce((s, r) => s + (r.total_score ?? 0), 0);
+            const trainingDays = data.filter(r => (r.routines_completed ?? 0) >= 4).length;
+            const best = data.reduce(
+                (top, r) => (r.total_score ?? 0) > top.score
+                    ? { score: r.total_score ?? 0, date: r.date }
+                    : top,
+                { score: 0, date: "" }
+            );
+
+            setWeeklySummary({
+                completedDays,
+                totalScore,
+                trainingDays,
+                bestDayScore: best.score,
+                bestDayDate: best.date,
+            });
+            setWeekDayScores(data as DayScore[]);
+            setSummaryLoaded(true);
+        }
+
+        loadSummary();
+    }, [isClient]);
+
     const toggleWeeklyTask = (id: string) => {
         if (typeof window !== "undefined" && window.navigator && window.navigator.vibrate) {
             window.navigator.vibrate(50);
@@ -130,6 +206,110 @@ export default function WeeklyScreen() {
 
     return (
         <section className="space-y-8 animate-in fade-in duration-300">
+            {/* 2x2 Haftalık Özet Grid */}
+            <div className="grid grid-cols-2 gap-3">
+                {[
+                    {
+                        label: "Tamamlanan Gün",
+                        value: `${weeklySummary.completedDays} / 7`,
+                        color: weeklySummary.completedDays >= 5 ? "#22c55e" : weeklySummary.completedDays >= 3 ? "#f59e0b" : "#ef4444",
+                    },
+                    {
+                        label: "Haftalık Toplam Puan",
+                        value: weeklySummary.totalScore > 0 ? weeklySummary.totalScore.toString() : "—",
+                        color: "#3b82f6",
+                    },
+                    {
+                        label: "Antrenman",
+                        value: `${weeklySummary.trainingDays} / 4`,
+                        color: weeklySummary.trainingDays >= 4 ? "#22c55e" : weeklySummary.trainingDays >= 2 ? "#f59e0b" : "#ef4444",
+                    },
+                    {
+                        label: "En İyi Gün",
+                        value: weeklySummary.bestDayScore > 0
+                            ? `${weeklySummary.bestDayScore}p`
+                            : "—",
+                        sub: weeklySummary.bestDayDate
+                            ? new Date(weeklySummary.bestDayDate + "T12:00:00").toLocaleDateString("tr-TR", { weekday: "short", day: "numeric" })
+                            : "",
+                        color: "#f97316",
+                    },
+                ].map((card) => (
+                    <div
+                        key={card.label}
+                        style={{
+                            background: "#111111",
+                            border: "1px solid #1f1f1f",
+                            borderRadius: "6px",
+                            padding: "16px 18px",
+                        }}
+                    >
+                        <p className="text-[10px] uppercase tracking-[0.2em] text-[#404040] font-bold mb-2">
+                            {card.label}
+                        </p>
+                        <p
+                            className="text-2xl font-bold tabular-nums"
+                            style={{ color: card.color }}
+                        >
+                            {card.value}
+                        </p>
+                        {"sub" in card && card.sub && (
+                            <p className="text-[10px] text-[#404040] mt-0.5">{card.sub}</p>
+                        )}
+                    </div>
+                ))}
+            </div>
+
+            {/* Haftalık Bar Chart */}
+            {summaryLoaded && (() => {
+                const DAY_LABELS = ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"];
+                const monday = getMondayOfWeek(new Date());
+                const mondayDate = new Date(monday + "T12:00:00");
+                const bars = DAY_LABELS.map((label, i) => {
+                    const d = new Date(mondayDate);
+                    d.setDate(d.getDate() + i);
+                    const dateStr = d.toISOString().split("T")[0];
+                    const found = weekDayScores.find((s) => s.date === dateStr);
+                    return { label, score: found?.total_score ?? 0 };
+                });
+                const maxBar = Math.max(...bars.map(b => b.score), 1);
+                return (
+                    <div style={{ marginBottom: "8px" }}>
+                        <div className="flex items-end gap-2 justify-between" style={{ height: "80px" }}>
+                            {bars.map((bar, i) => {
+                                const barH = Math.round((bar.score / maxBar) * 72);
+                                const barColor = bar.score >= 66 ? "#4CAF7D" : bar.score >= 41 ? "#D4A574" : bar.score > 0 ? "#C75B5B" : "var(--border-0)";
+                                return (
+                                    <div key={i} className="flex flex-col items-center gap-1" style={{ flex: 1 }}>
+                                        {bar.score > 0 && (
+                                            <span style={{ fontFamily: "var(--font-mono)", fontSize: "9px", color: "var(--text-3)" }}>{bar.score}</span>
+                                        )}
+                                        <div style={{ flex: 1, display: "flex", alignItems: "flex-end", width: "100%" }}>
+                                            <div
+                                                style={{
+                                                    width: "100%",
+                                                    height: barH > 0 ? `${barH}px` : "3px",
+                                                    background: barColor,
+                                                    borderRadius: "3px 3px 0 0",
+                                                    transition: "height 0.4s ease",
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                        <div className="flex gap-2 justify-between mt-1">
+                            {bars.map((bar, i) => (
+                                <span key={i} style={{ flex: 1, textAlign: "center", fontFamily: "var(--font-mono)", fontSize: "9px", color: "var(--text-3)" }}>
+                                    {bar.label}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                );
+            })()}
+
             <div>
                 <h2 className="text-xl font-bold tracking-wide text-text mb-1 flex items-center gap-2">
                     Bu Haftanın Odakları

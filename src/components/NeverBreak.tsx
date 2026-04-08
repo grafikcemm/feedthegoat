@@ -1,264 +1,212 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { Sunrise, Smile, Pill, Dumbbell, BookOpen } from "lucide-react";
+import VitaminCheckModal from "@/components/VitaminCheckModal";
+import { useToast } from "@/components/Toast";
 
-interface FailRecord {
-  reason: string;
-  suggestion: string;
-  date: string;
-  taskId: string;
-  taskLabel: string;
+interface RoutineItem {
+  id: string;
+  label: string;
+  puan: number;
+  icon: React.ElementType;
+  activeDays?: number[];
+  openVitaminModal?: boolean;
 }
 
-const FAIL_REASONS = [
-  { value: "no-time", label: "Zamanım olmadı", suggestion: "Sorun değil. Yarın 15 dk erken başla veya görevi kısalt." },
-  { value: "no-energy", label: "Enerjim yoktu / hasta hissettim", suggestion: "Bu geçici. Yarın mini versiyon: sadece 5 dakika bile yap." },
-  { value: "forgot", label: "Unuttum", suggestion: "Tetikleyici kur: Kahve = İngilizce, Spor çantası = Antrenman." },
-  { value: "external", label: "Dış etken (seyahat, acil durum)", suggestion: "Olağanüstü durum. Zincir kopmadı, sadece durakladı. Yarın devam." },
-  { value: "motivation", label: "İsteksizlik / dikkat dağınıklığı", suggestion: "Olur böyle günler. Yarın 2 dakika kuralıyla sadece başlamayı dene." },
+const ITEMS: RoutineItem[] = [
+  {
+    id: "wake_up",
+    label: "06:30 Uyanış + Yüze Buz",
+    puan: 15,
+    icon: Sunrise,
+  },
+  {
+    id: "teeth",
+    label: "Dişlerini fırçala + gargara yap",
+    puan: 5,
+    icon: Smile,
+  },
+  {
+    id: "vitamins",
+    label: "Vitaminlerin tamamını iç",
+    puan: 5,
+    icon: Pill,
+    openVitaminModal: true,
+  },
+  {
+    id: "workout",
+    label: "Antrenman (Pzt/Sal/Prş/Cmt)",
+    puan: 20,
+    icon: Dumbbell,
+    activeDays: [1, 2, 4, 6],
+  },
+  {
+    id: "reading",
+    label: "15 sayfa kitap oku",
+    puan: 10,
+    icon: BookOpen,
+  },
 ];
 
 export default function NeverBreak({ streak = 0 }: { streak?: number }) {
-  const [checked, setChecked] = useState<Record<string, boolean>>({});
-  const [failed, setFailed] = useState<Record<string, boolean>>({});
-  const [showReasonPicker, setShowReasonPicker] = useState<string | null>(null);
-  const [selectedReason, setSelectedReason] = useState<Record<string, string>>({});
-  const [currentDay, setCurrentDay] = useState(new Date().getDay());
-
-  useEffect(() => {
-    setTimeout(() => {
-      setCurrentDay(new Date().getDay());
-    }, 0);
-  }, []);
-
-  useEffect(() => {
+  const [checked, setChecked] = useState<Record<string, boolean>>(() => {
+    if (typeof window === "undefined") return {};
     const saved = localStorage.getItem("goat-never-break-v2");
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        // Only load if it's the same day
         if (parsed.date === new Date().toISOString().split("T")[0]) {
-          setTimeout(() => {
-            setChecked(parsed.data || {});
-            setFailed(parsed.failed || {});
-            setSelectedReason(parsed.reasons || {});
-          }, 0);
+          return parsed.data || {};
         }
-      } catch { }
+      } catch {}
     }
-  }, []);
+    return {};
+  });
+  const [currentDay] = useState(() => new Date().getDay());
+  const [vitaminModalOpen, setVitaminModalOpen] = useState(false);
+  const { showToast } = useToast();
 
-  const saveState = (newChecked: Record<string, boolean>, newFailed: Record<string, boolean>, newReasons: Record<string, string>) => {
+  const _ = streak;
+
+  const saveState = (newChecked: Record<string, boolean>) => {
     localStorage.setItem(
       "goat-never-break-v2",
       JSON.stringify({
         date: new Date().toISOString().split("T")[0],
         data: newChecked,
-        failed: newFailed,
-        reasons: newReasons,
       })
     );
-    // Dispatch event to recalculate score
     window.dispatchEvent(new Event("dailyScoreUpdated"));
   };
 
-  const toggleSuccess = (id: string) => {
-    if (typeof window !== "undefined" && window.navigator && window.navigator.vibrate) {
-        window.navigator.vibrate(50);
+  const toggleItem = (id: string, isDisabled: boolean) => {
+    if (isDisabled) return;
+    
+    if (typeof window !== "undefined" && window.navigator?.vibrate) {
+      window.navigator.vibrate(50);
     }
-    const newChecked = { ...checked, [id]: !checked[id] };
-    const newFailed = { ...failed };
-    delete newFailed[id]; // Clear fail state if marking as done
-    const newReasons = { ...selectedReason };
-    delete newReasons[id];
+    
+    const isNewDone = !checked[id];
+    const newChecked = { ...checked, [id]: isNewDone };
+    
+    if (isNewDone) {
+      const item = ITEMS.find((i) => i.id === id);
+      if (item) showToast(`+${item.puan}p — iyi iş`);
+      
+      const allRoutines = ITEMS.filter((i) => !i.activeDays || i.activeDays.includes(currentDay));
+      const allDone = allRoutines.every((i) => newChecked[i.id]);
+      if (allDone) {
+        setTimeout(() => showToast("Rutinlerin tamam. Güçlü bir başlangıç."), 500);
+      }
+    }
     
     setChecked(newChecked);
-    setFailed(newFailed);
-    setSelectedReason(newReasons);
-    setShowReasonPicker(null);
-    saveState(newChecked, newFailed, newReasons);
+    saveState(newChecked);
   };
 
-  const toggleFail = (id: string) => {
-    if (typeof window !== "undefined" && window.navigator && window.navigator.vibrate) {
-        window.navigator.vibrate(50);
-    }
-    if (failed[id]) {
-      // If already failed, clear it
-      const newFailed = { ...failed };
-      delete newFailed[id];
-      const newReasons = { ...selectedReason };
-      delete newReasons[id];
-      setFailed(newFailed);
-      setSelectedReason(newReasons);
-      setShowReasonPicker(null);
-      saveState(checked, newFailed, newReasons);
-    } else {
-      // Mark as failed and show reason picker
-      const newChecked = { ...checked };
-      delete newChecked[id]; // Clear success state
-      const newFailed = { ...failed, [id]: true };
-      setChecked(newChecked);
-      setFailed(newFailed);
-      setShowReasonPicker(id);
-      saveState(newChecked, newFailed, selectedReason);
-    }
+  const handleVitaminComplete = () => {
+    toggleItem("vitamins", false);
   };
 
-  const selectReason = (taskId: string, reasonValue: string, taskLabel: string) => {
-    const newReasons = { ...selectedReason, [taskId]: reasonValue };
-    setSelectedReason(newReasons);
-    saveState(checked, failed, newReasons);
-
-    // Save fail record to history
-    const reason = FAIL_REASONS.find(r => r.value === reasonValue);
-    if (reason) {
-      const failRecord: FailRecord = {
-        reason: reason.label,
-        suggestion: reason.suggestion,
-        date: new Date().toISOString(),
-        taskId,
-        taskLabel,
-      };
-      
-      const historyKey = "goat-never-break-fails-history";
-      const existingHistory = localStorage.getItem(historyKey);
-      const history: FailRecord[] = existingHistory ? JSON.parse(existingHistory) : [];
-      history.push(failRecord);
-      // Keep only last 30 records
-      if (history.length > 30) history.shift();
-      localStorage.setItem(historyKey, JSON.stringify(history));
+  const handleItemClick = (item: RoutineItem, isDisabled: boolean) => {
+    if (isDisabled) return;
+    if (item.openVitaminModal && !checked[item.id]) {
+      setVitaminModalOpen(true);
+      return;
     }
+    toggleItem(item.id, isDisabled);
   };
 
-  const ITEMS = [
-    { id: "nb-morning", label: "07:00 Uyanış + Yüze Buz" },
-    { id: "nb-teeth", label: "Dişlerini fırçala + listerine gargara yap" },
-    { id: "nb-deepwork", label: "Vitaminlerin tamamını iç" },
-    { id: "nb-sports", label: "Antrenman (Pzt-Salı-Prş-Cmt)", activeDays: [1, 2, 4, 6] },
-    { id: "nb-book", label: "20 sayfa kitap oku" },
-  ];
+  const orderedItems = [...ITEMS].sort((a, b) => {
+    const aDone = checked[a.id] ? 1 : 0;
+    const bDone = checked[b.id] ? 1 : 0;
+    return aDone - bDone;
+  });
 
   return (
-    <section className="mt-8">
-      <div className="mb-4 flex items-end justify-between border-b border-border pb-2">
-        <div>
-            <h2 className="text-xl font-bold tracking-wide text-text mb-1 flex items-center gap-2">
-              <span className="opacity-80 text-lg">🛡️</span> Kritik Rutinler
-            </h2>
-            <p className="text-xs text-text-muted">
-              Günü kurtaracak temel adımlar. Yarım kalsa da devam et.
-            </p>
-        </div>
-        <div className="text-right">
-            <span className="text-[10px] uppercase tracking-widest text-text-muted block mb-0.5">Mevcut Seri</span>
-            <span className="text-base font-bold text-accent-green">{streak} GÜN</span>
-        </div>
-      </div>
+    <>
+      <VitaminCheckModal
+        isOpen={vitaminModalOpen}
+        onClose={() => setVitaminModalOpen(false)}
+        onComplete={handleVitaminComplete}
+      />
 
-      <div className="space-y-3">
-        {ITEMS.map((item) => {
-          const isDisabled = item.activeDays && !item.activeDays.includes(currentDay);
+      <div className="flex flex-col">
+        {orderedItems.map((item) => {
+          const isDisabled = !!(item.activeDays && !item.activeDays.includes(currentDay));
           const isDone = checked[item.id];
-          const isFailed = failed[item.id];
-          const currentReason = selectedReason[item.id];
-          const reasonData = FAIL_REASONS.find(r => r.value === currentReason);
+          const Icon = item.icon;
 
           return (
-            <div key={item.id} className="space-y-2">
+            <div
+              key={item.id}
+              onClick={() => handleItemClick(item, isDisabled)}
+              className="group flex items-center transition-all duration-200"
+              style={{
+                height: "40px",
+                padding: "0 16px",
+                borderBottom: "1px solid var(--border-1)",
+                background: isDone ? "var(--bg-hover)" : "transparent",
+                opacity: isDone ? 0.35 : isDisabled ? 0.2 : 1,
+                cursor: isDisabled ? "not-allowed" : "pointer",
+                position: "relative",
+              }}
+              title={isDisabled ? "Bugün antrenman yok" : ""}
+            >
               <div
-                className={`flex items-center gap-4 p-4 border transition-all ${
-                  isDisabled 
-                    ? "opacity-40 cursor-not-allowed border-transparent bg-transparent" 
-                    : isFailed
-                      ? "border-border bg-surface/5"
-                      : isDone
-                        ? "border-transparent bg-surface/30"
-                        : "border-border bg-surface hover:bg-surface-hover"
-                }`}
+                style={{
+                  width: "16px",
+                  height: "16px",
+                  borderRadius: "50%",
+                  border: `1px solid ${isDone ? "var(--amber)" : "var(--border-0)"}`,
+                  background: isDone ? "var(--amber)" : "transparent",
+                  marginRight: "12px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  transition: "all 0.2s",
+                  flexShrink: 0,
+                }}
               >
-                {/* Success Button */}
-                <button
-                  onClick={() => !isDisabled && toggleSuccess(item.id)}
-                  disabled={isDisabled}
-                  className={`w-10 h-10 shrink-0 flex items-center justify-center border transition-colors ${
-                    isDone
-                      ? "border-accent-green bg-accent-green text-black"
-                      : "border-border bg-transparent text-transparent hover:border-text-muted"
-                  } ${isDisabled ? "cursor-not-allowed" : "cursor-pointer rounded-sm"}`}
-                  title="Tamamlandı"
-                >
-                  <span className="text-xl font-bold">✓</span>
-                </button>
-
-                {/* Fail Button */}
-                <button
-                  onClick={() => !isDisabled && toggleFail(item.id)}
-                  disabled={isDisabled}
-                  className={`w-10 h-10 shrink-0 flex items-center justify-center border transition-colors ${
-                    isFailed
-                      ? "border-accent-red bg-surface/50 text-accent-red"
-                      : "border-border bg-transparent text-transparent hover:border-accent-red/50"
-                  } ${isDisabled ? "cursor-not-allowed" : "cursor-pointer rounded-sm"}`}
-                  title="Eksik Kaldı"
-                >
-                  <span className="text-xl font-bold">✗</span>
-                </button>
-
-                {/* Label */}
-                <div className="flex flex-col flex-1">
-                  <span
-                    className={`text-[15px] font-medium select-none ${
-                        isDone 
-                        ? "line-through text-text-muted opacity-50" 
-                        : isFailed
-                            ? "text-text-muted"
-                            : "text-text"
-                    }`}
-                  >
-                    {item.label}
-                  </span>
-                  {isDisabled && (
-                    <span className="text-[10px] text-text-muted uppercase tracking-wider mt-1">Bugün dinlenme / Deaktif</span>
-                  )}
-                </div>
+                {isDone && <span style={{ color: "black", fontSize: "9px", fontWeight: "bold" }}>✓</span>}
               </div>
 
-              {/* Reason Picker - Inline */}
-              {isFailed && showReasonPicker === item.id && !currentReason && (
-                <div className="ml-4 p-4 border border-border bg-surface mt-2 space-y-3">
-                  <p className="text-xs text-text-muted font-bold mb-2">
-                    Neden eksik kaldı? (Zinciri onarmaya başlayalım)
-                  </p>
-                  <div className="space-y-1">
-                    {FAIL_REASONS.map((reason) => (
-                      <button
-                        key={reason.value}
-                        onClick={() => selectReason(item.id, reason.value, item.label)}
-                        className="w-full text-left px-4 py-2.5 text-sm text-text-muted hover:text-text hover:bg-surface-hover transition-colors"
-                      >
-                        {reason.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
+              <Icon
+                size={14}
+                style={{
+                  color: isDone ? "var(--amber)" : "var(--text-2)",
+                  marginRight: "10px",
+                  flexShrink: 0,
+                }}
+              />
 
-              {/* Selected Reason + Suggestion */}
-              {isFailed && currentReason && reasonData && (
-                <div className="ml-4 p-4 bg-surface mt-2 space-y-2 border-l-[3px] border-text-muted">
-                  <p className="text-xs text-text-muted">
-                    <span className="font-bold text-text">Sebep:</span> {reasonData.label}
-                  </p>
-                  <p className="text-sm text-text">
-                    💡 <span className="opacity-80">{reasonData.suggestion}</span>
-                  </p>
-                </div>
-              )}
+              <span
+                style={{
+                  flex: 1,
+                  fontFamily: "var(--font-sans)",
+                  fontSize: "var(--size-sm)",
+                  color: isDone ? "var(--text-2)" : "var(--text-1)",
+                  textDecoration: isDone ? "line-through" : "none",
+                }}
+              >
+                {item.label}
+              </span>
+
+              <span
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "var(--size-xs)",
+                  color: "var(--text-3)",
+                  flexShrink: 0,
+                }}
+              >
+                {item.puan}p
+              </span>
             </div>
           );
         })}
       </div>
-    </section>
+    </>
   );
 }

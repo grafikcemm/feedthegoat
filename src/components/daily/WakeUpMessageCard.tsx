@@ -28,31 +28,74 @@ export default function WakeUpMessageCard() {
   if (!isClient || !message) return null;
 
   return (
-    <div className="mb-6 border-l-4 border-l-accent-amber/50 border border-border bg-surface/30 p-5 sm:p-6 relative group">
-       <div className="flex justify-between items-start mb-3">
-           <div className="text-[10px] uppercase tracking-[0.2em] font-bold text-text-muted">
-               <span className="opacity-60 mr-1">TEMA:</span> 
-               <span className="text-text/80">{translateCategory(message.category)}</span>
-           </div>
-           <button 
-             onClick={handleRefresh}
-             className="opacity-0 group-hover:opacity-100 transition-opacity text-[9px] uppercase tracking-widest text-text-muted hover:text-text border border-border/50 px-2 py-1 bg-background"
-             title="Başka bir mesaj getir"
-           >
-             Değiştir
-           </button>
-       </div>
+    <div 
+      className="group"
+      style={{
+        marginTop: "24px",
+        paddingLeft: "16px",
+        borderLeft: "1px solid var(--amber-border)",
+      }}
+    >
+      {/* Üst */}
+      <div className="flex justify-between items-start mb-2">
+        <span
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: "var(--size-xs)",
+            color: "var(--text-3)",
+            letterSpacing: "0.1em",
+            fontStyle: "italic",
+            textTransform: "uppercase",
+          }}
+        >
+          [ {translateCategory(message.category)} ]
+        </span>
+      </div>
 
-       <div className="space-y-4">
-           <h2 className="text-lg font-bold tracking-wide text-text leading-snug">
-               &quot;{message.text}&quot;
-           </h2>
-           
-           <div className="flex items-center justify-between border-t border-border/30 pt-3">
-              <span className="text-[11px] text-text-muted italic">Bugünün Darbesi</span>
-              <span className="text-[10px] uppercase font-bold tracking-widest bg-text text-black px-2 py-0.5">Reality Check</span>
-           </div>
-       </div>
+      {/* Alıntı */}
+      <h2
+        style={{
+          fontFamily: "var(--font-display)",
+          fontSize: "15px",
+          color: "var(--text-1)",
+          fontStyle: "italic",
+          lineHeight: 1.4,
+          marginBottom: "12px",
+        }}
+      >
+        "{message.text}"
+      </h2>
+      
+      {/* Alt Bölüm */}
+      <div className="flex items-center gap-4">
+        <span
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: "var(--size-xs)",
+            color: "var(--text-3)",
+          }}
+        >
+          Bugünün darbesi
+        </span>
+        <button 
+          onClick={handleRefresh}
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: "var(--size-xs)",
+            color: "var(--text-3)",
+            background: "transparent",
+            border: "1px solid var(--border-0)",
+            padding: "3px 8px",
+            borderRadius: "2px",
+            cursor: "pointer",
+            transition: "all 0.2s",
+            textTransform: "uppercase",
+          }}
+          className="hover:text-(--text-1) hover:border-(--border-1)"
+        >
+          REALITY CHECK
+        </button>
+      </div>
     </div>
   );
 }
@@ -76,5 +119,5 @@ function translateCategory(cat: string): string {
         'reality': "Acı Gerçekler",
         'self_respect': "Özsaygı",
     };
-    return map[cat] || cat.toUpperCase();
+    return map[cat] || cat;
 }

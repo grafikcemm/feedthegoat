@@ -86,13 +86,13 @@ export default function ContentSharing() {
 
               <button
                 onClick={(e) => toggle(item.id, e)}
-                className={`w-8 h-8 shrink-0 flex items-center justify-center border transition-colors ${
+                className={`w-6 h-6 shrink-0 flex items-center justify-center border transition-colors ${
                   isDone
                     ? "border-accent-green bg-accent-green text-black"
-                    : "border-border bg-transparent text-transparent hover:border-text-muted"
-                } rounded-sm`}
+                    : "border-border bg-transparent text-transparent hover:border-text-muted transition-all"
+                } rounded-full`}
               >
-                <span className="text-sm font-bold">✓</span>
+                {isDone && <span className="text-[10px] font-bold">✓</span>}
               </button>
             </div>
           );

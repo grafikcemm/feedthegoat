@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import AlertBanner from "./AlertBanner";
+
 
 type FinRecord = {
     id: string;
@@ -11,47 +11,59 @@ type FinRecord = {
 };
 
 const INITIAL_RECORDS: FinRecord[] = [
-    { id: "inc-1", label: "Freelance Gelecek Kalan Ödeme", amount: 15000, type: "income" },
-    { id: "inc-2", label: "Şubat Sonu Maaş", amount: 42000, type: "income" },
-    { id: "inc-3", label: "Ek Gelir", amount: 12000, type: "income" },
-    { id: "exp-1", label: "Enpara Net Borç", amount: 60000, type: "expense" },
-    { id: "exp-2", label: "Enpara Tahmini Dönem Borcu", amount: 30500, type: "expense" },
-    { id: "exp-3", label: "Migros Sonra Öde", amount: 2800, type: "expense" },
-    { id: "exp-4", label: "Denizbank Kredi", amount: 27000, type: "expense" },
-    { id: "exp-5", label: "Kredimin ilk taksiti", amount: 11820, type: "expense" },
+    { id: "inc-1", label: "Ek Gelir (Ay Ortası)", amount: 12000, type: "income" },
+    { id: "inc-2", label: "Nisan Sonu Maaş", amount: 42000, type: "income" },
+    { id: "exp-1", label: "Enpara Tahmini Kredi Kartı", amount: 55670, type: "expense" },
+    { id: "exp-2", label: "Getir Yemek", amount: 3277, type: "expense" },
+    { id: "exp-3", label: "Kredinin Üçüncü Taksiti", amount: 9121, type: "expense" },
+    { id: "exp-4", label: "Denizbank Kredi Kartı", amount: 15000, type: "expense" },
+    { id: "sub-1", label: "Twitter Mavi Tik", amount: 150, type: "subscription" },
+    { id: "sub-2", label: "Instagram Mavi Tik", amount: 260, type: "subscription" },
+    { id: "sub-3", label: "Claude", amount: 799, type: "subscription" },
+    { id: "sub-4", label: "Perplexity", amount: 400, type: "subscription" },
 ];
 
 export default function WarFund() {
-    const [records, setRecords] = useState<FinRecord[]>(INITIAL_RECORDS);
+    const [records, setRecords] = useState<FinRecord[]>(() => {
+        if (typeof window === "undefined") return [];
+
+        // Veri Enjeksiyonu (Bir defaya mahsus)
+        const migrationFlag = localStorage.getItem("goat-restoration-v2-finance");
+        if (!migrationFlag) {
+            const screenshotRecords: FinRecord[] = [
+                { id: "inc-1", label: "Ek Gelir (Ay Ortası)", amount: 12000, type: "income" },
+                { id: "inc-2", label: "Nisan Sonu Maaş", amount: 42000, type: "income" },
+                { id: "exp-1", label: "Enpara Tahmini Kredi Kartı", amount: 55670, type: "expense" },
+                { id: "exp-2", label: "Getir Yemek", amount: 3277, type: "expense" },
+                { id: "exp-3", label: "Kredinin Üçüncü Taksiti", amount: 9121, type: "expense" },
+                { id: "exp-4", label: "Denizbank Kredi Kartı", amount: 15000, type: "expense" },
+                { id: "sub-1", label: "Twitter Mavi Tik", amount: 150, type: "subscription" },
+                { id: "sub-2", label: "Instagram Mavi Tik", amount: 260, type: "subscription" },
+                { id: "sub-3", label: "Claude", amount: 799, type: "subscription" },
+                { id: "sub-4", label: "Perplexity", amount: 400, type: "subscription" },
+            ];
+            localStorage.setItem("goat-restoration-v2-finance", "true");
+            localStorage.setItem("goat-warfund-v2", JSON.stringify(screenshotRecords));
+            return screenshotRecords;
+        }
+
+        const saved = localStorage.getItem("goat-warfund-v2");
+        if (saved) {
+            try {
+                return JSON.parse(saved);
+            } catch { }
+        }
+        return INITIAL_RECORDS;
+    });
     const [newLabel, setNewLabel] = useState("");
     const [newAmount, setNewAmount] = useState("");
     const [newType, setNewType] = useState<"income" | "expense" | "subscription">("income");
     const [isLoaded, setIsLoaded] = useState(false);
 
-    // Initial Load
     useEffect(() => {
-        const saved = localStorage.getItem("goat-warfund-v2");
-        if (saved) {
-            try {
-                const parsed = JSON.parse(saved);
-                setTimeout(() => setRecords(parsed), 0);
-            } catch (e) {
-                console.error("Failed to parse WarFund data", e);
-            }
-        } else {
-            // migration from v1
-            const oldSaved = localStorage.getItem("goat-warfund-v1");
-            if (oldSaved) {
-                try {
-                    const parsed = JSON.parse(oldSaved);
-                    setTimeout(() => setRecords(parsed), 0);
-                } catch {}
-            }
-        }
-        setTimeout(() => setIsLoaded(true), 0);
+        setIsLoaded(true);
     }, []);
 
-    // Save on Change
     useEffect(() => {
         if (isLoaded) {
             localStorage.setItem("goat-warfund-v2", JSON.stringify(records));
@@ -90,32 +102,29 @@ export default function WarFund() {
     if (!isLoaded) return null;
 
     return (
-        <section>
-            <div className="flex items-center justify-between mb-4 mt-6">
-                <h2 className="text-xs uppercase tracking-[0.25em] text-text-muted">
+        <div style={{ marginTop: "24px" }}>
+            <div className="flex items-center justify-between mb-6">
+                <h2 style={{ fontFamily: "var(--font-mono)", fontSize: "var(--size-xs)", color: "var(--text-3)", letterSpacing: "0.25em", textTransform: "uppercase" }}>
                     Savaş Fonu
                 </h2>
-                <span className={`text-xs font-bold tabular-nums ${netCashflow >= 0 ? "text-accent-green" : "text-accent-red"}`}>
+                <span style={{ fontFamily: "var(--font-mono)", fontSize: "var(--size-sm)", color: netCashflow >= 0 ? "rgba(34, 197, 94, 1)" : "var(--red-signal)", fontWeight: 500 }}>
                     NET: {netCashflow.toLocaleString("tr-TR")} ₺
                 </span>
             </div>
 
-            {/* Warn message if negative */}
             {netCashflow < 0 && (
-                <AlertBanner 
-                    variant="warning"
-                    title="Durum Bilgisi: Nakit Açığı"
-                    description="Giderler geçici olarak gelirini aşmış durumda. Panik yapmadan önce abonelikleri ve gereksiz küçük harcamaları optimize edebilirsin."
-                    className="mb-6"
-                />
+                <div style={{ padding: "16px", background: "rgba(224, 100, 100, 0.1)", borderLeft: "2px solid var(--red-signal)", marginBottom: "24px" }}>
+                    <h3 style={{ fontFamily: "var(--font-sans)", fontSize: "var(--size-sm)", color: "var(--red-signal)", fontWeight: 500, marginBottom: "4px" }}>Durum Bilgisi: Nakit Açığı</h3>
+                    <p style={{ fontFamily: "var(--font-sans)", fontSize: "var(--size-xs)", color: "var(--text-2)" }}>Giderler geçici olarak gelirini aşmış durumda. Panik yapmadan önce abonelikleri ve gereksiz küçük harcamaları optimize edebilirsin.</p>
+                </div>
             )}
 
-            {/* Add New Form */}
-            <form onSubmit={handleAdd} className="border border-border/50 p-4 sm:p-5 bg-surface/30 mb-6 flex flex-col md:flex-row gap-3">
+            <form onSubmit={handleAdd} className="flex flex-col md:flex-row gap-3 mb-8" style={{ background: "transparent", border: "1px solid var(--border-0)", padding: "16px", borderRadius: 0 }}>
                 <select
                     value={newType}
                     onChange={e => setNewType(e.target.value as "income" | "expense" | "subscription")}
-                    className="bg-background border border-border px-3 py-2.5 text-xs text-text focus:border-text transition-colors outline-none"
+                    className="focus:border-(--border-1) transition-colors"
+                    style={{ fontFamily: "var(--font-sans)", fontSize: "var(--size-sm)", color: "var(--text-1)", background: "transparent", border: "1px solid var(--border-0)", padding: "10px", outline: "none", borderRadius: 0 }}
                 >
                     <option value="income">Gelir (+)</option>
                     <option value="expense">Gider (-)</option>
@@ -123,37 +132,39 @@ export default function WarFund() {
                 </select>
                 <input
                     type="text"
-                    placeholder="Gösterge / Açıklama"
+                    placeholder="Açıklama"
                     value={newLabel}
                     onChange={e => setNewLabel(e.target.value)}
-                    className="flex-1 bg-background border border-border px-4 py-2.5 text-sm text-text focus:border-text transition-colors outline-none"
+                    className="flex-1 focus:border-(--border-1) transition-colors"
+                    style={{ fontFamily: "var(--font-sans)", fontSize: "var(--size-sm)", color: "var(--text-1)", background: "transparent", border: "1px solid var(--border-0)", padding: "10px", outline: "none", borderRadius: 0 }}
                 />
                 <input
                     type="number"
-                    placeholder="Miktar (₺) / Aylık"
+                    placeholder="Miktar (₺)"
                     value={newAmount}
                     onChange={e => setNewAmount(e.target.value)}
-                    className="w-full md:w-40 bg-background border border-border px-4 py-2.5 text-sm text-text focus:border-text transition-colors outline-none"
+                    className="w-full md:w-40 focus:border-(--border-1) transition-colors"
+                    style={{ fontFamily: "var(--font-sans)", fontSize: "var(--size-sm)", color: "var(--text-1)", background: "transparent", border: "1px solid var(--border-0)", padding: "10px", outline: "none", borderRadius: 0 }}
                 />
-                <button type="submit" className="bg-text text-black px-6 py-2.5 text-xs tracking-wider uppercase font-bold hover:opacity-90 transition-opacity">
+                <button type="submit" className="hover:bg-(--bg-hover) transition-colors" style={{ fontFamily: "var(--font-mono)", fontSize: "var(--size-xs)", color: "var(--text-1)", background: "transparent", border: "1px solid var(--border-0)", padding: "10px 24px", letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer", borderRadius: 0 }}>
                     EKLE
                 </button>
             </form>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Gelirler */}
-                <div className="border border-border p-5 bg-surface/30">
-                    <h3 className="text-xs uppercase tracking-wider text-accent-green/80 flex justify-between mb-4 pb-2 border-b border-border/50">
-                        <span>Gelir</span>
-                        <span className="font-bold">{totalIncome.toLocaleString("tr-TR")} ₺</span>
+                <div style={{ background: "var(--bg-raised)", border: "1px solid var(--border-0)", padding: "20px" }}>
+                    <h3 style={{ fontFamily: "var(--font-mono)", fontSize: "var(--size-xs)", color: "var(--text-2)", letterSpacing: "0.12em", textTransform: "uppercase", borderBottom: "1px solid var(--border-1)", paddingBottom: "12px", marginBottom: "16px", display: "flex", justifyContent: "space-between" }}>
+                        <span style={{ color: "rgba(34, 197, 94, 0.8)" }}>Gelir</span>
+                        <span style={{ color: "var(--text-0)" }}>{totalIncome.toLocaleString("tr-TR")} ₺</span>
                     </h3>
-                    <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                    <div className="space-y-0">
                         {incomes.map((item) => (
-                            <div key={item.id} className="group flex justify-between items-start text-xs border-b border-border/30 pb-2">
-                                <span className="text-text-muted pr-2 leading-relaxed">{item.label}</span>
-                                <div className="flex items-center gap-3 shrink-0 mt-0.5">
-                                    <span className="text-text font-mono font-medium">{item.amount.toLocaleString("tr-TR")} ₺</span>
-                                    <button onClick={() => handleDelete(item.id)} className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-accent-red transition-opacity">✕</button>
+                            <div key={item.id} className="group flex justify-between items-center" style={{ height: "40px", borderBottom: "1px solid var(--border-1)", fontFamily: "var(--font-sans)", fontSize: "var(--size-sm)", color: "var(--text-1)" }}>
+                                <span className="truncate pr-2">{item.label}</span>
+                                <div className="flex items-center gap-2">
+                                    <span style={{ fontFamily: "var(--font-mono)", fontSize: "var(--size-xs)", color: "var(--text-2)" }}>{item.amount.toLocaleString("tr-TR")}</span>
+                                    <button onClick={() => handleDelete(item.id)} style={{ background: "transparent", border: "none", color: "var(--text-3)", cursor: "pointer" }} className="opacity-0 group-hover:opacity-100 hover:text-(--red-signal) transition-opacity">✕</button>
                                 </div>
                             </div>
                         ))}
@@ -161,18 +172,18 @@ export default function WarFund() {
                 </div>
 
                 {/* Giderler */}
-                <div className="border border-border p-5 bg-surface/30">
-                    <h3 className="text-xs uppercase tracking-wider text-accent-amber/80 flex justify-between mb-4 pb-2 border-b border-border/50">
-                        <span>Gider</span>
-                        <span className="font-bold">{totalExpense.toLocaleString("tr-TR")} ₺</span>
+                <div style={{ background: "var(--bg-raised)", border: "1px solid var(--border-0)", padding: "20px" }}>
+                    <h3 style={{ fontFamily: "var(--font-mono)", fontSize: "var(--size-xs)", color: "var(--text-2)", letterSpacing: "0.12em", textTransform: "uppercase", borderBottom: "1px solid var(--border-1)", paddingBottom: "12px", marginBottom: "16px", display: "flex", justifyContent: "space-between" }}>
+                        <span style={{ color: "var(--amber)" }}>Gider</span>
+                        <span style={{ color: "var(--text-0)" }}>{totalExpense.toLocaleString("tr-TR")} ₺</span>
                     </h3>
-                    <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                    <div className="space-y-0">
                         {expenses.map((item) => (
-                            <div key={item.id} className="group flex justify-between items-start text-xs border-b border-border/30 pb-2">
-                                <span className="text-text-muted pr-2 leading-relaxed">{item.label}</span>
-                                <div className="flex items-center gap-3 shrink-0 mt-0.5">
-                                    <span className="text-text font-mono font-medium">{item.amount.toLocaleString("tr-TR")} ₺</span>
-                                    <button onClick={() => handleDelete(item.id)} className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-accent-red transition-opacity">✕</button>
+                            <div key={item.id} className="group flex justify-between items-center" style={{ height: "40px", borderBottom: "1px solid var(--border-1)", fontFamily: "var(--font-sans)", fontSize: "var(--size-sm)", color: "var(--text-1)" }}>
+                                <span className="truncate pr-2">{item.label}</span>
+                                <div className="flex items-center gap-2">
+                                    <span style={{ fontFamily: "var(--font-mono)", fontSize: "var(--size-xs)", color: "var(--text-2)" }}>{item.amount.toLocaleString("tr-TR")}</span>
+                                    <button onClick={() => handleDelete(item.id)} style={{ background: "transparent", border: "none", color: "var(--text-3)", cursor: "pointer" }} className="opacity-0 group-hover:opacity-100 hover:text-(--red-signal) transition-opacity">✕</button>
                                 </div>
                             </div>
                         ))}
@@ -180,24 +191,24 @@ export default function WarFund() {
                 </div>
 
                 {/* Abonelikler */}
-                <div className="border border-border p-5 bg-surface/30">
-                    <h3 className="text-xs uppercase tracking-wider text-text-muted flex justify-between mb-4 pb-2 border-b border-border/50">
-                        <span>Abonelikler & Sabitler</span>
-                        <span className="font-bold">{totalSubs.toLocaleString("tr-TR")} ₺</span>
+                <div style={{ background: "var(--bg-raised)", border: "1px solid var(--border-0)", padding: "20px" }}>
+                    <h3 style={{ fontFamily: "var(--font-mono)", fontSize: "var(--size-xs)", color: "var(--text-2)", letterSpacing: "0.12em", textTransform: "uppercase", borderBottom: "1px solid var(--border-1)", paddingBottom: "12px", marginBottom: "16px", display: "flex", justifyContent: "space-between" }}>
+                        <span>Abonelikler</span>
+                        <span style={{ color: "var(--text-0)" }}>{totalSubs.toLocaleString("tr-TR")} ₺</span>
                     </h3>
-                    <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                    <div className="space-y-0">
                         {subscriptions.map((item) => (
-                            <div key={item.id} className="group flex justify-between items-start text-xs border-b border-border/30 pb-2">
-                                <span className="text-text-muted pr-2 leading-relaxed">{item.label}</span>
-                                <div className="flex items-center gap-3 shrink-0 mt-0.5">
-                                    <span className="text-text font-mono font-medium">{item.amount.toLocaleString("tr-TR")} ₺</span>
-                                    <button onClick={() => handleDelete(item.id)} className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-accent-red transition-opacity">✕</button>
+                            <div key={item.id} className="group flex justify-between items-center" style={{ height: "40px", borderBottom: "1px solid var(--border-1)", fontFamily: "var(--font-sans)", fontSize: "var(--size-sm)", color: "var(--text-1)" }}>
+                                <span className="truncate pr-2">{item.label}</span>
+                                <div className="flex items-center gap-2">
+                                    <span style={{ fontFamily: "var(--font-mono)", fontSize: "var(--size-xs)", color: "var(--text-2)" }}>{item.amount.toLocaleString("tr-TR")}</span>
+                                    <button onClick={() => handleDelete(item.id)} style={{ background: "transparent", border: "none", color: "var(--text-3)", cursor: "pointer" }} className="opacity-0 group-hover:opacity-100 hover:text-(--red-signal) transition-opacity">✕</button>
                                 </div>
                             </div>
                         ))}
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
     );
 }

@@ -1,17 +1,23 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono } from "next/font/google";
+import { Lexend, JetBrains_Mono } from "next/font/google";
+import { ToastProvider } from "@/components/Toast";
 import "./globals.css";
 
-const jetbrains = JetBrains_Mono({
+const lexend = Lexend({
+  variable: "--font-body",
+  subsets: ["latin"],
+  weight: ["300", "400", "500"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
-  subsets: ["latin", "latin-ext"],
-  weight: ["400", "500", "700", "800"],
+  subsets: ["latin"],
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
-  title: "FEED THE GOAT",
-  description:
-    "Kişisel disiplin, büyüme ve hesap verebilirlik panosu.",
+  title: "Feed The Goat",
+  description: "Kişisel disiplin, büyüme ve hesap verebilirlik panosu.",
 };
 
 export default function RootLayout({
@@ -21,8 +27,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="tr">
-      <body className={`${jetbrains.variable} font-mono antialiased`}>
-        {children}
+      <body className={`${lexend.variable} ${jetbrainsMono.variable}`}>
+        <ToastProvider>
+          {children}
+        </ToastProvider>
       </body>
     </html>
   );

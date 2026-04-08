@@ -1,434 +1,371 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { useToast } from "@/components/Toast";
+import { Trash2 } from "lucide-react";
 
 type Quadrant = "MIND" | "BODY" | "SPIRIT" | "VOCATION";
 
 type ActiveTask = {
-    id: string;
-    title: string;
-    is_completed: boolean;
-    is_urgent?: boolean;
-    priority: "P1" | "P2" | "P3";
-    quadrant: Quadrant;
-    created_at: string;
-    completed_at?: string;
+  id: string;
+  title: string;
+  is_completed: boolean;
+  priority: "P1" | "P2" | "P3";
+  is_urgent?: boolean;
+  quadrant: Quadrant;
+  created_at: string;
+  completed_at?: string;
 };
 
-const QUADRANT_STYLES: Record<Quadrant, { border: string; color: string; bg: string; label: string }> = {
-    MIND: { border: "border-blue-500", color: "text-blue-500", bg: "bg-blue-500/10", label: "🧠 ZİHİN" },
-    BODY: { border: "border-green-500", color: "text-green-500", bg: "bg-green-500/10", label: "💪 BEDEN" },
-    SPIRIT: { border: "border-purple-500", color: "text-purple-500", bg: "bg-purple-500/10", label: "🔮 RUH" },
-    VOCATION: { border: "border-orange-500", color: "text-orange-500", bg: "bg-orange-500/10", label: "⚡ İŞ/KARİYER" },
+const PRIORITY_CONFIG = {
+  P1: { color: "var(--amber)", bg: "var(--amber-dim)", border: "var(--amber-border)", label: "P1" },
+  P2: { color: "rgba(100,130,180,1)", bg: "rgba(100,130,180,0.15)", border: "rgba(100,130,180,0.3)", label: "P2" },
+  P3: { color: "var(--text-2)", bg: "transparent", border: "var(--border-0)", label: "P3" },
 };
 
-
-
-// Default quadrant mappings for existing tasks
-const TASK_QUADRANT_MAP: Record<string, Quadrant> = {
-    "Python ile Yapay Zeka 101": "MIND",
-    "Claude Code": "MIND",
-    "Behance": "VOCATION",
-    "Ajans mail": "VOCATION",
-    "Gym": "BODY",
-    "Spor": "BODY",
-    "Kitap": "MIND",
-    "kitap": "MIND",
-    "Twitter": "VOCATION",
-    "Lead Gen": "VOCATION",
-    "weSafe": "VOCATION",
-    "reklam görselleri": "MIND",
-    "video": "VOCATION",
-    "notebookları": "VOCATION",
-};
-
-const guessQuadrant = (title: string): Quadrant => {
-    for (const [keyword, quadrant] of Object.entries(TASK_QUADRANT_MAP)) {
-        if (title.toLowerCase().includes(keyword.toLowerCase())) return quadrant;
-    }
-    return "VOCATION";
-};
-
-interface ActiveTasksProps {
-    activeQuadrantFilter?: Quadrant | null;
-}
-
-export default function ActiveTasks({ activeQuadrantFilter }: ActiveTasksProps) {
-    const [tasks, setTasks] = useState<ActiveTask[]>([]);
-    const [isLoaded, setIsLoaded] = useState(false);
-
-    // Form states
-    const [newTaskTitle, setNewTaskTitle] = useState("");
-    const [newPriority, setNewPriority] = useState<"P1" | "P2" | "P3">("P2");
-    const [newQuadrant] = useState<Quadrant>("VOCATION");
+export default function ActiveTasks() {
+  const [tasks, setTasks] = useState<ActiveTask[]>(() => {
+    if (typeof window === "undefined") return [];
     
-    // UI state
-    const [showAllTasks, setShowAllTasks] = useState(false);
+    // Veri Enjeksiyonu (Bir defaya mahsus zorlama)
+    const migrationFlag = localStorage.getItem("goat-restoration-v2-active");
+    if (!migrationFlag) {
+      const screenshotTasks: ActiveTask[] = [
+        { id: "1", title: "Beykent vizelerini tamamla, günlük disipline uy", is_completed: false, priority: "P1", quadrant: "VOCATION", created_at: new Date().toISOString() },
+        { id: "2", title: "Anasayfada bulunan Claude Code & N8N Claude Code videolarını bitir", is_completed: false, priority: "P1", quadrant: "VOCATION", created_at: new Date().toISOString() },
+        { id: "3", title: "Grafikcem reels çekimlerini & editlerini yap", is_completed: false, priority: "P2", quadrant: "VOCATION", created_at: new Date().toISOString() },
+        { id: "4", title: "YouTube otomasyonu için fikir al bir saas yapılabilir mi bak", is_completed: false, priority: "P2", quadrant: "VOCATION", created_at: new Date().toISOString() },
+        { id: "5", title: "Mobil uygulama üretme fikirleri", is_completed: false, priority: "P3", quadrant: "VOCATION", created_at: new Date().toISOString() },
+        { id: "6", title: "Ana sayfa da bulunan yapay zeka ile reklam görselleri kursunu bitir", is_completed: false, priority: "P3", quadrant: "VOCATION", created_at: new Date().toISOString() },
+        { id: "7", title: "İngilizceyi günlük rutin olarak sistem haline sokacak güncellemeleri yap ve günlük rutin olar...", is_completed: false, priority: "P3", quadrant: "VOCATION", created_at: new Date().toISOString() },
+        { id: "8", title: "Behance portfolyonu güncel tutmaya odaklı planlama yap ve ajanslara mail yollamak için planla...", is_completed: false, priority: "P3", quadrant: "VOCATION", created_at: new Date().toISOString() },
+      ];
+      localStorage.setItem("goat-restoration-v2-active", "true");
+      localStorage.setItem("goat-active-tasks-v2", JSON.stringify(screenshotTasks));
+      return screenshotTasks;
+    }
 
-    // Load Data with migration
-    useEffect(() => {
-        let loadedTasks: ActiveTask[] = [];
-        const savedTasks = localStorage.getItem("goat-active-tasks-v2");
-        if (savedTasks) {
-            try {
-                const parsed = JSON.parse(savedTasks);
-                loadedTasks = parsed.map((t: ActiveTask & { subTasks?: unknown, category?: unknown, deadline?: unknown }) => {
-                    const mapped = { ...t };
-                    delete mapped.subTasks;
-                    delete mapped.category;
-                    delete mapped.deadline;
-                    // Migrate: add quadrant if missing
-                    if (!mapped.quadrant) {
-                        mapped.quadrant = guessQuadrant(mapped.title || "");
-                    }
-                    return mapped;
-                });
-            } catch { }
-        }
+    const savedTasks = localStorage.getItem("goat-active-tasks-v2");
+    if (savedTasks) {
+      try {
+        const parsed = JSON.parse(savedTasks);
+        if (parsed.length > 0) return parsed;
+      } catch {}
+    }
+    return [];
+  });
+  
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [newPriority, setNewPriority] = useState<"P1" | "P2" | "P3">("P2");
+  const [showAllTasks, setShowAllTasks] = useState(false);
+  const { showToast } = useToast();
 
-        // One-time migration (v4 = full task restore from screenshot)
-        const hasMigrated = localStorage.getItem("goat-migrated-supabase-v4");
-        if (!hasMigrated) {
-            const oldTasks: ActiveTask[] = [
-                {
-                    id: "t-grafikcem-reels",
-                    title: "Grafikcem reels çekimlerini & editlerini yap - Yeni insta profil fotoğrafı, diğer ayarlar (tiktok, içerik planı)",
-                    is_completed: false,
-                    is_urgent: true,
-                    priority: "P1",
-                    quadrant: "VOCATION",
-                    created_at: "2026-03-01T09:00:00.000Z"
-                },
-                {
-                    id: "t-ceren-8mart",
-                    title: "Ceren 8 Mart videosunu tamamla & Esline Güzellik işlerine başlangıç yap",
-                    is_completed: false,
-                    is_urgent: true,
-                    priority: "P1",
-                    quadrant: "VOCATION",
-                    created_at: "2026-03-02T09:00:00.000Z"
-                },
-                {
-                    id: "t-python-4",
-                    title: "(Pazar) Python ile Yapay Zeka 101 - 4. Ders",
-                    is_completed: false,
-                    is_urgent: true,
-                    priority: "P2",
-                    quadrant: "MIND",
-                    created_at: "2026-03-03T09:00:00.000Z"
-                },
-                {
-                    id: "t-python-3",
-                    title: "(Pazar) Python ile Yapay Zeka 101 - 3. Ders",
-                    is_completed: false,
-                    is_urgent: true,
-                    priority: "P2",
-                    quadrant: "MIND",
-                    created_at: "2026-03-03T08:00:00.000Z"
-                },
-                {
-                    id: "t-python-2",
-                    title: "(Cumartesi) Python ile Yapay Zeka 101 - 2. Ders",
-                    is_completed: false,
-                    is_urgent: true,
-                    priority: "P2",
-                    quadrant: "MIND",
-                    created_at: "2026-03-02T08:00:00.000Z"
-                },
-                {
-                    id: "t-python-1",
-                    title: "(Cumartesi) Python ile Yapay Zeka 101 - 1. Ders",
-                    is_completed: false,
-                    is_urgent: true,
-                    priority: "P2",
-                    quadrant: "MIND",
-                    created_at: "2026-03-01T08:00:00.000Z"
-                },
-                {
-                    id: "t-ingilizce-rutin",
-                    title: "İngilizceyi günlük rutin olarak sistem haline sokacak güncellemeleri yap ve günlük rutin olarak ekle",
-                    is_completed: false,
-                    is_urgent: true,
-                    priority: "P3",
-                    quadrant: "MIND",
-                    created_at: "2026-03-01T07:00:00.000Z"
-                },
-                {
-                    id: "t-behance-portfolio",
-                    title: "Behance portfolyonu güncel tutmaya odaklı planlama yap ve ajanslara mail yollamak için planlama yap",
-                    is_completed: false,
-                    priority: "P3",
-                    quadrant: "VOCATION",
-                    created_at: "2026-03-01T06:00:00.000Z"
-                },
-                {
-                    id: "b9ed6856-f556-4440-8549-60d2a24fae73",
-                    title: "Ana sayfa da bulunan yapay zeka ile reklam görselleri kursunu bitir",
-                    is_completed: false,
-                    priority: "P3",
-                    quadrant: "MIND",
-                    created_at: "2026-02-21T08:58:02.800071+00:00"
-                },
-                {
-                    id: "t-wesafe-tamamla",
-                    title: "weSafe projesini tamamla",
-                    is_completed: false,
-                    priority: "P3",
-                    quadrant: "VOCATION",
-                    created_at: "2026-02-27T10:57:59.221605+00:00"
-                }
-            ];
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
 
-            const newTasksMap = new Map();
-            oldTasks.forEach(t => newTasksMap.set(t.id, t));
-            loadedTasks.forEach(t => newTasksMap.set(t.id, t));
-            loadedTasks = Array.from(newTasksMap.values()) as ActiveTask[];
-            localStorage.setItem("goat-migrated-supabase-v4", "true");
-        }
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem("goat-active-tasks-v2", JSON.stringify(tasks));
+    }
+  }, [tasks, isLoaded]);
 
-        // Set tasks and mark as loaded in same batch to avoid race condition
-        setTimeout(() => {
-            setTasks(loadedTasks);
-            setIsLoaded(true);
-        }, 0);
-    }, []);
+  const handleAddTask = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTaskTitle.trim()) return;
 
-    // Save Data
-    useEffect(() => {
-        if (isLoaded) {
-            localStorage.setItem("goat-active-tasks-v2", JSON.stringify(tasks));
-        }
-    }, [tasks, isLoaded]);
+    if (newPriority === "P1") {
+      const activeP1s = tasks.filter((t) => t.priority === "P1" && !t.is_completed).length;
+      if (activeP1s >= 2) {
+        showToast("Maksimum 2 adet P1 olabilir. Odaklan.");
+        return;
+      }
+    }
 
-    const handleAddTask = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!newTaskTitle.trim()) return;
+    const newTask: ActiveTask = {
+      id: Date.now().toString(),
+      title: newTaskTitle.trim(),
+      is_completed: false,
+      priority: newPriority,
+      quadrant: "VOCATION",
+      created_at: new Date().toISOString(),
+    };
 
-        if (newPriority === "P1") {
-            const currentP1s = tasks.filter(t => t.priority === "P1" && !t.is_completed).length;
-            if (currentP1s >= 2) {
-                alert("Önce mevcut P1 görevlerinden birini bitir veya düşür. (Maksimum 2 adet P1 olabilir)");
-                return;
+    setTasks([newTask, ...tasks]);
+    setNewTaskTitle("");
+    setNewPriority("P2");
+    showToast("Görev eklendi.");
+  };
+
+  const toggleTask = (id: string) => {
+    if (typeof window !== "undefined" && window.navigator?.vibrate) window.navigator.vibrate(20);
+    const task = tasks.find((t) => t.id === id);
+    if (!task) return;
+
+    const willComplete = !task.is_completed;
+    
+    if (willComplete) {
+      showToast(task.priority === "P1" ? "+20p — Aslan payı" : task.priority === "P2" ? "+8p — İyi ilerleme" : "+4p — Damlaya damlaya");
+    }
+
+    setTasks((prev) =>
+      prev.map((t) =>
+        t.id === id
+          ? {
+              ...t,
+              is_completed: willComplete,
+              completed_at: willComplete ? new Date().toISOString() : undefined,
             }
-        }
-
-        const newTask: ActiveTask = {
-            id: Date.now().toString(),
-            title: newTaskTitle.trim(),
-            is_completed: false,
-            priority: newPriority,
-            quadrant: newQuadrant,
-            created_at: new Date().toISOString()
-        };
-
-        setTasks([newTask, ...tasks]);
-        setNewTaskTitle("");
-        setNewPriority("P2");
-    };
-
-    const toggleTask = (id: string) => {
-        setTasks(tasks.map(t => {
-            if (t.id === id) {
-                const willComplete = !t.is_completed;
-                return {
-                    ...t,
-                    is_completed: willComplete,
-                    completed_at: willComplete ? new Date().toISOString() : undefined
-                };
-            }
-            return t;
-        }));
-    };
-
-    const toggleUrgency = (id: string, e: React.MouseEvent) => {
-        e.stopPropagation();
-        setTasks(tasks.map(t => t.id === id ? { ...t, is_urgent: !t.is_urgent } : t));
-    };
-
-    const deleteTask = (id: string, e: React.MouseEvent) => {
-        e.stopPropagation();
-        e.preventDefault();
-        setTasks(prev => prev.filter(t => t.id !== id));
-    };
-
-    const PRIORITY_STYLES = {
-        "P1": "border-accent-red text-accent-red",
-        "P2": "border-accent-amber text-accent-amber",
-        "P3": "border-border text-text-muted"
-    };
-
-    const PRIORITY_LEFT_BORDER = {
-        "P1": "#FF3B3B",
-        "P2": "#FFB800",
-        "P3": "#444444"
-    };
-
-
-    const activeTasksList = useMemo(() => {
-        let active = tasks.filter(t => !t.is_completed);
-        // Apply quadrant filter if active
-        if (activeQuadrantFilter) {
-            active = active.filter(t => t.quadrant === activeQuadrantFilter);
-        }
-        return active.sort((a, b) => {
-            const pOrder = { "P1": 1, "P2": 2, "P3": 3 };
-            if (pOrder[a.priority] !== pOrder[b.priority]) return pOrder[a.priority] - pOrder[b.priority];
-            return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-        });
-    }, [tasks, activeQuadrantFilter]);
-
-    const visibleTasksList = showAllTasks ? activeTasksList : activeTasksList.slice(0, 3);
-
-    const completedTasksList = useMemo(() => {
-        const completed = tasks.filter(t => t.is_completed);
-        const twoWeeksAgo = new Date();
-        twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
-
-        return completed.filter(t => {
-            if (!t.completed_at) return true;
-            return new Date(t.completed_at) >= twoWeeksAgo;
-        }).sort((a, b) => {
-            const timeA = a.completed_at ? new Date(a.completed_at).getTime() : 0;
-            const timeB = b.completed_at ? new Date(b.completed_at).getTime() : 0;
-            return timeB - timeA;
-        });
-    }, [tasks]);
-
-    if (!isLoaded) return null;
-
-    return (
-        <section className="mt-8">
-            <div className="flex items-center justify-between mb-4 border-b border-border pb-2">
-                <div>
-                  <h2 className="text-xl font-bold tracking-wide text-text mb-1 flex items-center gap-2">
-                      Aktif Görevler
-                  </h2>
-                  <p className="text-xs text-text-muted">Önce en önemliden başla. Hepsini aynı anda düşünme.</p>
-                </div>
-            </div>
-
-            <div className="bg-surface border border-border p-5 space-y-5">
-
-                {/* Add Task Form */}
-                <form onSubmit={handleAddTask} className="flex gap-3 items-center flex-wrap border-b border-border/50 pb-5">
-                    <select
-                        value={newPriority}
-                        onChange={(e) => setNewPriority(e.target.value as "P1" | "P2" | "P3")}
-                        className="bg-background border border-border px-3 py-2.5 text-xs font-medium text-text outline-none focus:border-text transition-colors"
-                    >
-                        <option value="P1">P1</option>
-                        <option value="P2">P2</option>
-                        <option value="P3">P3</option>
-                    </select>
-                    <input
-                        type="text"
-                        value={newTaskTitle}
-                        onChange={(e) => setNewTaskTitle(e.target.value)}
-                        placeholder="Görev tanımlayın..."
-                        className="flex-1 bg-background border border-border px-4 py-2.5 text-sm text-text outline-none focus:border-text transition-colors min-w-[200px]"
-                    />
-                    <button
-                        type="submit"
-                        disabled={!newTaskTitle.trim()}
-                        className="bg-text text-black px-6 py-2.5 text-xs font-bold tracking-wider uppercase hover:opacity-90 transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
-                    >
-                        EKLE
-                    </button>
-                </form>
-
-                {/* Active Tasks List */}
-                {activeTasksList.length === 0 ? (
-                    <div className="text-text-muted text-xs font-mono uppercase tracking-widest py-6 text-center border border-dashed border-border">
-                        {activeQuadrantFilter
-                            ? `${QUADRANT_STYLES[activeQuadrantFilter].label} QUADRANT'INDA AKTİF GÖREV YOK.`
-                            : "AKTİF GÖREV BULUNAMADI."}
-                    </div>
-                ) : (
-                    <div className="space-y-4">
-                        <div className="space-y-3">
-                            {visibleTasksList.map((task) => {
-                            return (
-                                <div 
-                                    key={task.id} 
-                                    className={`group overflow-hidden transition-all duration-200 p-4 flex items-center gap-4 bg-background border ${task.is_urgent ? "border-accent-green/50" : "border-border hover:border-text-muted"}`}
-                                    style={{
-                                        borderLeftWidth: "4px",
-                                        borderLeftColor: PRIORITY_LEFT_BORDER[task.priority],
-                                    }}
-                                >
-                                    <button
-                                        onClick={() => toggleTask(task.id)}
-                                        className="w-5 h-5 shrink-0 border flex items-center justify-center text-[10px] font-bold transition-colors bg-transparent border-border text-transparent hover:border-text-muted"
-                                    >
-                                        ✓
-                                    </button>
-
-                                    <span className={`px-2 py-1 text-[10px] font-bold uppercase tracking-widest border shrink-0 ${PRIORITY_STYLES[task.priority]}`}>
-                                        {task.priority}
-                                    </span>
-
-                                    <span 
-                                        className={`text-[15px] font-medium text-text flex-1 min-w-0 truncate ${task.is_urgent ? 'text-text' : (task.priority === 'P1' ? 'text-text' : '')}`}
-                                    >
-                                        {task.title}
-                                    </span>
-
-                                    <button
-                                        onClick={(e) => toggleUrgency(task.id, e)}
-                                        className={`opacity-0 group-hover:opacity-100 transition-all p-1 text-base shrink-0 ${task.is_urgent ? "text-accent-green opacity-100" : "text-text-muted hover:text-accent-green"}`}
-                                        title="Acil/Önemli İşaretle"
-                                    >
-                                        ★
-                                    </button>
-
-                                    <button
-                                        onClick={(e) => deleteTask(task.id, e)}
-                                        className="text-text-muted hover:text-accent-red transition-all p-1.5 text-xs shrink-0"
-                                        title="Görevi Sil"
-                                    >
-                                        ✕
-                                    </button>
-                                </div>
-                            );
-                        })}
-                        </div>
-                        {activeTasksList.length > 3 && (
-                            <button
-                                onClick={() => setShowAllTasks(!showAllTasks)}
-                                className="w-full text-xs py-3 border border-border bg-surface/30 hover:bg-surface/50 text-text-muted hover:text-text transition-colors font-bold uppercase tracking-wider"
-                            >
-                                {showAllTasks ? "SADECE ÖNEMLİ 3 GÖREVİ GÖSTER" : `TÜMÜNÜ GÖSTER (+${activeTasksList.length - 3})`}
-                            </button>
-                        )}
-                    </div>
-                )}
-            </div>
-
-            {/* COMPLETED ARCHIVE */}
-            {completedTasksList.length > 0 && (
-                <div className="mt-8">
-                    <div className="flex justify-between items-center mb-3">
-                        <h3 className="text-sm font-bold tracking-wide text-text-muted flex items-center gap-2">
-                            Tamamlananlar
-                        </h3>
-                        <span className="text-xs text-text-muted/50">
-                            {completedTasksList.length} görev
-                        </span>
-                    </div>
-                    <div className="space-y-2 opacity-60 hover:opacity-100 transition-opacity">
-                        {completedTasksList.map((task) => (
-                            <div key={task.id} className="flex items-center gap-3 p-3 bg-surface/30 border border-border">
-                                <span className="text-text-muted text-xs font-bold">✓</span>
-                                <span className="text-sm text-text-muted line-through flex-1 truncate">{task.title}</span>
-                                <span className="text-[10px] text-text-muted/60 tracking-wider">
-                                    {task.completed_at ? new Date(task.completed_at).toLocaleDateString("tr-TR") : ''}
-                                </span>
-                                <button onClick={(e) => deleteTask(task.id, e)} className="text-text-muted/50 hover:text-text text-sm px-2">✕</button>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            )}
-        </section>
+          : t
+      )
     );
+  };
+
+  const deleteTask = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    setTasks((prev) => prev.filter((t) => t.id !== id));
+    showToast("Görev silindi.");
+  };
+
+  const activeTasksList = useMemo(() => {
+    return tasks
+      .filter((t) => !t.is_completed)
+      .sort((a, b) => {
+        const order = { P1: 1, P2: 2, P3: 3 };
+        if (order[a.priority] !== order[b.priority]) return order[a.priority] - order[b.priority];
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      });
+  }, [tasks]);
+
+  const completedTasksList = useMemo(() => {
+    return tasks
+      .filter((t) => t.is_completed)
+      .sort((a, b) => {
+        const timeA = a.completed_at ? new Date(a.completed_at).getTime() : 0;
+        const timeB = b.completed_at ? new Date(b.completed_at).getTime() : 0;
+        return timeB - timeA;
+      });
+  }, [tasks]);
+
+  const MAX_VISIBLE = 5;
+  const visibleActiveTasks = showAllTasks ? activeTasksList : activeTasksList.slice(0, MAX_VISIBLE);
+
+  if (!isLoaded) return null;
+
+  return (
+    <div className="flex flex-col gap-4">
+      {/* Title Header */}
+      <div className="flex justify-between items-baseline mb-[-8px]">
+        <span style={{ fontFamily: "var(--font-mono)", fontSize: "var(--size-xs)", color: "var(--text-3)", letterSpacing: "0.12em", textTransform: "uppercase" }}>AKTİF GÖREVLER</span>
+        <span style={{ flexGrow: 1 }} />
+        <span style={{ fontFamily: "var(--font-mono)", fontSize: "var(--size-xs)", color: "var(--text-3)" }}>önce en önemlisi</span>
+      </div>
+
+      {/* Form Row */}
+      <form onSubmit={handleAddTask} className="flex gap-2 items-center">
+        <select
+          value={newPriority}
+          onChange={(e) => setNewPriority(e.target.value as "P1" | "P2" | "P3")}
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: "var(--size-xs)",
+            border: "1px solid var(--border-0)",
+            background: "transparent",
+            color: "var(--text-2)",
+            padding: "4px 8px",
+            borderRadius: "2px",
+            outline: "none",
+            height: "30px",
+          }}
+        >
+          <option value="P1">P1</option>
+          <option value="P2">P2</option>
+          <option value="P3">P3</option>
+        </select>
+        
+        <input
+          type="text"
+          value={newTaskTitle}
+          onChange={(e) => setNewTaskTitle(e.target.value)}
+          placeholder="Bugün ne yapacaksın?"
+          style={{
+            fontFamily: "var(--font-sans)",
+            fontSize: "var(--size-sm)",
+            color: "var(--text-1)",
+            background: "transparent",
+            border: "none",
+            flexGrow: 1,
+            outline: "none",
+            height: "30px",
+            padding: "0 8px",
+          }}
+          className="placeholder:text-(--text-3)"
+        />
+        
+        <button
+          type="submit"
+          disabled={!newTaskTitle.trim()}
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: "var(--size-xs)",
+            letterSpacing: "0.08em",
+            border: "1px solid var(--border-0)",
+            padding: "4px 10px",
+            borderRadius: "2px",
+            color: newTaskTitle.trim() ? "var(--text-0)" : "var(--text-3)",
+            background: "transparent",
+            cursor: newTaskTitle.trim() ? "pointer" : "not-allowed",
+            height: "30px",
+            textTransform: "uppercase",
+            transition: "border 0.2s, color 0.2s",
+          }}
+          className={newTaskTitle.trim() ? "hover:border-(--amber-border) hover:text-(--amber)" : ""}
+        >
+          EKLE
+        </button>
+      </form>
+
+      {/* Active Tasks List */}
+      <div className="flex flex-col">
+        {activeTasksList.length === 0 ? (
+          <div style={{ padding: "16px", textAlign: "center", border: "1px solid var(--border-0)", borderRadius: "2px" }}>
+            <span style={{ fontFamily: "var(--font-sans)", fontSize: "var(--size-sm)", color: "var(--text-3)" }}>
+              Bugün görev eklemedin. Küçük bir şeyle başla.
+            </span>
+          </div>
+        ) : (
+          visibleActiveTasks.map((task) => {
+            const cfg = PRIORITY_CONFIG[task.priority];
+            const isDone = task.is_completed;
+            
+            return (
+              <div
+                key={task.id}
+                onClick={() => toggleTask(task.id)}
+                className="group flex items-center transition-all duration-200"
+                style={{
+                  height: "40px",
+                  padding: "0 16px 0 0",
+                  borderBottom: "1px solid var(--border-1)",
+                  background: "transparent",
+                  cursor: "pointer",
+                }}
+              >
+              <div
+                style={{
+                  width: "18px",
+                  height: "18px",
+                  borderRadius: "50%",
+                  border: `1px solid ${isDone ? "var(--amber)" : "var(--border-0)"}`,
+                  background: isDone ? "var(--amber)" : "transparent",
+                  marginRight: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  transition: "all 0.2s",
+                }}
+              >
+                {isDone && <span style={{ color: "black", fontSize: "10px", fontWeight: "bold" }}>✓</span>}
+              </div>
+
+                <span
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: "9px",
+                    letterSpacing: "0.1em",
+                    padding: "1px 5px",
+                    borderRadius: "2px",
+                    textTransform: "uppercase",
+                    background: cfg.bg,
+                    border: `1px solid ${cfg.border}`,
+                    color: cfg.color,
+                    marginRight: "10px",
+                  }}
+                >
+                  {task.priority}
+                </span>
+
+                <span
+                  style={{
+                    flex: 1,
+                    fontFamily: "var(--font-sans)",
+                    fontSize: "var(--size-sm)",
+                    color: "var(--text-1)",
+                    textDecoration: "none",
+                  }}
+                  className="truncate"
+                >
+                  {task.title}
+                </span>
+
+                <button
+                  onClick={(e) => deleteTask(e, task.id)}
+                  style={{
+                    color: "var(--text-3)",
+                    background: "transparent",
+                    border: "none",
+                    cursor: "pointer",
+                    padding: "4px",
+                  }}
+                  className="opacity-0 group-hover:opacity-100 hover:text-(--red-signal) transition-all"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            );
+          })
+        )}
+
+        {activeTasksList.length > MAX_VISIBLE && (
+          <button
+            onClick={() => setShowAllTasks(!showAllTasks)}
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: "var(--size-xs)",
+              color: "var(--text-3)",
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              padding: "12px 0",
+              textAlign: "left",
+            }}
+            className="hover:text-(--text-1) transition-colors"
+          >
+            {showAllTasks ? "Daha az göster" : `+${activeTasksList.length - MAX_VISIBLE} görev daha`}
+          </button>
+        )}
+      </div>
+
+      {/* Completed Tasks List */}
+      {completedTasksList.length > 0 && (
+        <div className="flex flex-col mt-4 border-t border-(--border-1) pt-4">
+          {completedTasksList.slice(0, 10).map((task) => (
+            <div
+              key={task.id}
+              className="flex items-center"
+              style={{
+                height: "32px",
+                opacity: 0.2,
+                padding: "0 16px 0 18px",
+              }}
+            >
+              <span
+                style={{
+                  flex: 1,
+                  fontFamily: "var(--font-sans)",
+                  fontSize: "var(--size-sm)",
+                  color: "var(--text-1)",
+                  textDecoration: "line-through",
+                }}
+                className="truncate"
+              >
+                {task.title}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }

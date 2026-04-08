@@ -1,56 +1,316 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
-import MotivationCards from "@/components/MotivationCards";
+import { useState, useEffect } from "react";
 import EndDayButton from "@/components/EndDayButton";
 import ActiveTasks from "@/components/ActiveTasks";
 import CareerDashboard from "@/components/career/CareerDashboard";
-import DailyPrayer from "@/components/DailyPrayer";
 import NeverBreak from "@/components/NeverBreak";
-import ContentSharing from "@/components/ContentSharing";
-import BonusTasks from "@/components/BonusTasks";
 import WeeklyScreen from "@/components/WeeklyScreen";
 import WarFund from "@/components/WarFund";
 import RightPanel from "@/components/RightPanel";
 import HealthDashboard from "@/components/health/HealthDashboard";
 import WakeUpMessageCard from "@/components/daily/WakeUpMessageCard";
-import CollapsibleBlock from "@/components/CollapsibleBlock";
+import DailyFocusCard from "@/components/DailyFocusCard";
+import IngilizceModal from "@/components/IngilizceModal";
+import { useDailyScore } from "@/utils/useDailyScore";
 
-type Tab = "GUNLUK" | "HAFTALIK" | "STRATEJI" | "FINANS" | "SPOR_SAGLIK";
+import { Send } from "lucide-react";
 
-const TABS: { key: Tab; label: string; icon: string }[] = [
-  { key: "GUNLUK", label: "GÜNLÜK", icon: "⚡" },
-  { key: "SPOR_SAGLIK", label: "SPOR & SAĞLIK", icon: "🏋️‍♂️" },
-  { key: "HAFTALIK", label: "HAFTALIK", icon: "📅" },
-  { key: "STRATEJI", label: "KARİYER", icon: "🗺️" },
-  { key: "FINANS", label: "FİNANS", icon: "💰" },
+type Tab = "GUNLUK" | "SPOR_SAGLIK" | "HAFTALIK" | "STRATEJI" | "FINANS";
+
+const TABS: { key: Tab; label: string }[] = [
+  { key: "GUNLUK", label: "GÜNLÜK" },
+  { key: "SPOR_SAGLIK", label: "SPOR" },
+  { key: "HAFTALIK", label: "HAFTALIK" },
+  { key: "STRATEJI", label: "KARİYER" },
+  { key: "FINANS", label: "FİNANS" },
 ];
 
+// ── İçerik Paylaşımı (15p) ───────────────────────────────────
+function ContentSharingSection() {
+  const [done, setDone] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const saved = localStorage.getItem("goat-content-sharing-v1");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.date === new Date().toISOString().split("T")[0]) {
+          return parsed.data?.["cs-grafikcem-x"] || false;
+        }
+      } catch {}
+    }
+    return false;
+  });
+
+  const toggle = () => {
+    if (typeof window !== "undefined" && window.navigator?.vibrate) {
+      window.navigator.vibrate(50);
+    }
+    const newDone = !done;
+    setDone(newDone);
+    const today = new Date().toISOString().split("T")[0];
+    const saved = localStorage.getItem("goat-content-sharing-v1");
+    let existingData: Record<string, boolean> = {};
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.date === today) existingData = parsed.data || {};
+      } catch {}
+    }
+    localStorage.setItem(
+      "goat-content-sharing-v1",
+      JSON.stringify({ date: today, data: { ...existingData, "cs-grafikcem-x": newDone } })
+    );
+    window.dispatchEvent(new Event("dailyScoreUpdated"));
+  };
+
+  return (
+    <div
+      onClick={toggle}
+      className="flex items-center gap-[10px] cursor-pointer transition-all duration-200"
+      style={{
+        height: "40px",
+        background: done ? "var(--amber-dim)" : "transparent",
+        borderBottom: "1px solid var(--border-1)",
+        paddingRight: "16px",
+      }}
+      title="İçerik Paylaşımı"
+    >
+      <div 
+        style={{ 
+          width: "2px", 
+          height: "100%", 
+          background: "var(--amber)",
+          transition: "background 0.2s" 
+        }} 
+      />
+      <Send size={14} style={{ color: "var(--amber)", flexShrink: 0 }} />
+      <span
+        style={{
+          flex: 1,
+          fontFamily: "var(--font-sans)",
+          fontSize: "var(--size-sm)",
+          color: "var(--text-1)",
+          textDecoration: done ? "line-through" : "none",
+          opacity: done ? 0.4 : 1,
+        }}
+      >
+        Bugünkü X paylaşımı yapıldı
+      </span>
+      <span
+        style={{ 
+          fontFamily: "var(--font-mono)", 
+          fontSize: "var(--size-xs)", 
+          color: "var(--text-3)",
+          opacity: done ? 0.4 : 1,
+        }}
+      >
+        +15p
+      </span>
+    </div>
+  );
+}
+
+// ── Bonus Görevler ────────────────────────────────────────────
+interface BonusItemDef {
+  id: string;
+  label: string;
+  points: number;
+  activeDays?: number[];
+  hasModal?: boolean;
+}
+
+const BONUS_ITEMS: BonusItemDef[] = [
+  { id: "bn-sleep", label: "23:00 öncesi yat", points: 5 },
+  { id: "bn-extra-read", label: "Ekstra 10 sayfa oku", points: 5 },
+  {
+    id: "bn-english",
+    label: "İngilizce çalış",
+    points: 10,
+    activeDays: [1, 3, 5, 6],
+    hasModal: true,
+  },
+  {
+    id: "bn-treadmill",
+    label: "Koşu bandı yürüyüşü",
+    points: 10,
+    activeDays: [3, 5, 0],
+  },
+];
+
+function BonusSection() {
+  const [checked, setChecked] = useState<Record<string, boolean>>(() => {
+    if (typeof window === "undefined") return {};
+    const saved = localStorage.getItem("goat-bonus-tasks-v1");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.date === new Date().toISOString().split("T")[0]) {
+          return parsed.data || {};
+        }
+      } catch {}
+    }
+    return {};
+  });
+  const [showEnglishModal, setShowEnglishModal] = useState(false);
+  const today = new Date().getDay();
+
+  const saveAndDispatch = (newChecked: Record<string, boolean>) => {
+    localStorage.setItem(
+      "goat-bonus-tasks-v1",
+      JSON.stringify({ date: new Date().toISOString().split("T")[0], data: newChecked })
+    );
+    window.dispatchEvent(new Event("dailyScoreUpdated"));
+  };
+
+  const toggle = (id: string, isDisabled: boolean) => {
+    if (isDisabled) return;
+    if (typeof window !== "undefined" && window.navigator?.vibrate) window.navigator.vibrate(20);
+    const newChecked = { ...checked, [id]: !checked[id] };
+    setChecked(newChecked);
+    saveAndDispatch(newChecked);
+  };
+
+  const handleItemClick = (item: BonusItemDef, isDisabled: boolean) => {
+    if (isDisabled) return;
+    if (item.hasModal && !checked[item.id]) {
+      setShowEnglishModal(true);
+      return;
+    }
+    toggle(item.id, isDisabled);
+  };
+
+  return (
+    <>
+      <div className="flex flex-col">
+        {BONUS_ITEMS.map((item) => {
+          const isDisabled = !!(item.activeDays && !item.activeDays.includes(today));
+          const isDone = checked[item.id];
+
+          return (
+            <div
+              key={item.id}
+              onClick={() => handleItemClick(item, isDisabled)}
+              className="flex items-center gap-[10px] transition-all duration-200"
+              style={{
+                height: "40px",
+                borderBottom: "1px solid var(--border-1)",
+                paddingRight: "16px",
+                background: isDone ? "var(--bg-hover)" : "transparent",
+                opacity: isDone ? 0.35 : isDisabled ? 0.15 : 1,
+                cursor: isDisabled ? "not-allowed" : "pointer",
+              }}
+            >
+              <div 
+                style={{ 
+                  width: "2px", 
+                  height: "100%", 
+                  background: isDone ? "var(--amber)" : "transparent",
+                  transition: "background 0.2s" 
+                }} 
+              />
+              <span
+                style={{
+                  flex: 1,
+                  fontFamily: "var(--font-sans)",
+                  fontSize: "var(--size-sm)",
+                  color: isDone ? "var(--text-2)" : "var(--text-1)",
+                  textDecoration: isDone ? "line-through" : "none",
+                }}
+              >
+                {item.label}
+              </span>
+              <span
+                style={{ 
+                  fontFamily: "var(--font-mono)", 
+                  fontSize: "var(--size-xs)", 
+                  color: "var(--text-3)",
+                }}
+              >
+                {item.points}p
+              </span>
+            </div>
+          );
+        })}
+      </div>
+
+      <IngilizceModal
+        isOpen={showEnglishModal}
+        onClose={() => setShowEnglishModal(false)}
+        onComplete={() => toggle("bn-english", false)}
+      />
+    </>
+  );
+}
+
+// ── Puan Barı ─────────────────────────────────────────────────
+function ScoreBar({ score, maxPuan, percentage }: {
+  score: number; maxPuan: number; percentage: number;
+}) {
+  let fillColor = "var(--green-signal)";
+  if (percentage <= 40) fillColor = "var(--red-signal)";
+  else if (percentage <= 65) fillColor = "var(--amber)";
+
+  return (
+    <div className="flex items-center gap-[10px]">
+      <span style={{ fontFamily: "var(--font-mono)", fontSize: "var(--size-sm)", color: "var(--text-2)" }}>
+        {score.toString().padStart(3, '0')} <span style={{ opacity: 0.5 }}>/</span> {maxPuan}
+      </span>
+      <div 
+        style={{ 
+          width: "120px", 
+          height: "2px", 
+          background: "var(--bg-overlay)", 
+          borderRadius: 0,
+          overflow: "hidden"
+        }}
+      >
+        <div
+          style={{
+            width: `${Math.min(percentage, 100)}%`,
+            height: "100%",
+            background: fillColor,
+            transition: "width 0.3s ease",
+            borderRadius: 0,
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+// ── Ana Sayfa ─────────────────────────────────────────────────
 export default function Home() {
-  /* ── State ────────────────────────────────────────────── */
   const [activeTab, setActiveTab] = useState<Tab>("GUNLUK");
-  const [dailyScore, setDailyScore] = useState(0);
-  const [dailyStatusMessage, setDailyStatusMessage] = useState("");
-  const [dailyStatusColor, setDailyStatusColor] = useState("");
   const [streak, setStreak] = useState(0);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     const saved = localStorage.getItem("goat-streak-v1");
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        // If the last date was more than 1 day ago and not today, streak resets if we want strict streak, but let's just keep the count and update it on EndDay.
-        setTimeout(() => setStreak(parsed.count || 0), 0);
+        setStreak(parsed.count || 0);
       } catch {}
     }
+
+    const initDate = new Date().toISOString().split("T")[0];
+    const interval = setInterval(() => {
+      if (new Date().toISOString().split("T")[0] !== initDate) window.location.reload();
+    }, 60000);
+    return () => clearInterval(interval);
   }, []);
+
+  const { score, maxPuan, percentage } = useDailyScore();
+
+  if (!isClient) return null;
 
   const handleDayEnd = (isSuccess: boolean) => {
     const today = new Date().toISOString().split("T")[0];
     const saved = localStorage.getItem("goat-streak-v1");
     let currentStreak = streak;
     let lastDate = "";
-
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -58,270 +318,134 @@ export default function Home() {
         lastDate = parsed.lastDate || "";
       } catch {}
     }
-
-    if (lastDate !== today) {
-        if (isSuccess) {
-            currentStreak += 1;
-        } else {
-            currentStreak = 0; // Break streak
-        }
-    }
-
+    if (lastDate !== today) currentStreak = isSuccess ? currentStreak + 1 : 0;
     setStreak(currentStreak);
     localStorage.setItem("goat-streak-v1", JSON.stringify({ count: currentStreak, lastDate: today }));
-    calculateScore();
   };
 
-  /* ── Score Calculation ────────────────────────────────── */
-  const calculateScore = useCallback(() => {
-    let score = 0;
-    const today = new Date().toISOString().split("T")[0];
-
-    // Never Break (5 tasks = max 5 points) - now using v2
-    const savedNB = localStorage.getItem("goat-never-break-v2");
-    if (savedNB) {
-      try {
-        const parsed = JSON.parse(savedNB);
-        if (parsed.date === today && parsed.data) {
-          if (parsed.data["nb-morning"]) score += 1;
-          if (parsed.data["nb-teeth"]) score += 1;
-          if (parsed.data["nb-deepwork"]) score += 1;
-          if (parsed.data["nb-sports"]) score += 1;
-          if (parsed.data["nb-book"]) score += 1;
-        }
-      } catch {
-        // ignore errors
-      }
-    }
-
-    // Bonus (max 4 tasks * 0.5 = 2 points)
-    const savedBonus = localStorage.getItem("goat-bonus-tasks-v1");
-    if (savedBonus) {
-      try {
-        const parsed = JSON.parse(savedBonus);
-        if (parsed.date === today && parsed.data) {
-          Object.values(parsed.data).forEach(val => {
-            if (val) score += 0.5;
-          });
-        }
-      } catch {
-        // ignore errors
-      }
-    }
-
-    setDailyScore(score);
-
-    // Determine status based on score (out of 5 base tasks)
-    if (score >= 5) {
-      setDailyStatusMessage("Gün Kazanıldı ✓");
-      setDailyStatusColor("#00FF88");
-    } else if (score >= 4) {
-      setDailyStatusMessage("İyi Gün ✓");
-      setDailyStatusColor("#00FF88");
-    } else {
-      setDailyStatusMessage(score > 0 ? "Devam Et" : "Başla");
-      setDailyStatusColor("#FF3B3B");
-    }
-  }, []);
-
-  useEffect(() => {
-    // Avoid calling setState synchronously within an effect
-    setTimeout(() => {
-      calculateScore();
-    }, 0);
-    window.addEventListener("dailyScoreUpdated", calculateScore);
-
-    // Midnight Auto-Rollover Logic and 18:00 check interval
-    const initDate = new Date().toISOString().split("T")[0];
-    const checkInterval = setInterval(() => {
-        const currentDate = new Date().toISOString().split("T")[0];
-        if (initDate !== currentDate) {
-            window.location.reload();
-        } else {
-            // Re-calculate score purely to trigger the 18:00 check if time passes naturally
-            calculateScore();
-        }
-    }, 60000); // Check every minute
-
-    return () => {
-        window.removeEventListener("dailyScoreUpdated", calculateScore);
-        clearInterval(checkInterval);
-    };
-  }, [calculateScore]);
-
-  /* ── Today's date display ─────────────────────────────── */
   const todayDate = new Date();
   const dateStrTR = todayDate.toLocaleDateString("tr-TR", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+    weekday: "long", year: "numeric", month: "long", day: "numeric",
+  }).toUpperCase();
 
   return (
-    <>
-      <div className="min-h-screen">
+    <div className="min-h-screen">
+      <RightPanel />
+
+      <div className="max-w-xl mx-auto px-0 pt-0 pb-[100px]">
         {/* ── Header ─────────────────────────────────────── */}
-        <header className="border-b border-border px-4 md:px-8 py-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 max-w-6xl mx-auto">
+        <header 
+          className="flex items-center justify-between mb-4"
+          style={{ background: "var(--bg-void)", borderBottom: "1px solid var(--border-1)", padding: "16px 24px" }}
+        >
           <div>
-            <h1 className="text-3xl font-bold tracking-wider text-text">
-              FEED THE GOAT<span className="text-accent-red">.</span>
+            <h1 style={{ fontFamily: "var(--font-mono)", fontSize: "var(--size-sm)", fontWeight: 500, letterSpacing: "0.15em", color: "var(--text-0)" }}>
+              FEED THE GOAT<span style={{ color: "var(--amber)" }}>.</span>
             </h1>
-            <p className="text-xs text-text-muted mt-2 tracking-wide font-medium">
-              {activeTab === "GUNLUK" && "Karargâh — Bugün sadece ana hedeflerine odaklan."}
-              {activeTab === "HAFTALIK" && "Bu Haftanın 3 Kazancı — Haftayı kazanmak için minimum hedefler."}
-              {activeTab === "STRATEJI" && "Kariyer — Odaklan, tasarla ve inşa et."}
-              {activeTab === "FINANS" && "Savaş Fonu — Kaynaklarını koru, israfı önle."}
-              {activeTab === "SPOR_SAGLIK" && "Spor & Sağlık — Kendine iyi bak ve harekette kal."}
-            </p>
-          </div>
-          <div className="flex flex-col items-start sm:items-end gap-2">
-            <p className="text-xs text-text-muted font-medium tabular-nums px-3 py-1.5 bg-surface/50 border border-border">
+            <p style={{ fontFamily: "var(--font-mono)", fontSize: "var(--size-xs)", color: "var(--text-2)", letterSpacing: "0.08em", marginTop: "4px" }}>
               {dateStrTR}
             </p>
           </div>
+          <ScoreBar score={score} maxPuan={maxPuan} percentage={percentage} />
         </header>
 
-        <RightPanel />
-
         {/* ── Tab Navigation ─────────────────────────────── */}
-        <nav className="px-4 md:px-8 max-w-6xl mx-auto border-b border-border">
-          <div className="flex overflow-x-auto hide-scrollbar">
+        <nav className="mb-6 px-6">
+          <div className="flex tab-container">
             {TABS.map((tab) => {
               const isActive = activeTab === tab.key;
               return (
                 <button
                   key={tab.key}
-                  onClick={() => {
-                    if (navigator.vibrate) navigator.vibrate(50);
-                    setActiveTab(tab.key);
-                  }}
-                  className={`
-                    flex-1 min-w-[120px] py-4 px-4 text-xs font-bold tracking-wide transition-all border-b-2
-                    ${isActive
-                      ? "text-text border-text bg-surface/30"
-                      : "text-text-muted border-transparent hover:text-text hover:bg-surface/10"
-                    }
-                  `}
+                  onClick={() => setActiveTab(tab.key)}
+                  className={`tab-btn flex-1 ${isActive ? "active" : ""}`}
                 >
-                  <div className="flex items-center justify-center gap-2">
-                    <span className="text-lg opacity-80">{tab.icon}</span>
-                    <span className={`${isActive ? '' : 'opacity-80'}`}>{tab.label}</span>
-                  </div>
+                  {tab.label}
                 </button>
               );
             })}
           </div>
         </nav>
 
-        {/* ── Main Content ──────────────────────────────── */}
-        <main className="px-4 md:px-8 py-6 space-y-6 max-w-6xl mx-auto">
-
-          {/* ── TAB: GÜNLÜK ────────────────────────────── */}
+        {/* ── Content ─────────────────────────────────────── */}
+        <main className="px-6">
+          {/* ── GÜNLÜK ──────────────────────────────────── */}
           {activeTab === "GUNLUK" && (
-            <div className="animate-in fade-in duration-300 space-y-8">
-              {/* 0. Günün Gerçeği (Reality Check) */}
-              <WakeUpMessageCard />
+            <div className="space-y-6">
+              {/* 1. Sabah Fokus Kartı */}
+              <DailyFocusCard />
 
-              {/* 1. Asla Kırma (En Yüksek Öncelik) - Her zaman açık */}
-              <NeverBreak streak={streak} />
-
-              {/* Aktif Görevler - Her zaman açık */}
-              <ActiveTasks />
-
-              {/* İkincil Ritüeller ve Görevler (Collapsible) */}
-              <div className="space-y-4 pt-4 border-t border-border/30">
-                <h3 className="text-[10px] uppercase tracking-[0.25em] text-text-muted font-bold mb-2">İkincil Aksiyonlar</h3>
-                
-                <CollapsibleBlock title="Günü Kapatış Ritüeli (Akşam)" icon="🌙">
-                  <DailyPrayer />
-                </CollapsibleBlock>
-
-                <CollapsibleBlock title="İçerik Paylaşımı (Opsiyonel)" icon="📱">
-                  <ContentSharing />
-                </CollapsibleBlock>
-
-                <CollapsibleBlock title="Bonus Görevler (Enerji Varsa)" icon="⚡">
-                  <BonusTasks />
-                </CollapsibleBlock>
-              </div>
-
-              {/* Animasyonlu Motivasyon Kartları */}
-              <MotivationCards />
-
-              {/* Günlük Skor */}
-              <section className="flex flex-col items-center justify-center text-center space-y-2 py-4">
-                <div className="text-[10px] uppercase tracking-widest text-text-muted font-bold">Gün Durumu</div>
-                <div 
-                  className={`text-2xl md:text-3xl font-bold uppercase tracking-wider`}
-                  style={{ color: dailyStatusColor }}
-                >
-                  {dailyStatusMessage} <span className="text-sm opacity-50 ml-2">({dailyScore.toFixed(1)}/5)</span>
-                </div>
+              {/* 2. Günün Darbesi */}
+              <section>
+                <WakeUpMessageCard />
               </section>
 
-              {/* Günü Bitirme Butonu */}
-              <EndDayButton
-                score={dailyScore}
-                maxBaseScore={5}
-                onFail={() => handleDayEnd(false)}
-                onSuccess={() => handleDayEnd(true)}
-              />
+              {/* 3. Kritik Rutinler */}
+              <section>
+                <div style={{ marginBottom: "8px" }}>
+                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "var(--size-xs)", color: "var(--text-3)", letterSpacing: "0.12em", textTransform: "uppercase" }}>KRİTİK RUTİNLER</span>
+                </div>
+                <NeverBreak streak={streak} />
+              </section>
+
+              {/* 4. İçerik Paylaşımı */}
+              <section>
+                <ContentSharingSection />
+              </section>
+
+              {/* 5. Aktif Görevler */}
+              <section>
+                <ActiveTasks />
+              </section>
+
+              {/* 6. Bonus */}
+              <section>
+                <div className="flex justify-between items-baseline mb-2">
+                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "var(--size-xs)", color: "var(--text-3)", letterSpacing: "0.12em", textTransform: "uppercase" }}>BONUS</span>
+                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "var(--size-xs)", color: "var(--text-3)" }}>opsiyonel</span>
+                </div>
+                <BonusSection />
+              </section>
             </div>
           )}
 
-          {/* ── TAB: HAFTALIK ───────────────────────────── */}
-          {activeTab === "HAFTALIK" && (
-            <>
-              <WeeklyScreen />
-            </>
-          )}
-
-          {/* ── TAB: STRATEJİ ───────────────────────────── */}
-          {activeTab === "STRATEJI" && (
-            <>
-              {/* Career Dashboard (Refactored) */}
-              <CareerDashboard />
-            </>
-          )}
-
-          {/* ── TAB: FİNANS ─────────────────────────────── */}
-          {activeTab === "FINANS" && (
-            <>
-              <WarFund />
-            </>
-          )}
-
-          {/* ── TAB: SPOR & SAĞLIK ─────────────────────────────── */}
-          {activeTab === "SPOR_SAGLIK" && (
-            <>
-              <HealthDashboard />
-            </>
-          )}
-
-          {/* Footer */}
-          <footer className="pt-6 pb-8 text-center space-y-4">
-            <p className="text-[9px] uppercase tracking-[0.3em] text-text-muted">
-              &ldquo;Disiplinsiz özgürlük, özgürlüksüz disiplin — ikisi de
-              ölüm.&rdquo;
-            </p>
-            <button 
-                onClick={() => {
-                    const data = { ...localStorage };
-                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement("a");
-                    a.href = url;
-                    a.download = `goat-backup-${new Date().toISOString().split("T")[0]}.json`;
-                    a.click();
-                }}
-                className="text-[10px] text-text-muted/50 hover:text-text-muted transition-colors border border-border/50 px-3 py-1 bg-surface/10"
-            >
-                VERİLERİ DIŞA AKTAR (JSON)
-            </button>
-          </footer>
+          {activeTab === "SPOR_SAGLIK" && <HealthDashboard />}
+          {activeTab === "HAFTALIK" && <WeeklyScreen />}
+          {activeTab === "STRATEJI" && <CareerDashboard />}
+          {activeTab === "FINANS" && <WarFund />}
         </main>
+
+        {/* ── Sticky Günü Bitir ───────────────────────────── */}
+        {activeTab === "GUNLUK" && (
+          <EndDayButton
+            score={score}
+            maxBaseScore={maxPuan * 0.66}
+            onFail={() => handleDayEnd(false)}
+            onSuccess={() => handleDayEnd(true)}
+          />
+        )}
       </div>
-    </>
+
+      {/* Footer */}
+      <footer className="text-center" style={{ marginTop: "40px", paddingBottom: "100px" }}>
+        <p style={{ fontFamily: "var(--font-mono)", fontSize: "var(--size-xs)", color: "var(--text-3)", opacity: 0.4 }}>
+          &quot;THIS IS A SERIOUS TOOL FOR A SERIOUS PERSON.&quot;
+        </p>
+        <button
+          onClick={() => {
+            const data = { ...localStorage };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `goat-backup-${new Date().toISOString().split("T")[0]}.json`;
+            a.click();
+          }}
+          style={{ fontFamily: "var(--font-mono)", fontSize: "var(--size-xs)", color: "var(--text-3)", opacity: 0.4, marginTop: "8px", background: "transparent", border: "none", cursor: "pointer", textDecoration: "underline" }}
+        >
+          VERİLERİ DIŞA AKTAR
+        </button>
+      </footer>
+    </div>
   );
 }
