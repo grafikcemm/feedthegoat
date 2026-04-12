@@ -1,0 +1,30 @@
+[
+  {
+    "id": "b9ed6856-f556-4440-8549-60d2a24fae73",
+    "title": "Ana sayfa da bulunan yapay zeka ile reklam görselleri kursunu bitir",
+    "is_completed": false,
+    "created_at": "2026-02-21T08:58:02.800071+00:00",
+    "is_urgent": false
+  },
+  {
+    "id": "136a4c51-c229-438f-a540-f4853165202e",
+    "title": "Python ile Yapay Zeka 101 - 1. Ders Tamamla!",
+    "is_completed": false,
+    "created_at": "2026-02-22T11:44:36.972526+00:00",
+    "is_urgent": false
+  },
+  {
+    "id": "f4ee137f-8f3e-434e-bc1f-e3cf6fbd72f1",
+    "title": "2026’da Claude Code ile Sıfırdan Zirveye Youtube Kursunu Bitir",
+    "is_completed": false,
+    "created_at": "2026-02-25T18:37:49.571699+00:00",
+    "is_urgent": true
+  },
+  {
+    "id": "57e92577-6370-433b-adac-7015fe720112",
+    "title": "Anasayfa video ve notebookları bitir & weSafe sosyal medya boardu bitir",
+    "is_completed": false,
+    "created_at": "2026-02-27T10:57:59.221605+00:00",
+    "is_urgent": true
+  }
+]

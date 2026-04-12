@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@config "../../tailwind.config.ts";
+
 
 :root {
   --bg-void: #0D0D0D;
@@ -52,12 +54,10 @@
   --radius-none: 0px;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap');
-
 body {
   background: var(--bg-void);
   color: var(--text-0);
-  font-family: var(--font-sans);
+  font-family: "JetBrains Mono", monospace;
   font-size: var(--size-base);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -177,4 +177,43 @@ body {
     transition: none !important;
     animation: none !important;
   }
+}
+
+@keyframes idle-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1px); }
+}
+
+.animate-idle-bob {
+  transform-origin: center;
+  animation: idle-bob 2s ease-in-out infinite;
+}
+
+@keyframes score-flash {
+  0% { color: #FFD17A; transform: scale(1.05); }
+  100% { color: #F5B544; transform: scale(1); }
+}
+.animate-score-flash {
+  animation: score-flash 600ms ease-out;
+}
+
+@keyframes fly-up {
+  0% { opacity: 0; transform: translateY(0); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-32px); }
+}
+.animate-fly-up {
+  animation: fly-up 800ms ease-out forwards;
+}
+
+@keyframes alfa-pulse {
+  0%, 100% { transform: scale(1.05) translateY(0); }
+  50% { transform: scale(1.08) translateY(-2px); }
+}
+.mood-alfa {
+  animation: alfa-pulse 1.4s ease-in-out infinite;
+}
+.mood-durgun {
+  animation: idle-bob 4s ease-in-out infinite;
+  opacity: 0.6;
 }

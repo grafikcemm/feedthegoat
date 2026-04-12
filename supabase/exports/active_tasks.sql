@@ -1,0 +1,4 @@
+INSERT INTO active_tasks (id, title, is_completed, created_at, is_urgent) VALUES ('b9ed6856-f556-4440-8549-60d2a24fae73', 'Ana sayfa da bulunan yapay zeka ile reklam görselleri kursunu bitir', FALSE, '2026-02-21T08:58:02.800071+00:00', FALSE);
+INSERT INTO active_tasks (id, title, is_completed, created_at, is_urgent) VALUES ('136a4c51-c229-438f-a540-f4853165202e', 'Python ile Yapay Zeka 101 - 1. Ders Tamamla!', FALSE, '2026-02-22T11:44:36.972526+00:00', FALSE);
+INSERT INTO active_tasks (id, title, is_completed, created_at, is_urgent) VALUES ('f4ee137f-8f3e-434e-bc1f-e3cf6fbd72f1', '2026’da Claude Code ile Sıfırdan Zirveye Youtube Kursunu Bitir', FALSE, '2026-02-25T18:37:49.571699+00:00', TRUE);
+INSERT INTO active_tasks (id, title, is_completed, created_at, is_urgent) VALUES ('57e92577-6370-433b-adac-7015fe720112', 'Anasayfa video ve notebookları bitir & weSafe sosyal medya boardu bitir', FALSE, '2026-02-27T10:57:59.221605+00:00', TRUE);

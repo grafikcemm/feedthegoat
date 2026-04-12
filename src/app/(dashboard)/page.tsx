@@ -1,0 +1,562 @@
+import React from "react";
+import { format, subDays } from "date-fns";
+
+import { DailyShell } from "@/components/daily/DailyShell";
+import { TopBar } from "@/components/daily/TopBar";
+import { TabNav } from "@/components/daily/TabNav";
+import { HeroZone } from "@/components/daily/HeroZone";
+import { TaskGroup } from "@/components/daily/TaskGroup";
+import { EnergyCheckIn } from "@/components/daily/EnergyCheckIn";
+import { FocusCard } from "@/components/daily/FocusCard";
+import { QuoteBar } from "@/components/daily/QuoteBar";
+import { MountainMini } from "@/components/daily/MountainMini";
+import { HeatmapMini } from "@/components/daily/HeatmapMini";
+import { BottomActionBar } from "@/components/daily/BottomActionBar";
+import { FinanceShell } from "@/components/finance/FinanceShell";
+
+// Legacy components for other tabs
+import HealthDashboard from "@/components/health/HealthDashboard";
+import CareerDashboard from "@/components/career/CareerDashboard";
+import WeeklyScreen from "@/components/WeeklyScreen";
+import WarFund from "@/components/WarFund";
+import RightPanel from "@/components/RightPanel";
+
+import { createServerSupabase } from "@/lib/supabaseServer";
+import { calculateDailyScore } from "@/lib/scoring";
+import { computeFinanceSummary } from "@/lib/financeCalc";
+import { getCurrentISOWeekKey, getCurrentWeekRange, formatDateForDB, DAY_LABELS_TR } from '@/lib/weekUtils';
+
+// New Weekly Components
+import { WeeklyShell } from "@/components/weekly/WeeklyShell";
+import { WeeklyMetricCard } from "@/components/weekly/WeeklyMetricCard";
+import { WeeklyHeatmap } from "@/components/weekly/WeeklyHeatmap";
+import { MinimumGainsCard } from "@/components/weekly/MinimumGainsCard";
+import { ChargeDayCard } from "@/components/weekly/ChargeDayCard";
+
+// New Sport Components
+import { SportShell } from "@/components/sport/SportShell";
+import { WorkoutPlanColumn } from "@/components/sport/WorkoutPlanColumn";
+import { NutritionPanel } from "@/components/sport/NutritionPanel";
+import { MealPlanSection } from "@/components/sport/MealPlanSection";
+import { WaterActions } from "@/components/sport/WaterActions";
+import { DailySystemsCard } from "@/components/sport/DailySystemsCard";
+
+// New Career Components
+import { CAREER_PHASES, getPhaseCompletionPct, computeCurrentPhase } from '@/lib/careerConfig';
+import { CareerShell } from "@/components/career/CareerShell";
+import { KariyerOmurgasiCard } from "@/components/career/KariyerOmurgasiCard";
+import { FocusStrip } from "@/components/career/FocusStrip";
+import { ApiMetricsRow } from "@/components/career/ApiMetricsRow";
+import { FilterSearchRow } from "@/components/career/FilterSearchRow";
+import { PhaseTimeline } from "@/components/career/PhaseTimeline";
+import { ActivePhaseDetail } from "@/components/career/ActivePhaseDetail";
+import { OtherPhasesAccordion } from "@/components/career/OtherPhasesAccordion";
+
+import { 
+  getTodayDayKey, 
+  getEnglishGroupForToday 
+} from '@/lib/dayUtils';
+import { ensureTodayTasks } from '@/app/actions/dailyResetActions';
+import { ensureTodayQuote } from "@/app/actions/quoteActions";
+import { RealityCheckCard } from "@/components/daily/RealityCheckCard";
+
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  await Promise.all([
+    ensureTodayTasks(),
+    ensureTodayQuote(),
+  ]);
+  const resolvedParams = await searchParams;
+  const tab = resolvedParams.tab || "GUNLUK";
+  const supabase = createServerSupabase();
+  const today = format(new Date(), "yyyy-MM-dd");
+  const todayDayKey = getTodayDayKey();
+
+  // 0. Fetch today's daily score for Reality Check
+  const { data: todayDailyScore } = await supabase
+    .from("daily_scores")
+    .select("*")
+    .eq("date", today)
+    .maybeSingle();
+
+  // Tab routing
+  if (tab === "SPOR") {
+    const { start, end } = getCurrentWeekRange();
+    const startStr = formatDateForDB(start);
+    const endStr = formatDateForDB(end);
+
+    // Parallelize all SPOR data fetching
+    const [
+      { data: days },
+      { data: completionsThisWeek },
+      { data: sportState },
+      { data: todayNutrition },
+      { data: todayWaterLogs },
+      { data: weekNutrition },
+      { data: weekWater },
+      { data: meals }
+    ] = await Promise.all([
+      supabase.from("workout_days").select("id, day_type, day_of_week, sort_order, title, is_required, is_bonus, amac, exercises:workout_exercises(id, name, sets_reps, sort_order)").order("sort_order"),
+      supabase.from("workout_completions").select("day_id, date").gte("date", startStr).lte("date", endStr),
+      supabase.from("sport_state").select("id, protein_target_g, calorie_target, water_target_ml, ceo_breakfast_note").eq("id", 1).single(),
+      supabase.from("nutrition_logs").select("protein_g, calories").eq("date", today),
+      supabase.from("water_logs").select("amount_ml").eq("date", today),
+      supabase.from("nutrition_logs").select("date, protein_g, calories").gte("date", startStr).lte("date", endStr),
+      supabase.from("water_logs").select("date, amount_ml").gte("date", startStr).lte("date", endStr),
+      supabase.from("meal_plan").select("id, meal_time, meal_label, items, total_protein_g, sort_order").order("sort_order", { ascending: true })
+    ]);
+
+    const sortedDays =
+      days?.map((d) => ({
+        ...d,
+        exercises:
+          d.exercises?.sort((a, b) => a.sort_order - b.sort_order) ?? [],
+      })) ?? [];
+
+    const completedDayIds = new Set(
+      completionsThisWeek?.map((c) => c.day_id) ?? []
+    );
+
+    const todayProtein =
+      todayNutrition?.reduce((s, l) => s + Number(l.protein_g), 0) ?? 0;
+    const todayCalories =
+      todayNutrition?.reduce((s, l) => s + l.calories, 0) ?? 0;
+    const todayWater =
+      todayWaterLogs?.reduce((s, l) => s + l.amount_ml, 0) ?? 0;
+
+    const proteinByDate: Record<string, number> = {};
+    const caloriesByDate: Record<string, number> = {};
+    const waterByDate: Record<string, number> = {};
+
+    weekNutrition?.forEach((n) => {
+      proteinByDate[n.date] = (proteinByDate[n.date] ?? 0) + Number(n.protein_g);
+      caloriesByDate[n.date] = (caloriesByDate[n.date] ?? 0) + n.calories;
+    });
+    weekWater?.forEach((w) => {
+      waterByDate[w.date] = (waterByDate[w.date] ?? 0) + w.amount_ml;
+    });
+
+    const daysWithData = Object.keys(proteinByDate).length || 1;
+    const daysWithWater = Object.keys(waterByDate).length || 1;
+
+    const avgProtein =
+      Object.values(proteinByDate).reduce((a, b) => a + b, 0) / daysWithData;
+    const avgCalories =
+      Object.values(caloriesByDate).reduce((a, b) => a + b, 0) / daysWithData;
+    const avgWater =
+      Object.values(waterByDate).reduce((a, b) => a + b, 0) / daysWithWater;
+
+    return (
+      <div className="min-h-screen">
+        <RightPanel />
+        <div className="pt-8">
+          <nav className="mb-6 px-8 max-w-5xl mx-auto">
+            <TabNav />
+          </nav>
+          <SportShell>
+            {/* Left Column: Workout Plan */}
+            <WorkoutPlanColumn
+              days={sortedDays}
+              completedDayIds={completedDayIds}
+              todayDayKey={todayDayKey}
+            />
+
+            {/* Right Column: Nutrition + Water + Systems */}
+            <div className="flex flex-col gap-6">
+              <NutritionPanel
+                todayProtein={todayProtein}
+                todayCalories={todayCalories}
+                todayWater={todayWater}
+                proteinTarget={sportState?.protein_target_g || 180}
+                calorieTarget={sportState?.calorie_target || 1600}
+                waterTarget={sportState?.water_target_ml || 3000}
+                avgProtein={avgProtein}
+                avgCalories={avgCalories}
+                avgWater={avgWater}
+              />
+
+              <MealPlanSection meals={meals || []} />
+
+              <WaterActions />
+
+              <DailySystemsCard
+                ceo_breakfast_note={sportState?.ceo_breakfast_note}
+              />
+            </div>
+          </SportShell>
+        </div>
+      </div>
+    );
+  }
+
+  if (tab === "HAFTALIK") {
+    const { start, end, days: weekDays } = getCurrentWeekRange();
+    const isoWeek = getCurrentISOWeekKey();
+    const startStr = formatDateForDB(start);
+    const endStr = formatDateForDB(end);
+
+    // Parallelize all HAFTALIK data fetching
+    const [
+      { data: scores },
+      { data: gains },
+      { data: completions },
+      { data: rituals }
+    ] = await Promise.all([
+      supabase.from("daily_scores").select("date, total_score, finalized").gte("date", startStr).lte("date", endStr),
+      supabase.from("weekly_minimum_gains").select("id, title, sort_order, is_active").eq("is_active", true).order("sort_order"),
+      supabase.from("weekly_gain_completions").select("gain_id").eq("iso_week", isoWeek),
+      supabase.from("charge_day_rituals").select("id, title, description, sort_order").order("sort_order")
+    ]);
+
+    // Build a date -> score map
+    const scoresByDate: Record<string, number> = {};
+    scores?.forEach((s) => {
+      scoresByDate[s.date] = s.total_score;
+    });
+
+    // Compute metrics
+    const completedDays =
+      scores?.filter((s) => s.finalized && s.total_score >= 50).length ?? 0;
+    const weeklyTotal =
+      scores?.reduce((sum, s) => sum + (s.finalized ? s.total_score : 0), 0) ?? 0;
+
+    let bestDayLabel = "—";
+    let bestDayScore = 0;
+    if (scores && scores.length > 0) {
+      const best = scores.reduce((max, s) =>
+        s.total_score > max.total_score ? s : max
+      );
+      if (best.total_score > 0) {
+        const dayIndex = weekDays.findIndex((d) => formatDateForDB(d) === best.date);
+        if (dayIndex >= 0) {
+          bestDayLabel = DAY_LABELS_TR[dayIndex];
+          bestDayScore = best.total_score;
+        }
+      }
+    }
+
+    const completedGainIds = new Set(completions?.map((c) => c.gain_id) ?? []);
+    const gainsWithStatus =
+      gains?.map((g) => ({
+        id: g.id,
+        title: g.title,
+        isCompleted: completedGainIds.has(g.id),
+      })) ?? [];
+    const gainsCompleted = completedGainIds.size;
+
+    const isTodayCharge = new Date().getDay() === 0; // 0 Sunday
+
+    return (
+      <div className="min-h-screen">
+        <RightPanel />
+        <div className="pt-8">
+          <nav className="mb-6 px-8 max-w-5xl mx-auto">
+            <TabNav />
+          </nav>
+          <WeeklyShell>
+            {/* Zone 1: Top Metric Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <WeeklyMetricCard
+                label="TAMAMLANAN GÜN"
+                value={completedDays}
+                total={7}
+              />
+              <WeeklyMetricCard
+                label="HAFTALIK TOPLAM PUAN"
+                value={weeklyTotal}
+              />
+              <WeeklyMetricCard
+                label="MİNİMUM KAZANIM"
+                value={gainsCompleted}
+                total={5}
+              />
+              <WeeklyMetricCard
+                label="EN İYİ GÜN"
+                value={bestDayLabel}
+                subValue={bestDayLabel !== "—" ? `${bestDayScore} puan` : ""}
+              />
+            </div>
+
+            {/* Zone 2: 7-Day Heatmap Strip */}
+            <WeeklyHeatmap weekDays={weekDays} scoresByDate={scoresByDate} />
+
+            {/* Zone 3: Two-Column Layout — Minimum Gains + Şarj Günü */}
+            <div className="mt-10 grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-8">
+              <MinimumGainsCard
+                gains={gainsWithStatus}
+                completedCount={gainsCompleted}
+              />
+              <ChargeDayCard
+                rituals={rituals || []}
+                isTodayCharge={isTodayCharge}
+              />
+            </div>
+          </WeeklyShell>
+        </div>
+      </div>
+    );
+  }
+
+  if (tab === "KARIYER") {
+
+    // Parallelize all KARIYER data fetching
+    const [
+      { data: backbone },
+      { data: completions },
+      { data: state }
+    ] = await Promise.all([
+      supabase.from("career_backbone").select("id, title, subtitle, su_an_odaklanilacak, simdilik_dokunma, ana_yon, ana_gelir_motoru, yardimci_motor, fiziksel_sigorta, karar_filtresi").eq("id", 1).single(),
+      supabase.from("career_task_completions").select("task_key"),
+      supabase.from("career_state").select("id, override_active, current_phase").eq("id", 1).single()
+    ]);
+
+    const completedKeys = new Set(completions?.map((c) => c.task_key) ?? []);
+
+    // 4. Determine current phase
+    const currentPhaseNumber = state?.override_active
+      ? state.current_phase
+      : computeCurrentPhase(completedKeys);
+
+    const activePhase =
+      CAREER_PHASES.find((p) => p.number === currentPhaseNumber) ||
+      CAREER_PHASES[0];
+    const otherPhases = CAREER_PHASES.filter(
+      (p) => p.number !== currentPhaseNumber
+    );
+
+    // 5. Compute completion % for each phase (for the timeline dots)
+    const completionsByPhase: Record<number, number> = {};
+    CAREER_PHASES.forEach((p) => {
+      completionsByPhase[p.number] = getPhaseCompletionPct(p, completedKeys);
+    });
+
+    return (
+      <div className="min-h-screen">
+        <RightPanel />
+        <div className="pt-8">
+          <nav className="mb-6 px-8 max-w-5xl mx-auto">
+            <TabNav />
+          </nav>
+          <CareerShell>
+            {/* Zone 1: Backbone & Focus */}
+            <div className="flex flex-col gap-6">
+              {backbone && <KariyerOmurgasiCard backbone={backbone} />}
+              {backbone && (
+                <FocusStrip
+                  su_an_odaklanilacak={backbone.su_an_odaklanilacak}
+                  simdilik_dokunma={backbone.simdilik_dokunma}
+                />
+              )}
+            </div>
+
+            {/* Zone 2: Static Placeholders */}
+            <ApiMetricsRow />
+            <FilterSearchRow />
+
+            {/* Zone 3: Roadmap Timeline */}
+            <PhaseTimeline
+              phases={CAREER_PHASES}
+              currentPhase={currentPhaseNumber}
+              completionsByPhase={completionsByPhase}
+            />
+
+            {/* Zone 4: Active Phase Detail */}
+            <ActivePhaseDetail
+              phase={activePhase}
+              completedKeys={completedKeys}
+            />
+
+            {/* Zone 5: Other Phases */}
+            <OtherPhasesAccordion
+              phases={otherPhases}
+              completedKeys={completedKeys}
+            />
+          </CareerShell>
+        </div>
+      </div>
+    );
+  }
+
+  if (tab === "FINANS") {
+    const currentMonth = format(new Date(), "yyyy-MM");
+
+    // 1. Parallelize all FINANS data fetching
+    const [
+      { data: financeState },
+      { data: transactions = [] },
+      { data: subscriptions = [] }
+    ] = await Promise.all([
+      supabase.from("finance_state").select("net_balance, status_label, status_description, severity").eq("id", 1).single(),
+      supabase.from("finance_transactions").select("id, amount, type, description, category, created_at, month").eq("month", currentMonth).order("created_at", { ascending: false }),
+      supabase.from("finance_subscriptions").select("id, name, amount, is_active, billing_day").eq("is_active", true).order("amount", { ascending: false })
+    ]);
+
+    const incomeItems = (transactions || []).filter((t) => t.type === "income");
+    const expenseItems = (transactions || []).filter((t) => t.type === "expense");
+
+    const sumIncome = incomeItems.reduce((acc, t) => acc + (t.amount || 0), 0);
+    const sumExpense = expenseItems.reduce((acc, t) => acc + (t.amount || 0), 0);
+    const sumSubs = (subscriptions || []).reduce(
+      (acc, s) => acc + (s.amount || 0),
+      0
+    );
+
+    const summary = computeFinanceSummary(sumIncome, sumExpense, sumSubs);
+
+    const safeState = financeState || {
+      net_balance: 0,
+      status_label: "VERİ BEKLENİYOR",
+      status_description: "Henüz bir finansal veri girişi yapılmadı.",
+      severity: "neutral",
+    };
+
+    return (
+      <div className="min-h-screen">
+        <RightPanel />
+        <div className="pt-8">
+          <nav className="mb-6 px-8 max-w-5xl mx-auto">
+            <TabNav />
+          </nav>
+          <FinanceShell
+            summary={summary}
+            status={{
+              label: safeState.status_label,
+              description: safeState.status_description,
+              severity: safeState.severity as "neutral" | "warning" | "danger" | "positive",
+            }}
+            incomeItems={incomeItems}
+            expenseItems={expenseItems}
+            subscriptionItems={subscriptions || []}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // Daily Tab (Default)
+  // Daily Tab (Default)
+
+  const sevenDaysAgo = format(subDays(new Date(), 7), "yyyy-MM-dd");
+  const englishGroupKey = getEnglishGroupForToday();
+
+  // Parallelize primary Daily tab fetches
+  const [
+    { data: goatState },
+    { data: tasks },
+    { data: energyCheckIn },
+    { data: recentScores },
+    { data: focus },
+    { data: quote },
+    { data: todayWorkout },
+    { data: vitaminPackagesData },
+    { data: vitaminCompletions }
+  ] = await Promise.all([
+    supabase.from("goat_state").select("*").eq("id", 1).single(),
+    supabase.from("tasks").select("*").eq("date", today).order("created_at", { ascending: true }),
+    supabase.from("energy_checkins").select("*").eq("date", today).maybeSingle(),
+    supabase.from("daily_scores").select("*").gte("date", sevenDaysAgo),
+    supabase.from("daily_focus").select("*").eq("date", today).maybeSingle(),
+    supabase.from("daily_quotes").select("*").eq("date", today).maybeSingle(),
+    supabase.from('workout_days').select('*').eq('day_of_week', todayDayKey).maybeSingle(),
+    supabase.from('vitamin_packages').select('*').eq('is_active', true).order('sort_order'),
+    supabase.from('vitamin_package_completions').select('*').eq('date', today)
+  ]);
+
+  // Handle dependent subtasks
+  let englishSubtasks: { id: string; title: string; isCompleted: boolean }[] = [];
+  if (englishGroupKey) {
+    const [
+      { data: subtasks },
+      { data: subCompletions }
+    ] = await Promise.all([
+      supabase.from('task_subtasks').select('*').eq('subtask_group', englishGroupKey).order('sort_order'),
+      supabase.from('task_subtask_completions').select('*').eq('date', today)
+    ]);
+    const completedSet = new Set(subCompletions?.map(c => c.subtask_id) ?? []);
+    englishSubtasks = subtasks?.map((s: any) => ({ ...s, isCompleted: completedSet.has(s.id) })) ?? [];
+  }
+
+  const isTreadmillActive = todayWorkout?.day_type !== 'strength';
+  const takenSet = new Set(vitaminCompletions?.map(c => c.package_id) ?? []);
+  const vitaminPackages = vitaminPackagesData?.map(p => ({
+    ...p,
+    isTaken: takenSet.has(p.id),
+  })) ?? [];
+
+  const formatted7Days = (recentScores || []).map((s) => ({
+    date: s.date,
+    score: s.total_score,
+  }));
+
+  // Task ordering and sorting
+  const groupOrder: Record<string, number> = { morning: 1, day: 2, evening: 3 };
+  const sortedTasks = [...(tasks || [])].sort((a, b) => {
+    const orderDiff = (groupOrder[a.time_of_day] || 0) - (groupOrder[b.time_of_day] || 0);
+    if (orderDiff !== 0) return orderDiff;
+    return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+  });
+
+  // Calculate live score from tasks
+  const breakdown = calculateDailyScore(sortedTasks);
+  const remainingTasks = sortedTasks.filter(t => !t.is_done && !t.is_bonus).length;
+  
+  // Safe state
+  const safeGoatState = goatState || {
+    current_stage: "OGLAK" as const,
+    current_streak: 0,
+    consistency_days: 0,
+    current_mood: "AC" as const
+  };
+
+  return (
+    <div className="min-h-screen bg-ftg-bg font-mono">
+      <DailyShell>
+        <TopBar state={safeGoatState} />
+        <TabNav />
+        <QuoteBar quote={quote} />
+        <HeroZone 
+          total={breakdown.total}
+          discipline={breakdown.discipline}
+          production={breakdown.production}
+          health={breakdown.health}
+          mood={safeGoatState.current_mood}
+          remainingTaskCount={remainingTasks}
+        />
+        
+        {/* Main Content Layout */}
+        <div className="grid grid-cols-[1fr_320px] gap-8 px-8 py-8">
+          {/* Left Column: Task Lists */}
+          <div>
+            <TaskGroup 
+              tasks={sortedTasks} 
+              englishSubtasks={englishSubtasks}
+              isTreadmillActive={isTreadmillActive}
+              vitaminPackages={vitaminPackages}
+            />
+          </div>
+
+          {/* Right Column: Mini Cards */}
+          <div className="flex flex-col gap-4">
+            <EnergyCheckIn currentEnergy={energyCheckIn?.energy || null} />
+            <FocusCard focus={focus} />
+            <MountainMini />
+            <HeatmapMini last7Days={formatted7Days} />
+          </div>
+        </div>
+
+        <RealityCheckCard
+          score={breakdown.total}
+          tasksCompleted={sortedTasks.filter((t) => t.is_done).length}
+          tasksTotal={sortedTasks.length}
+          date={today}
+          savedWorkHours={todayDailyScore?.work_hours ?? null}
+        />
+
+        <BottomActionBar />
+      </DailyShell>
+    </div>
+  );
+}
