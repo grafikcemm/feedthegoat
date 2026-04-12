@@ -9,6 +9,7 @@ import { TaskGroup } from "@/components/daily/TaskGroup";
 import { EnergyCheckIn } from "@/components/daily/EnergyCheckIn";
 import { FocusCard } from "@/components/daily/FocusCard";
 import { QuoteBar } from "@/components/daily/QuoteBar";
+import { XPostSection } from "@/components/daily/XPostSection";
 import { MountainMini } from "@/components/daily/MountainMini";
 import { HeatmapMini } from "@/components/daily/HeatmapMini";
 import { BottomActionBar } from "@/components/daily/BottomActionBar";
@@ -452,7 +453,8 @@ export default async function Page({
     { data: quote },
     { data: todayWorkout },
     { data: vitaminPackagesData },
-    { data: vitaminCompletions }
+    { data: vitaminCompletions },
+    { data: skincareCompletions }
   ] = await Promise.all([
     supabase.from("goat_state").select("*").eq("id", 1).single(),
     supabase.from("tasks").select("*").eq("date", today).order("created_at", { ascending: true }),
@@ -462,7 +464,8 @@ export default async function Page({
     supabase.from("daily_quotes").select("*").eq("date", today).maybeSingle(),
     supabase.from('workout_days').select('*').eq('day_of_week', todayDayKey).maybeSingle(),
     supabase.from('vitamin_packages').select('*').eq('is_active', true).order('sort_order'),
-    supabase.from('vitamin_package_completions').select('*').eq('date', today)
+    supabase.from('vitamin_package_completions').select('*').eq('date', today),
+    supabase.from('skincare_completions').select('package_id').eq('date', today)
   ]);
 
   // Handle dependent subtasks
@@ -480,28 +483,37 @@ export default async function Page({
   }
 
   const isTreadmillActive = todayWorkout?.day_type !== 'strength';
-  const takenSet = new Set(vitaminCompletions?.map(c => c.package_id) ?? []);
+  
+  // Vitamin Packages
+  const takenVitaminSet = new Set(vitaminCompletions?.map(c => c.package_id) ?? []);
   const vitaminPackages = vitaminPackagesData?.map(p => ({
     ...p,
-    isTaken: takenSet.has(p.id),
+    isTaken: takenVitaminSet.has(p.id),
   })) ?? [];
+
+  // Skincare Packages
+  const completedSkincareIds = skincareCompletions?.map(c => c.package_id) ?? [];
 
   const formatted7Days = (recentScores || []).map((s) => ({
     date: s.date,
     score: s.total_score,
   }));
 
-  // Task ordering and sorting
+  // Task filtering and sorting
+  const allTasks = tasks || [];
+  const xPostTasks = allTasks.filter(t => t.system_type === 'x_post');
+  const otherTasks = allTasks.filter(t => t.system_type !== 'x_post');
+
   const groupOrder: Record<string, number> = { morning: 1, day: 2, evening: 3 };
-  const sortedTasks = [...(tasks || [])].sort((a, b) => {
+  const sortedTasks = [...otherTasks].sort((a, b) => {
     const orderDiff = (groupOrder[a.time_of_day] || 0) - (groupOrder[b.time_of_day] || 0);
     if (orderDiff !== 0) return orderDiff;
     return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
   });
 
-  // Calculate live score from tasks
-  const breakdown = calculateDailyScore(sortedTasks);
-  const remainingTasks = sortedTasks.filter(t => !t.is_done && !t.is_bonus).length;
+  // Calculate live score from tasks (Using all tasks including x-posts for correct scoring)
+  const breakdown = calculateDailyScore(allTasks);
+  const remainingTasks = allTasks.filter(t => !t.is_done && !t.is_bonus).length;
   
   // Safe state
   const safeGoatState = goatState || {
@@ -530,11 +542,19 @@ export default async function Page({
         <div className="grid grid-cols-[1fr_320px] gap-8 px-8 py-8">
           {/* Left Column: Task Lists */}
           <div>
+            <XPostSection 
+              tasks={xPostTasks} 
+              onComplete={(taskId) => {
+                // This is a client-side call usually handled in TaskGroup but XPostSection is separate
+                // We'll import completeTask in XPostSection or handle it via a common pattern
+              }} 
+            />
             <TaskGroup 
               tasks={sortedTasks} 
               englishSubtasks={englishSubtasks}
               isTreadmillActive={isTreadmillActive}
               vitaminPackages={vitaminPackages}
+              completedSkincareIds={completedSkincareIds}
             />
           </div>
 
@@ -549,8 +569,8 @@ export default async function Page({
 
         <RealityCheckCard
           score={breakdown.total}
-          tasksCompleted={sortedTasks.filter((t) => t.is_done).length}
-          tasksTotal={sortedTasks.length}
+          tasksCompleted={allTasks.filter((t) => t.is_done).length}
+          tasksTotal={allTasks.length}
           date={today}
           savedWorkHours={todayDailyScore?.work_hours ?? null}
         />

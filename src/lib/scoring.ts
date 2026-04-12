@@ -16,9 +16,9 @@ export interface DailyScoreBreakdown {
 }
 
 export const SCORE_CAPS = {
-  discipline: 30,
-  health: 30,
-  total: 60,    // was 100, now 60 (production removed)
+  discipline: 35,
+  health: 35,
+  total: 70,    // was 60, now 70
 } as const;
 
 export function calculateDailyScore(tasks: ScoreableTask[]): DailyScoreBreakdown {

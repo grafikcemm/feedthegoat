@@ -20,8 +20,8 @@ export function WeeklyHeatmap({ weekDays, scoresByDate }: WeeklyHeatmapProps) {
           const score = scoresByDate[formatDateForDB(day)] ?? 0;
           const intensity =
             score === 0 ? 'bg-ftg-border-subtle' :
-            score < 30 ? 'bg-ftg-amber/20' :
-            score < 60 ? 'bg-ftg-amber/50' :
+            score < 35 ? 'bg-ftg-amber/20' :
+            score < 70 ? 'bg-ftg-amber/50' :
             'bg-ftg-amber';
           
           const isToday = isSameDay(day, now);

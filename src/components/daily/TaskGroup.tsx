@@ -21,6 +21,7 @@ interface TaskGroupProps {
   englishSubtasks?: { id: string; title: string; isCompleted: boolean }[];
   isTreadmillActive?: boolean;
   vitaminPackages?: { id: string; title: string; isTaken: boolean; items: string[] }[];
+  completedSkincareIds?: string[];
 }
 
 const GROUP_LABELS: Record<'morning' | 'day' | 'evening', string> = {
@@ -29,7 +30,13 @@ const GROUP_LABELS: Record<'morning' | 'day' | 'evening', string> = {
   evening: 'SİSTEMLER',
 };
 
-export function TaskGroup({ tasks, englishSubtasks = [], isTreadmillActive = true, vitaminPackages = [] }: TaskGroupProps) {
+export function TaskGroup({ 
+  tasks, 
+  englishSubtasks = [], 
+  isTreadmillActive = true, 
+  vitaminPackages = [],
+  completedSkincareIds = []
+}: TaskGroupProps) {
   const [isPending, startTransition] = useTransition();
 
   const handleComplete = (taskId: string) => {
@@ -38,9 +45,11 @@ export function TaskGroup({ tasks, englishSubtasks = [], isTreadmillActive = tru
     });
   };
 
-  const morningTasks = tasks.filter((t) => t.time_of_day === "morning");
-  const dayTasks = tasks.filter((t) => t.time_of_day === "day");
-  const eveningTasks = tasks.filter((t) => t.time_of_day === "evening");
+  const filteredTasks = tasks.filter(t => t.system_type !== 'x_post');
+
+  const morningTasks = filteredTasks.filter((t) => t.time_of_day === "morning");
+  const dayTasks = filteredTasks.filter((t) => t.time_of_day === "day");
+  const eveningTasks = filteredTasks.filter((t) => t.time_of_day === "evening");
 
   return (
     <div className="flex flex-col gap-8">
@@ -66,6 +75,7 @@ export function TaskGroup({ tasks, englishSubtasks = [], isTreadmillActive = tru
                 englishSubtasks={t.system_type === 'english' ? englishSubtasks : []}
                 isTreadmillActive={isTreadmillActive}
                 vitaminPackages={t.system_type === 'vitamin' ? vitaminPackages : []}
+                completedSkincareIds={t.system_type === 'skincare' ? completedSkincareIds : []}
               />
             ))}
           </div>
@@ -94,6 +104,7 @@ export function TaskGroup({ tasks, englishSubtasks = [], isTreadmillActive = tru
                 englishSubtasks={t.system_type === 'english' ? englishSubtasks : []}
                 isTreadmillActive={isTreadmillActive}
                 vitaminPackages={t.system_type === 'vitamin' ? vitaminPackages : []}
+                completedSkincareIds={t.system_type === 'skincare' ? completedSkincareIds : []}
               />
             ))}
           </div>
@@ -122,6 +133,7 @@ export function TaskGroup({ tasks, englishSubtasks = [], isTreadmillActive = tru
                 englishSubtasks={t.system_type === 'english' ? englishSubtasks : []}
                 isTreadmillActive={isTreadmillActive}
                 vitaminPackages={t.system_type === 'vitamin' ? vitaminPackages : []}
+                completedSkincareIds={t.system_type === 'skincare' ? completedSkincareIds : []}
               />
             ))}
           </div>

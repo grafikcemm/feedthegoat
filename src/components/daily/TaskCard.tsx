@@ -8,6 +8,10 @@ const VitaminModal = dynamic(() => import("./VitaminModal").then(mod => mod.Vita
   ssr: false,
 });
 
+const SkincareModal = dynamic(() => import("./SkincareModal").then(mod => mod.SkincareModal), {
+  ssr: false,
+});
+
 export interface TaskCardProps {
   id: string;
   title: string;
@@ -22,34 +26,45 @@ export interface TaskCardProps {
   englishSubtasks?: any[];
   isTreadmillActive?: boolean;
   vitaminPackages?: any[];
+  completedSkincareIds?: string[];
 }
 
 const EMPTY_ARRAY: any[] = [];
 
 export function TaskCard({ 
   id, title, isDone, points, category, systemType, priority, isBonus, onComplete,
-  englishSubtasks = EMPTY_ARRAY, isTreadmillActive = true, vitaminPackages = EMPTY_ARRAY
+  englishSubtasks = EMPTY_ARRAY, isTreadmillActive = true, vitaminPackages = EMPTY_ARRAY,
+  completedSkincareIds = EMPTY_ARRAY
 }: TaskCardProps) {
   const [isFlying, setIsFlying] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [vitaminModalOpen, setVitaminModalOpen] = useState(false);
-  const [localCompletedIds, setLocalCompletedIds] = useState<string[]>(
+  const [skincareModalOpen, setSkincareModalOpen] = useState(false);
+  
+  const [localVitaminCompletedIds, setLocalVitaminCompletedIds] = useState<string[]>(
     vitaminPackages.filter((p: any) => p.isTaken).map((p: any) => p.id)
   );
+  const [localSkincareCompletedIds, setLocalSkincareCompletedIds] = useState<string[]>(completedSkincareIds);
 
   // Sync with props when they change (after revalidation)
   React.useEffect(() => {
     const currentTakenIds = vitaminPackages.filter((p: any) => p.isTaken).map((p: any) => p.id);
-    // Only update if the length or content differs to avoid unnecessary cycles
-    if (JSON.stringify(currentTakenIds) !== JSON.stringify(localCompletedIds)) {
-      setLocalCompletedIds(currentTakenIds);
+    if (JSON.stringify(currentTakenIds) !== JSON.stringify(localVitaminCompletedIds)) {
+      setLocalVitaminCompletedIds(currentTakenIds);
     }
   }, [vitaminPackages]);
+
+  React.useEffect(() => {
+    if (JSON.stringify(completedSkincareIds) !== JSON.stringify(localSkincareCompletedIds)) {
+      setLocalSkincareCompletedIds(completedSkincareIds);
+    }
+  }, [completedSkincareIds]);
 
   // 1. Passive Checks
   const isEnglish = systemType === 'english';
   const isTreadmill = systemType === 'treadmill';
   const isVitamin = systemType === 'vitamin';
+  const isSkincare = systemType === 'skincare';
   const isProduction = category === 'production';
 
   const englishActive = isEnglishActiveToday();
@@ -69,6 +84,10 @@ export function TaskCard({
       setVitaminModalOpen(true);
       return;
     }
+    if (isSkincare) {
+      setSkincareModalOpen(true);
+      return;
+    }
 
     // Normal or Production Handlers
     if (!isDone && !isProduction) {
@@ -78,8 +97,12 @@ export function TaskCard({
     onComplete(id);
   };
 
-  const handlePackageTaken = (packageId: string) => {
-    setLocalCompletedIds(prev => [...prev, packageId]);
+  const handleVitaminPackageTaken = (packageId: string) => {
+    setLocalVitaminCompletedIds(prev => [...prev, packageId]);
+  };
+
+  const handleSkincarePackageTaken = (packageId: string) => {
+    setLocalSkincareCompletedIds(prev => [...prev, packageId]);
   };
 
   const getPassiveLabel = () => {
@@ -156,35 +179,44 @@ export function TaskCard({
           </span>
         )}
 
-        {/* Checkbox (Special visual for english/vitamin) */}
+        {/* Checkbox (Special visual for english/vitamin/skincare) */}
         <div
           className={cn(
             "w-5 h-5 rounded-sm border shrink-0 flex items-center justify-center transition-all duration-300",
             isDone ? "bg-ftg-success border-ftg-success text-white" : "border-ftg-border-subtle bg-transparent group-hover:border-ftg-amber/50",
-            (isEnglish || isVitamin) && !isDone && !isPassive && "border-ftg-amber/40 bg-ftg-amber/5"
+            (isEnglish || isVitamin || isSkincare) && !isDone && !isPassive && "border-ftg-amber/40 bg-ftg-amber/5"
           )}
         >
           {isDone ? (
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
-          ) : (isEnglish || isVitamin) && !isPassive && (
+          ) : (isEnglish || isVitamin || isSkincare) && !isPassive && (
             <span className="text-ftg-amber font-mono text-[10px] select-none">...</span>
           )}
         </div>
       </div>
-
+ 
       {/* English Inline Sub-tasks */}
       {isEnglish && expanded && !isDone && !isPassive && (
         <EnglishSubtaskPanel subtasks={englishSubtasks} parentTaskId={id} />
       )}
-
+ 
       {/* Vitamin Modal */}
       <VitaminModal
         isOpen={vitaminModalOpen}
         onClose={() => setVitaminModalOpen(false)}
-        completedPackageIds={localCompletedIds}
-        onPackageTaken={handlePackageTaken}
+        completedPackageIds={localVitaminCompletedIds}
+        onPackageTaken={handleVitaminPackageTaken}
+        parentTaskId={id}
+      />
+
+      {/* Skincare Modal */}
+      <SkincareModal
+        isOpen={skincareModalOpen}
+        onClose={() => setSkincareModalOpen(false)}
+        completedPackageIds={localSkincareCompletedIds}
+        onPackageTaken={handleSkincarePackageTaken}
         parentTaskId={id}
       />
     </div>

@@ -33,7 +33,7 @@ export function HeroZone({ total, discipline, production, health, mood, remainin
             {total}
           </span>
           <span className="font-display text-[40px] text-ftg-text-mute ml-2">
-            /60
+            /70
           </span>
         </div>
         <p className="font-mono text-sm italic text-ftg-text-dim mt-2">
@@ -52,11 +52,11 @@ export function HeroZone({ total, discipline, production, health, mood, remainin
             <div className="w-24 h-1.5 bg-ftg-border-strong rounded-full overflow-hidden flex">
               <div
                 className="bg-ftg-amber h-full transition-all duration-500 ease-out"
-                style={{ width: `${(discipline / 30) * 100}%` }}
+                style={{ width: `${(discipline / 35) * 100}%` }}
               ></div>
             </div>
             <span className="font-mono text-[10px] text-ftg-amber leading-none">
-              {discipline}/30
+              {discipline}/35
             </span>
           </div>
         </div>
@@ -85,11 +85,11 @@ export function HeroZone({ total, discipline, production, health, mood, remainin
             <div className="w-24 h-1.5 bg-ftg-border-strong rounded-full overflow-hidden flex">
               <div
                 className="bg-ftg-amber h-full transition-all duration-500 ease-out"
-                style={{ width: `${(health / 30) * 100}%` }}
+                style={{ width: `${(health / 35) * 100}%` }}
               ></div>
             </div>
             <span className="font-mono text-[10px] text-ftg-amber leading-none">
-              {health}/30
+              {health}/35
             </span>
           </div>
         </div>
