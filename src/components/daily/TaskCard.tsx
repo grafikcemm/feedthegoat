@@ -151,8 +151,8 @@ export function TaskCard({
           )}
         </span>
 
-        {/* Priority Badge (only if not production) */}
-        {!isProduction && priority && (
+        {/* Priority Badge (only if not production and NOT a system task) */}
+        {!isProduction && !systemType && priority && (
           <span
             className={cn(
               "px-2 py-0.5 rounded text-[9px] tracking-wider font-mono",

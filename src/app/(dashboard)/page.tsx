@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import React from "react";
 import { format, subDays } from "date-fns";
 
@@ -538,17 +539,15 @@ export default async function Page({
           remainingTaskCount={remainingTasks}
         />
         
+        {/* X-Post Section (Separate from daily routines) */}
+        <div className="px-8 mt-6">
+          <XPostSection tasks={xPostTasks} />
+        </div>
+
         {/* Main Content Layout */}
         <div className="grid grid-cols-[1fr_320px] gap-8 px-8 py-8">
           {/* Left Column: Task Lists */}
           <div>
-            <XPostSection 
-              tasks={xPostTasks} 
-              onComplete={(taskId) => {
-                // This is a client-side call usually handled in TaskGroup but XPostSection is separate
-                // We'll import completeTask in XPostSection or handle it via a common pattern
-              }} 
-            />
             <TaskGroup 
               tasks={sortedTasks} 
               englishSubtasks={englishSubtasks}

@@ -45,11 +45,9 @@ export function TaskGroup({
     });
   };
 
-  const filteredTasks = tasks.filter(t => t.system_type !== 'x_post');
-
-  const morningTasks = filteredTasks.filter((t) => t.time_of_day === "morning");
-  const dayTasks = filteredTasks.filter((t) => t.time_of_day === "day");
-  const eveningTasks = filteredTasks.filter((t) => t.time_of_day === "evening");
+  const morningTasks = tasks.filter((t) => t.time_of_day === "morning");
+  const dayTasks = tasks.filter((t) => t.time_of_day === "day");
+  const eveningTasks = tasks.filter((t) => t.time_of_day === "evening");
 
   return (
     <div className="flex flex-col gap-8">
