@@ -23,11 +23,11 @@ export function EnergyCheckIn({ currentEnergy }: { currentEnergy: "LOW" | "MID" 
   };
 
   return (
-    <div className="bg-ftg-surface border border-ftg-border-subtle rounded-ftg-card p-5">
-      <h3 className="font-mono text-[10px] tracking-[0.18em] uppercase text-ftg-text-mute mb-4">
+    <div className="bg-ftg-surface border border-ftg-border-subtle rounded-ftg-card p-6">
+      <h3 className="font-mono text-[10px] tracking-[0.18em] uppercase text-ftg-text-mute mb-5 text-center">
         BUGÜNÜN ENERJİSİ
       </h3>
-      <div className="flex gap-2">
+      <div className="flex gap-3">
         {buttons.map((btn) => {
           const isActive = btn.value === active;
           return (
@@ -35,9 +35,9 @@ export function EnergyCheckIn({ currentEnergy }: { currentEnergy: "LOW" | "MID" 
               key={btn.value}
               onClick={() => handleSetEnergy(btn.value)}
               className={cn(
-                "flex-1 py-3 border font-mono text-[11px] tracking-wider transition-colors",
+                "flex-1 py-4 border font-mono text-xs tracking-widest transition-all duration-300",
                 isActive
-                  ? "border-ftg-amber bg-ftg-amber-glow text-ftg-amber rounded-ftg-card"
+                  ? "border-ftg-amber bg-ftg-amber-glow text-ftg-amber rounded-ftg-card shadow-lg shadow-ftg-amber/10"
                   : "border-ftg-border-subtle text-ftg-text-mute hover:text-ftg-text-dim hover:border-ftg-border-strong rounded-ftg-card"
               )}
             >

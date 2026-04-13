@@ -26,26 +26,14 @@ export function NutritionPanel({
 }: NutritionPanelProps) {
   return (
     <div className="rounded-ftg-card border border-ftg-border-subtle bg-ftg-surface p-5">
+    <div className="bg-ftg-surface border border-ftg-border-subtle rounded-ftg-card p-5">
       <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-ftg-text-mute mb-4">
         BESLENME
       </div>
-      <div className="grid grid-cols-2 gap-3">
-        <NutritionStat
-          label="PROTEİN"
-          value={todayProtein}
-          unit="g"
-          target={proteinTarget}
-          weeklyAvg={avgProtein}
-        />
-        <NutritionStat
-          label="KALORİ"
-          value={todayCalories}
-          unit=""
-          target={calorieTarget}
-          weeklyAvg={avgCalories}
-          prefix="~"
-        />
+      <div className="text-zinc-500 font-mono text-[10px] italic">
+        Sayımlar günlük tab'ına taşındı veya kaldırıldı. Burası sadece meal_plan odağındadır.
       </div>
+    </div>
     </div>
   );
 }

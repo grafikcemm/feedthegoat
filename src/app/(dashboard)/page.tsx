@@ -10,9 +10,6 @@ import { TaskGroup } from "@/components/daily/TaskGroup";
 import { EnergyCheckIn } from "@/components/daily/EnergyCheckIn";
 import { QuoteBar } from "@/components/daily/QuoteBar";
 import { XPostSection } from "@/components/daily/XPostSection";
-import { MountainMini } from "@/components/daily/MountainMini";
-import { HeatmapMini } from "@/components/daily/HeatmapMini";
-import { BottomActionBar } from "@/components/daily/BottomActionBar";
 import { FinanceShell } from "@/components/finance/FinanceShell";
 
 // Legacy components for other tabs
@@ -52,7 +49,6 @@ import {
   getEnglishGroupForToday 
 } from '@/lib/dayUtils';
 import { ensureTodayQuote } from "@/app/actions/quoteActions";
-import { RealityCheckCard } from "@/components/daily/RealityCheckCard";
 import { DuaPanel } from "@/components/daily/DuaPanel";
 import { EndDayButton } from "@/components/daily/EndDayButton";
 
@@ -68,33 +64,22 @@ export default async function Page({
   const today = format(new Date(), "yyyy-MM-dd");
   const todayDayKey = getTodayDayKey();
 
-  // 0. Fetch today's daily score for Reality Check
-  const { data: todayDailyScore } = await supabase
-    .from("daily_scores")
-    .select("*")
-    .eq("date", today)
-    .maybeSingle();
-
   // Tab routing
   if (tab === "SPOR") {
     const { start, end } = getCurrentWeekRange();
     const startStr = formatDateForDB(start);
     const endStr = formatDateForDB(end);
 
-    // Parallelize all SPOR data fetching
+    // Parallelize all SPOR data fetching — Cleanup: removed nutrition/water logs
     const [
       { data: days },
       { data: completionsThisWeek },
       { data: sportState },
-      { data: todayNutrition },
-      { data: weekNutrition },
       { data: meals }
     ] = await Promise.all([
       supabase.from("workout_days").select("id, day_type, day_of_week, sort_order, title, is_required, is_bonus, amac, exercises:workout_exercises(id, name, sets_reps, sort_order)").order("sort_order"),
       supabase.from("workout_completions").select("day_id, date").gte("date", startStr).lte("date", endStr),
       supabase.from("sport_state").select("id, protein_target_g, calorie_target, water_target_ml, ceo_breakfast_note").eq("id", 1).single(),
-      supabase.from("nutrition_logs").select("protein_g, calories").eq("date", today),
-      supabase.from("nutrition_logs").select("date, protein_g, calories").gte("date", startStr).lte("date", endStr),
       supabase.from("meal_plan").select("id, meal_time, meal_label, items, total_protein_g, sort_order").order("sort_order", { ascending: true })
     ]);
 
@@ -109,29 +94,8 @@ export default async function Page({
       completionsThisWeek?.map((c) => c.day_id) ?? []
     );
 
-    const todayProtein =
-      todayNutrition?.reduce((s, l) => s + Number(l.protein_g), 0) ?? 0;
-    const todayCalories =
-      todayNutrition?.reduce((s, l) => s + l.calories, 0) ?? 0;
-
-    const proteinByDate: Record<string, number> = {};
-    const caloriesByDate: Record<string, number> = {};
-
-    weekNutrition?.forEach((n) => {
-      proteinByDate[n.date] = (proteinByDate[n.date] ?? 0) + Number(n.protein_g);
-      caloriesByDate[n.date] = (caloriesByDate[n.date] ?? 0) + n.calories;
-    });
-
-    const daysWithData = Object.keys(proteinByDate).length || 1;
-
-    const avgProtein =
-      Object.values(proteinByDate).reduce((a, b) => a + b, 0) / daysWithData;
-    const avgCalories =
-      Object.values(caloriesByDate).reduce((a, b) => a + b, 0) / daysWithData;
-
     return (
       <div className="min-h-screen">
-        <RightPanel />
         <div className="pt-8">
           <nav className="mb-6 px-8 max-w-5xl mx-auto">
             <TabNav />
@@ -147,14 +111,14 @@ export default async function Page({
             {/* Right Column: Nutrition + Systems */}
             <div className="flex flex-col gap-6">
               <NutritionPanel
-                todayProtein={todayProtein}
-                todayCalories={todayCalories}
+                todayProtein={0}
+                todayCalories={0}
                 todayWater={0}
                 proteinTarget={sportState?.protein_target_g || 180}
                 calorieTarget={sportState?.calorie_target || 1600}
                 waterTarget={sportState?.water_target_ml || 3000}
-                avgProtein={avgProtein}
-                avgCalories={avgCalories}
+                avgProtein={0}
+                avgCalories={0}
                 avgWater={0}
               />
 
@@ -229,7 +193,6 @@ export default async function Page({
 
     return (
       <div className="min-h-screen">
-        <RightPanel />
         <div className="pt-8">
           <nav className="mb-6 px-8 max-w-5xl mx-auto">
             <TabNav />
@@ -313,7 +276,6 @@ export default async function Page({
 
     return (
       <div className="min-h-screen">
-        <RightPanel />
         <div className="pt-8">
           <nav className="mb-6 px-8 max-w-5xl mx-auto">
             <TabNav />
@@ -393,7 +355,6 @@ export default async function Page({
 
     return (
       <div className="min-h-screen">
-        <RightPanel />
         <div className="pt-8">
           <nav className="mb-6 px-8 max-w-5xl mx-auto">
             <TabNav />
@@ -426,8 +387,8 @@ export default async function Page({
     { data: completions },
     { data: rawActiveTasks },
     { data: energyCheckIn },
-    { data: recentScores },
     _, // Focus removal placeholder
+    __, // 7-day scores removal placeholder
     { data: quote },
     { data: todayWorkout },
     { data: vitaminPackagesData },
@@ -439,8 +400,8 @@ export default async function Page({
     supabase.from("daily_completions").select("template_id").eq("date", today),
     supabase.from("active_tasks").select("*").order("sort_order"),
     supabase.from("energy_checkins").select("*").eq("date", today).maybeSingle(),
-    supabase.from("daily_scores").select("*").gte("date", sevenDaysAgo),
     null, // Focus removal
+    null, // 7-day scores removal (HeatmapMini delete)
     supabase.from("daily_quotes").select("*").eq("date", today).maybeSingle(),
     supabase.from('workout_days').select('*').eq('day_of_week', todayDayKey).maybeSingle(),
     supabase.from('vitamin_packages').select('*').eq('is_active', true).order('sort_order'),
@@ -473,11 +434,6 @@ export default async function Page({
 
   // Skincare Packages
   const completedSkincareIds = skincareCompletions?.map(c => c.package_id) ?? [];
-
-  const formatted7Days = (recentScores || []).map((s) => ({
-    date: s.date,
-    score: s.total_score,
-  }));
 
   // --- Energy Selection: Cap + Tema ---
   const ENERGY_CONFIG = {
@@ -540,38 +496,46 @@ export default async function Page({
         <TopBar state={safeGoatState} />
         <TabNav />
 
-        {/* Dua Paneli — tab bar'ın altında, quote'tan önce */}
-        <div className="px-8 pt-4">
-          <DuaPanel />
-        </div>
+        {/* --- YENİ SIRALAMA: Tek Sütun --- */}
+        <div className="flex flex-col gap-0">
+          {/* 1. DuaPanel */}
+          <div className="px-8 pt-4">
+            <DuaPanel />
+          </div>
 
-        <QuoteBar quote={quote} />
-        <HeroZone 
-          total={todayScore}
-          disciplineScore={disciplineScore}
-          disciplineMax={disciplineMax}
-          healthScore={healthScore}
-          healthMax={healthMax}
-          productionDone={productionDone}
-          productionTotal={productionTotal}
-          mood={safeGoatState.current_mood}
-          remainingTaskCount={remainingTasks}
-          energyLevel={energyLevel}
-          energyCap={energyCap}
-        />
-        
-        {/* X-Post Section */}
-        <div className="px-8 mt-6">
-          <XPostSection
-            task={xPostTask}
-            isDone={xPostTask ? completedIds.has(xPostTask.id) : false}
+          {/* 2. QuoteBar */}
+          <QuoteBar quote={quote} />
+
+          {/* 3. HeroZone (Tam genişlik) */}
+          <HeroZone 
+            total={todayScore}
+            disciplineScore={disciplineScore}
+            disciplineMax={disciplineMax}
+            healthScore={healthScore}
+            healthMax={healthMax}
+            productionDone={productionDone}
+            productionTotal={productionTotal}
+            mood={safeGoatState.current_mood}
+            remainingTaskCount={remainingTasks}
+            energyLevel={energyLevel}
+            energyCap={energyCap}
           />
-        </div>
 
-        {/* Main Content Layout */}
-        <div className="grid grid-cols-[1fr_320px] gap-8 px-8 py-8">
-          {/* Left Column: Task Lists */}
-          <div>
+          {/* 4. BUGÜNÜN ENERJİSİ (HeroZone'un hemen altına taşındı) */}
+          <div className="px-8 mt-4">
+            <EnergyCheckIn currentEnergy={energyCheckIn?.energy || null} />
+          </div>
+
+          {/* 5. X PAYLAŞIMI */}
+          <div className="px-8 mt-6">
+            <XPostSection
+              task={xPostTask}
+              isDone={xPostTask ? completedIds.has(xPostTask.id) : false}
+            />
+          </div>
+
+          {/* 6. RUTİNLER, GÖREVLER, SİSTEMLER (Tek sütun layout) */}
+          <div className="px-8 py-8 flex flex-col gap-10">
             <TaskGroup
               kritikTasks={kritikTasks}
               sistemTasks={sistemTasks}
@@ -582,27 +546,13 @@ export default async function Page({
               vitaminPackages={vitaminPackages}
               completedSkincareIds={completedSkincareIds}
             />
-            {/* End Day Button */}
-            <EndDayButton />
-          </div>
-
-          {/* Right Column: Mini Cards */}
-          <div className="flex flex-col gap-4">
-            <EnergyCheckIn currentEnergy={energyCheckIn?.energy || null} />
-            <MountainMini />
-            <HeatmapMini last7Days={formatted7Days} />
+            
+            {/* 7. GÜNÜ BİTİR butonu (Sistemlerin altında) */}
+            <div className="mt-4 border-t border-zinc-800 pt-8">
+              <EndDayButton />
+            </div>
           </div>
         </div>
-
-        <RealityCheckCard
-          score={todayScore}
-          tasksCompleted={completedIds.size}
-          tasksTotal={allTemplates.length}
-          date={today}
-          savedWorkHours={todayDailyScore?.work_hours ?? null}
-        />
-
-        <BottomActionBar />
       </DailyShell>
     </div>
   );

@@ -120,7 +120,7 @@ export function TaskCard({
       <div
         onClick={handleClick}
         className={cn(
-          "flex items-center gap-4 px-4 py-3 rounded-ftg-card border transition-all relative group",
+          "flex items-center gap-4 px-5 py-4 rounded-ftg-card border transition-all relative group",
           isPassive ? "opacity-40 grayscale cursor-not-allowed bg-transparent border-ftg-border-subtle" : 
           isBonus ? "border-dashed border-ftg-border-subtle bg-transparent" :
           "border-ftg-border-subtle bg-ftg-surface hover:border-ftg-amber/40 hover:bg-ftg-elevated cursor-pointer"
@@ -129,12 +129,12 @@ export function TaskCard({
         {/* Icon */}
         <div
           className={cn(
-            "w-4 h-4 rounded-full flex items-center justify-center shrink-0 transition-colors",
+            "w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-colors",
             isDone ? "bg-ftg-success/20 text-ftg-success" : isPassive ? "bg-ftg-border-strong text-ftg-text-mute" : "bg-ftg-amber-glow"
           )}
         >
           {isDone && (
-            <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           )}
@@ -143,7 +143,7 @@ export function TaskCard({
         {/* Title */}
         <span
           className={cn(
-            "flex-1 font-mono text-sm transition-all",
+            "flex-1 font-mono text-base transition-all",
             isDone ? "text-ftg-text-mute line-through" : isPassive ? "text-ftg-text-mute" : isBonus ? "text-ftg-text-dim" : "text-ftg-text"
           )}
         >
@@ -159,7 +159,7 @@ export function TaskCard({
         {showPriorityBadge && (
           <span
             className={cn(
-              "px-2 py-0.5 rounded text-[9px] tracking-wider font-mono",
+              "px-2 py-1 rounded text-[10px] tracking-wider font-mono",
               priority === "P1" && "bg-ftg-danger/15 text-ftg-danger",
               priority === "P2" && "bg-ftg-amber/15 text-ftg-amber",
               priority === "P3" && "bg-ftg-text-mute/15 text-ftg-text-mute"
@@ -171,7 +171,7 @@ export function TaskCard({
 
         {/* Points (Hide for production) */}
         {!isProduction && (
-          <span className={cn("font-mono text-xs transition-colors", isDone ? "text-ftg-success" : "text-ftg-amber")}>
+          <span className={cn("font-mono text-sm transition-colors", isDone ? "text-ftg-success" : "text-ftg-amber")}>
             +{points}p
           </span>
         )}

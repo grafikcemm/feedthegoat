@@ -70,14 +70,14 @@ export function TaskGroup({
   };
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-10">
       {/* KRİTİK RUTİNLER */}
       {kritikTasks.length > 0 && (
-        <div className="flex flex-col gap-3">
-          <h3 className="font-mono text-[10px] tracking-[0.18em] uppercase text-ftg-text-mute">
+        <div className="flex flex-col gap-4">
+          <h3 className="font-mono text-[10px] tracking-[0.18em] uppercase text-ftg-text-mute pb-2 border-b border-zinc-800 mb-4">
             KRİTİK RUTİNLER
           </h3>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3">
             {kritikTasks.map((t) => (
               <TaskCard
                 key={t.id}
@@ -101,11 +101,11 @@ export function TaskGroup({
       )}
 
       {/* AKTİF GÖREVLER */}
-      <div className="flex flex-col gap-3">
-        <h3 className="font-mono text-[10px] tracking-[0.18em] uppercase text-ftg-text-mute">
+      <div className="flex flex-col gap-4">
+        <h3 className="font-mono text-[10px] tracking-[0.18em] uppercase text-ftg-text-mute pb-2 border-b border-zinc-800 mb-4">
           AKTİF GÖREVLER
         </h3>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           {activeTasks.length === 0 && (
             <p className="font-mono text-xs text-ftg-text-mute italic px-1">
               Henüz görev yok. Aşağıdan ekle.
@@ -116,7 +116,7 @@ export function TaskGroup({
           ))}
         </div>
         {/* Görev Ekleme Input */}
-        <div className="flex gap-2 mt-1">
+        <div className="flex gap-2 mt-2">
           <input
             type="text"
             value={newTaskValue}
@@ -124,12 +124,12 @@ export function TaskGroup({
             onKeyDown={handleKeyDown}
             placeholder="Yeni görev ekle..."
             disabled={isAdding}
-            className="flex-1 bg-transparent border border-ftg-border-subtle rounded-ftg-card px-3 py-2 font-mono text-xs text-ftg-text placeholder:text-ftg-text-mute focus:outline-none focus:border-ftg-amber/40 transition-colors disabled:opacity-50"
+            className="flex-1 bg-transparent border border-ftg-border-subtle rounded-ftg-card px-4 py-3 font-mono text-sm text-ftg-text placeholder:text-ftg-text-mute focus:outline-none focus:border-ftg-amber/40 transition-colors disabled:opacity-50"
           />
           <button
             onClick={handleAddTask}
             disabled={isAdding || !newTaskValue.trim()}
-            className="px-3 py-2 border border-ftg-border-subtle rounded-ftg-card font-mono text-xs text-ftg-amber hover:border-ftg-amber/50 hover:bg-ftg-elevated/50 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-4 py-3 border border-ftg-border-subtle rounded-ftg-card font-mono text-sm text-ftg-amber hover:border-ftg-amber/50 hover:bg-ftg-elevated/50 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
           >
             +
           </button>
@@ -138,11 +138,11 @@ export function TaskGroup({
 
       {/* SİSTEMLER */}
       {sistemTasks.length > 0 && (
-        <div className="flex flex-col gap-3">
-          <h3 className="font-mono text-[10px] tracking-[0.18em] uppercase text-ftg-text-mute">
+        <div className="flex flex-col gap-4">
+          <h3 className="font-mono text-[10px] tracking-[0.18em] uppercase text-ftg-text-mute pb-2 border-b border-zinc-800 mb-4">
             SİSTEMLER
           </h3>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3">
             {sistemTasks.map((t) => (
               <TaskCard
                 key={t.id}
