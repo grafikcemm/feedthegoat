@@ -19,31 +19,39 @@ export async function takeSkincarePackage(packageId: string, parentTaskId: strin
   }
 
   // 2. Count active packages
-  const { data: allPackages } = await supabase
+  const { count: totalCount } = await supabase
     .from('skincare_packages')
-    .select('id');
+    .select('id', { count: 'exact', head: true });
 
   // 3. Count completions today
-  const { data: completionsToday } = await supabase
+  const { count: completedCount } = await supabase
     .from('skincare_completions')
-    .select('package_id')
+    .select('id', { count: 'exact', head: true })
     .eq('date', today);
 
-  const totalCount = allPackages?.length ?? 0;
-  const completedCount = completionsToday?.length ?? 0;
-
   // 4. Update parent Skincare task if all packages are completed
-  if (totalCount > 0 && completedCount === totalCount) {
-    await supabase
-      .from('daily_completions')
-      .upsert({ 
-        template_id: parentTaskId, 
-        date: today 
-      }, { onConflict: 'template_id,date' });
+  if (completedCount !== null && totalCount !== null && completedCount >= totalCount) {
+    const { data: skincareTemplate } = await supabase
+      .from('task_templates')
+      .select('id')
+      .eq('system_type', 'skincare')
+      .single();
+
+    if (skincareTemplate) {
+      await supabase
+        .from('daily_completions')
+        .upsert({ 
+          template_id: skincareTemplate.id, 
+          date: today 
+        }, { onConflict: 'template_id,date' });
+    }
   }
 
   revalidatePath('/');
-  return { success: true, allCompleted: completedCount === totalCount };
+  return { 
+    success: true, 
+    allCompleted: (completedCount !== null && totalCount !== null && completedCount >= totalCount) 
+  };
 }
 
 export async function getSkincarePackages() {

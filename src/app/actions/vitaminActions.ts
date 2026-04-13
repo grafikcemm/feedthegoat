@@ -18,39 +18,45 @@ export async function takeVitaminPackage(packageId: string, parentTaskId: string
   }
 
   // 2. Count active packages
-  const { data: allActive } = await supabase
+  const { count: totalCount } = await supabase
     .from('vitamin_packages')
-    .select('id')
+    .select('id', { count: 'exact', head: true })
     .eq('is_active', true);
 
   // 3. Count completions today
-  const { data: takenToday } = await supabase
+  const { count: completedCount } = await supabase
     .from('vitamin_package_completions')
-    .select('package_id')
+    .select('id', { count: 'exact', head: true })
     .eq('date', today);
 
-  const activeIds = new Set(allActive?.map(a => a.id) ?? []);
-  const takenActiveCount = takenToday?.filter(t => activeIds.has(t.package_id)).length ?? 0;
-  const totalActiveCount = activeIds.size;
-
-  const allTaken = totalActiveCount > 0 && takenActiveCount === totalActiveCount;
-
   // 4. Update parent Vitamin task if all active packages are taken
-  if (allTaken) {
-    const { error: taskError } = await supabase
-      .from('daily_completions')
-      .upsert({ 
-        template_id: parentTaskId, 
-        date: today 
-      }, { onConflict: 'template_id,date' });
-      
-    if (taskError) {
-      console.error('[vitaminActions] Task Update Error:', taskError);
+  if (completedCount !== null && totalCount !== null && completedCount >= totalCount) {
+    // Find the template ID specifically for vitamin to be safe
+    const { data: vitaminTemplate } = await supabase
+      .from('task_templates')
+      .select('id')
+      .eq('system_type', 'vitamin')
+      .single();
+
+    if (vitaminTemplate) {
+      const { error: taskError } = await supabase
+        .from('daily_completions')
+        .upsert({ 
+          template_id: vitaminTemplate.id, 
+          date: today 
+        }, { onConflict: 'template_id,date' });
+        
+      if (taskError) {
+        console.error('[vitaminActions] Task Upsert Error:', taskError);
+      }
     }
   }
 
   revalidatePath('/');
-  return { success: true, allTaken };
+  return { 
+    success: true, 
+    allTaken: (completedCount !== null && totalCount !== null && completedCount >= totalCount) 
+  };
 }
 
 export async function getVitaminPackages() {

@@ -8,7 +8,7 @@ import { TabNav } from "@/components/daily/TabNav";
 import { HeroZone } from "@/components/daily/HeroZone";
 import { TaskGroup } from "@/components/daily/TaskGroup";
 import { EnergyCheckIn } from "@/components/daily/EnergyCheckIn";
-import { QuoteBar } from "@/components/daily/QuoteBar";
+import { QuoteCard } from "@/components/daily/QuoteCard";
 import { XPostSection } from "@/components/daily/XPostSection";
 import { ScoringBars } from "@/components/daily/ScoringBars";
 import { FinanceShell } from "@/components/finance/FinanceShell";
@@ -107,7 +107,7 @@ export default async function Page({
               todayDayKey={todayDayKey}
             />
 
-            {/* Right Column: Meal Plan Only (Placeholders removed as requested) */}
+            {/* Right Column: Meal Plan Only */}
             <div className="flex flex-col gap-6">
               <MealPlanSection meals={meals || []} />
             </div>
@@ -518,8 +518,8 @@ export default async function Page({
             </div>
           </div>
 
-          {/* Right Column (col-span-1): Stats, Energy & Quote */}
-          <div className="xl:col-span-1 flex flex-col gap-6">
+          {/* Right Column (col-span-1): Stats, Energy & Quote (Sticky) */}
+          <div className="xl:col-span-1 flex flex-col gap-4 self-start sticky top-6">
             <EnergyCheckIn currentEnergy={energyCheckIn?.energy || null} />
             <ScoringBars 
               disciplineScore={disciplineScore}
@@ -529,8 +529,10 @@ export default async function Page({
               productionDone={productionDone}
               productionTotal={productionTotal}
             />
-            {/* QuoteBar moved here from the top */}
-            <QuoteBar quote={quote} />
+            <QuoteCard 
+              quote={quote?.quote} 
+              author={quote?.author} 
+            />
           </div>
 
         </div>
