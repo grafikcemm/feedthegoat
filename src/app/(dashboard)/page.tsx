@@ -10,6 +10,7 @@ import { TaskGroup } from "@/components/daily/TaskGroup";
 import { EnergyCheckIn } from "@/components/daily/EnergyCheckIn";
 import { QuoteBar } from "@/components/daily/QuoteBar";
 import { XPostSection } from "@/components/daily/XPostSection";
+import { ScoringBars } from "@/components/daily/ScoringBars";
 import { FinanceShell } from "@/components/finance/FinanceShell";
 
 // Legacy components for other tabs
@@ -496,46 +497,29 @@ export default async function Page({
         <TopBar state={safeGoatState} />
         <TabNav />
 
-        {/* --- YENİ SIRALAMA: Tek Sütun --- */}
-        <div className="flex flex-col gap-0">
-          {/* 1. DuaPanel */}
-          <div className="px-8 pt-4">
-            <DuaPanel />
-          </div>
+        {/* --- Top Section: Always Full Width --- */}
+        <div className="px-10 pt-4">
+          <DuaPanel />
+        </div>
+        <QuoteBar quote={quote} />
+        <HeroZone 
+          total={todayScore}
+          mood={safeGoatState.current_mood}
+          remainingTaskCount={remainingTasks}
+          energyLevel={energyLevel}
+          energyCap={energyCap}
+        />
 
-          {/* 2. QuoteBar */}
-          <QuoteBar quote={quote} />
-
-          {/* 3. HeroZone (Tam genişlik) */}
-          <HeroZone 
-            total={todayScore}
-            disciplineScore={disciplineScore}
-            disciplineMax={disciplineMax}
-            healthScore={healthScore}
-            healthMax={healthMax}
-            productionDone={productionDone}
-            productionTotal={productionTotal}
-            mood={safeGoatState.current_mood}
-            remainingTaskCount={remainingTasks}
-            energyLevel={energyLevel}
-            energyCap={energyCap}
-          />
-
-          {/* 4. BUGÜNÜN ENERJİSİ (HeroZone'un hemen altına taşındı) */}
-          <div className="px-8 mt-4">
-            <EnergyCheckIn currentEnergy={energyCheckIn?.energy || null} />
-          </div>
-
-          {/* 5. X PAYLAŞIMI */}
-          <div className="px-8 mt-6">
+        {/* --- Grid Section: 2 Columns --- */}
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-10 px-10 py-10">
+          
+          {/* Left Column (col-span-2): Tasks */}
+          <div className="xl:col-span-2 flex flex-col gap-10">
             <XPostSection
               task={xPostTask}
               isDone={xPostTask ? completedIds.has(xPostTask.id) : false}
             />
-          </div>
-
-          {/* 6. RUTİNLER, GÖREVLER, SİSTEMLER (Tek sütun layout) */}
-          <div className="px-8 py-8 flex flex-col gap-10">
+            
             <TaskGroup
               kritikTasks={kritikTasks}
               sistemTasks={sistemTasks}
@@ -547,11 +531,24 @@ export default async function Page({
               completedSkincareIds={completedSkincareIds}
             />
             
-            {/* 7. GÜNÜ BİTİR butonu (Sistemlerin altında) */}
             <div className="mt-4 border-t border-zinc-800 pt-8">
               <EndDayButton />
             </div>
           </div>
+
+          {/* Right Column (col-span-1): Stats & Energy */}
+          <div className="xl:col-span-1 flex flex-col gap-6">
+            <EnergyCheckIn currentEnergy={energyCheckIn?.energy || null} />
+            <ScoringBars 
+              disciplineScore={disciplineScore}
+              disciplineMax={disciplineMax}
+              healthScore={healthScore}
+              healthMax={healthMax}
+              productionDone={productionDone}
+              productionTotal={productionTotal}
+            />
+          </div>
+
         </div>
       </DailyShell>
     </div>
