@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect, useTransition } from 'react';
 import { getSkincarePackages, takeSkincarePackage } from '@/app/actions/skincareActions';
+import { toggleTemplateTask } from '@/app/actions/taskActions';
+import { fireTaskConfetti } from '@/lib/confetti';
 import { cn } from '@/utils/cn';
 
 interface SkincarePackage {
@@ -57,6 +59,17 @@ export function SkincareModal({
     });
   };
 
+  const handleFinalize = async () => {
+    startTransition(async () => {
+      // Mark parent task as done in daily_completions
+      await toggleTemplateTask(parentTaskId, false);
+      // Dopamine hit
+      fireTaskConfetti();
+      // Close modal
+      onClose();
+    });
+  };
+
   const allTaken = packages.length > 0 && packages.every(p => completedPackageIds.includes(p.id));
 
   return (
@@ -98,53 +111,66 @@ export function SkincareModal({
               <span className="font-mono text-[10px] text-ftg-text-mute animate-pulse">VERİLER ÇEKİLİYOR...</span>
             </div>
           ) : (
-            packages.map(pkg => {
-              const isTaken = completedPackageIds.includes(pkg.id);
-              return (
-                <div 
-                  key={pkg.id}
-                  className={cn(
-                    "relative group p-4 rounded-ftg-card border transition-all duration-300",
-                    isTaken 
-                      ? "bg-ftg-success/5 border-ftg-success/30 shadow-[inset_0_0_24px_rgba(34,197,94,0.05)]" 
-                      : "bg-ftg-surface border-ftg-border-subtle hover:border-ftg-success/30"
-                  )}
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <h3 className={cn(
-                        "font-mono text-sm font-bold tracking-tight transition-colors",
-                        isTaken ? "text-ftg-success" : "text-ftg-text"
-                      )}>
-                        {pkg.title}
-                      </h3>
-                      
-                      <ul className="mt-3 space-y-1">
-                        {pkg.items.map((item, idx) => (
-                          <li key={idx} className="flex items-start gap-2 font-mono text-xs text-ftg-text-dim">
-                            <span className="mt-1.5 shrink-0 w-1 h-1 rounded-sm bg-ftg-success/60 rotate-45" />
-                            <span className="leading-relaxed">{item}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+            <>
+              {packages.map(pkg => {
+                const isTaken = completedPackageIds.includes(pkg.id);
+                return (
+                  <div 
+                    key={pkg.id}
+                    className={cn(
+                      "relative group p-4 rounded-ftg-card border transition-all duration-300",
+                      isTaken 
+                        ? "bg-ftg-success/5 border-ftg-success/30 shadow-[inset_0_0_24px_rgba(34,197,94,0.05)]" 
+                        : "bg-ftg-surface border-ftg-border-subtle hover:border-ftg-success/30"
+                    )}
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1">
+                        <h3 className={cn(
+                          "font-mono text-sm font-bold tracking-tight transition-colors",
+                          isTaken ? "text-ftg-success" : "text-ftg-text"
+                        )}>
+                          {pkg.title}
+                        </h3>
+                        
+                        <ul className="mt-3 space-y-1">
+                          {pkg.items.map((item, idx) => (
+                            <li key={idx} className="flex items-start gap-2 font-mono text-xs text-ftg-text-dim">
+                              <span className="mt-1.5 shrink-0 w-1 h-1 rounded-sm bg-ftg-success/60 rotate-45" />
+                              <span className="leading-relaxed">{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
 
-                    <button
-                      onClick={() => handleTake(pkg.id)}
-                      disabled={isTaken || isPending}
-                      className={cn(
-                        "shrink-0 px-4 py-2 rounded-ftg-card border font-mono text-[10px] font-bold tracking-widest uppercase transition-all duration-300",
-                        isTaken 
-                          ? "bg-ftg-success text-white border-ftg-success cursor-default" 
-                          : "bg-transparent text-ftg-success border-ftg-success hover:bg-ftg-success hover:text-black active:translate-y-0.5"
-                      )}
-                    >
-                      {isTaken ? '✓ TAMAM' : 'TAMAMLA'}
-                    </button>
+                      <button
+                        onClick={() => handleTake(pkg.id)}
+                        disabled={isTaken || isPending}
+                        className={cn(
+                          "shrink-0 px-4 py-2 rounded-ftg-card border font-mono text-[10px] font-bold tracking-widest uppercase transition-all duration-300",
+                          isTaken 
+                            ? "bg-ftg-success text-white border-ftg-success cursor-default" 
+                            : "bg-transparent text-ftg-success border-ftg-success hover:bg-ftg-success hover:text-black active:translate-y-0.5"
+                        )}
+                      >
+                        {isTaken ? '✓ TAMAM' : 'TAMAMLA'}
+                      </button>
+                    </div>
                   </div>
-                </div>
-              );
-            })
+                );
+              })}
+
+              {/* Completion Action */}
+              {allTaken && (
+                <button
+                  onClick={handleFinalize}
+                  disabled={isPending}
+                  className="w-full mt-4 py-4 bg-ftg-success hover:bg-green-500 text-white font-mono text-xs font-bold tracking-[0.2em] rounded-ftg-card transition-all shadow-xl shadow-green-900/10 active:scale-95 disabled:opacity-50"
+                >
+                  ✓ TAMAMLANDI — KAPAT
+                </button>
+              )}
+            </>
           )}
         </div>
 
