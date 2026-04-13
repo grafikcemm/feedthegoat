@@ -1,74 +1,77 @@
 "use client";
 
-import React, { useTransition } from "react";
+import React, { useState, useTransition } from "react";
 import { TaskCard } from "./TaskCard";
-import { completeTask } from "@/app/actions/completeTask";
-
-export interface Task {
-  id: string;
-  title: string;
-  category: "discipline" | "production" | "health" | "bonus";
-  time_of_day: "morning" | "day" | "evening";
-  system_type?: string | null;
-  points: number;
-  priority: "P1" | "P2" | "P3" | null;
-  is_bonus: boolean;
-  is_done: boolean;
-}
+import { ActiveTaskCard } from "./ActiveTaskCard";
+import { toggleTemplateTask, addActiveTask } from "@/app/actions/taskActions";
+import type { TaskTemplate, ActiveTask } from "@/types/tasks";
 
 interface TaskGroupProps {
-  tasks: Task[];
+  kritikTasks: TaskTemplate[];
+  sistemTasks: TaskTemplate[];
+  activeTasks: ActiveTask[];
+  completedIds: Set<string>;
+  // System task specific props (passed through to cards)
   englishSubtasks?: { id: string; title: string; isCompleted: boolean }[];
   isTreadmillActive?: boolean;
   vitaminPackages?: { id: string; title: string; isTaken: boolean; items: string[] }[];
   completedSkincareIds?: string[];
 }
 
-const GROUP_LABELS: Record<'morning' | 'day' | 'evening', string> = {
-  morning: 'KRİTİK RUTİNLER',
-  day: 'AKTİF GÖREVLER',
-  evening: 'SİSTEMLER',
-};
-
 export function TaskGroup({ 
-  tasks, 
-  englishSubtasks = [], 
-  isTreadmillActive = true, 
+  kritikTasks,
+  sistemTasks,
+  activeTasks,
+  completedIds,
+  englishSubtasks = [],
+  isTreadmillActive = true,
   vitaminPackages = [],
-  completedSkincareIds = []
+  completedSkincareIds = [],
 }: TaskGroupProps) {
   const [isPending, startTransition] = useTransition();
+  const [newTaskValue, setNewTaskValue] = useState('');
+  const [isAdding, startAddTransition] = useTransition();
 
-  const handleComplete = (taskId: string) => {
+  const handleComplete = (templateId: string) => {
+    const isCompleted = completedIds.has(templateId);
     startTransition(() => {
-      completeTask({ taskId });
+      toggleTemplateTask(templateId, isCompleted);
     });
   };
 
-  const morningTasks = tasks.filter((t) => t.time_of_day === "morning");
-  const dayTasks = tasks.filter((t) => t.time_of_day === "day");
-  const eveningTasks = tasks.filter((t) => t.time_of_day === "evening");
+  const handleAddTask = () => {
+    if (!newTaskValue.trim()) return;
+    const title = newTaskValue.trim();
+    setNewTaskValue('');
+    startAddTransition(() => {
+      addActiveTask(title);
+    });
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') handleAddTask();
+  };
 
   return (
     <div className="flex flex-col gap-8">
-      {/* KRİTİK RUTİNLER (morning) */}
-      {morningTasks.length > 0 && (
+      {/* KRİTİK RUTİNLER */}
+      {kritikTasks.length > 0 && (
         <div className="flex flex-col gap-3">
           <h3 className="font-mono text-[10px] tracking-[0.18em] uppercase text-ftg-text-mute">
-            {GROUP_LABELS.morning}
+            KRİTİK RUTİNLER
           </h3>
           <div className="flex flex-col gap-2">
-            {morningTasks.map((t) => (
+            {kritikTasks.map((t) => (
               <TaskCard
                 key={t.id}
                 id={t.id}
                 title={t.title}
-                isDone={t.is_done}
+                isDone={completedIds.has(t.id)}
                 category={t.category}
                 systemType={t.system_type}
                 points={t.points}
-                priority={t.priority}
-                isBonus={t.is_bonus}
+                priority={null}
+                isBonus={false}
                 onComplete={handleComplete}
                 englishSubtasks={t.system_type === 'english' ? englishSubtasks : []}
                 isTreadmillActive={isTreadmillActive}
@@ -80,53 +83,60 @@ export function TaskGroup({
         </div>
       )}
 
-      {/* AKTİF GÖREVLER (day) */}
-      {dayTasks.length > 0 && (
-        <div className="flex flex-col gap-3">
-          <h3 className="font-mono text-[10px] tracking-[0.18em] uppercase text-ftg-text-mute">
-            {GROUP_LABELS.day}
-          </h3>
-          <div className="flex flex-col gap-2">
-            {dayTasks.map((t) => (
-              <TaskCard
-                key={t.id}
-                id={t.id}
-                title={t.title}
-                isDone={t.is_done}
-                category={t.category}
-                systemType={t.system_type}
-                points={t.points}
-                priority={t.priority}
-                isBonus={t.is_bonus}
-                onComplete={handleComplete}
-                englishSubtasks={t.system_type === 'english' ? englishSubtasks : []}
-                isTreadmillActive={isTreadmillActive}
-                vitaminPackages={t.system_type === 'vitamin' ? vitaminPackages : []}
-                completedSkincareIds={t.system_type === 'skincare' ? completedSkincareIds : []}
-              />
-            ))}
-          </div>
+      {/* AKTİF GÖREVLER */}
+      <div className="flex flex-col gap-3">
+        <h3 className="font-mono text-[10px] tracking-[0.18em] uppercase text-ftg-text-mute">
+          AKTİF GÖREVLER
+        </h3>
+        <div className="flex flex-col gap-2">
+          {activeTasks.length === 0 && (
+            <p className="font-mono text-xs text-ftg-text-mute italic px-1">
+              Henüz görev yok. Aşağıdan ekle.
+            </p>
+          )}
+          {activeTasks.map((t) => (
+            <ActiveTaskCard key={t.id} task={t} />
+          ))}
         </div>
-      )}
+        {/* Görev Ekleme Input */}
+        <div className="flex gap-2 mt-1">
+          <input
+            type="text"
+            value={newTaskValue}
+            onChange={(e) => setNewTaskValue(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Yeni görev ekle..."
+            disabled={isAdding}
+            className="flex-1 bg-transparent border border-ftg-border-subtle rounded-ftg-card px-3 py-2 font-mono text-xs text-ftg-text placeholder:text-ftg-text-mute focus:outline-none focus:border-ftg-amber/40 transition-colors disabled:opacity-50"
+          />
+          <button
+            onClick={handleAddTask}
+            disabled={isAdding || !newTaskValue.trim()}
+            className="px-3 py-2 border border-ftg-border-subtle rounded-ftg-card font-mono text-xs text-ftg-amber hover:border-ftg-amber/50 hover:bg-ftg-elevated/50 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            +
+          </button>
+        </div>
+      </div>
 
-      {/* SİSTEMLER (evening) */}
-      {eveningTasks.length > 0 && (
+      {/* SİSTEMLER */}
+      {sistemTasks.length > 0 && (
         <div className="flex flex-col gap-3">
           <h3 className="font-mono text-[10px] tracking-[0.18em] uppercase text-ftg-text-mute">
-            {GROUP_LABELS.evening}
+            SİSTEMLER
           </h3>
           <div className="flex flex-col gap-2">
-            {eveningTasks.map((t) => (
+            {sistemTasks.map((t) => (
               <TaskCard
                 key={t.id}
                 id={t.id}
                 title={t.title}
-                isDone={t.is_done}
+                isDone={completedIds.has(t.id)}
                 category={t.category}
                 systemType={t.system_type}
                 points={t.points}
-                priority={t.priority}
-                isBonus={t.is_bonus}
+                priority={null}
+                isBonus={false}
                 onComplete={handleComplete}
                 englishSubtasks={t.system_type === 'english' ? englishSubtasks : []}
                 isTreadmillActive={isTreadmillActive}

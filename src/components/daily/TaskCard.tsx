@@ -72,6 +72,9 @@ export function TaskCard({
 
   const isPassive = (isEnglish && !englishActive) || (isTreadmill && !treadmillActive);
 
+  // system_type varsa priority badge gösterilmez
+  const showPriorityBadge = !isProduction && !systemType && priority;
+
   const handleClick = () => {
     if (isPassive) return;
 
@@ -151,8 +154,8 @@ export function TaskCard({
           )}
         </span>
 
-        {/* Priority Badge (only if not production and NOT a system task) */}
-        {!isProduction && !systemType && priority && (
+        {/* Priority Badge — system_type olan task'larda gösterilmez */}
+        {showPriorityBadge && (
           <span
             className={cn(
               "px-2 py-0.5 rounded text-[9px] tracking-wider font-mono",
@@ -172,14 +175,14 @@ export function TaskCard({
           </span>
         )}
 
-        {/* Floating XP Animation (Hide for production) */}
+        {/* Floating XP Animation — dopamine */}
         {isFlying && !isProduction && (
           <span className="absolute right-16 top-1/2 -translate-y-1/2 font-mono text-sm text-ftg-amber-bright pointer-events-none animate-fly-up">
             +{points}p
           </span>
         )}
 
-        {/* Checkbox (Special visual for english/vitamin/skincare) */}
+        {/* Checkbox */}
         <div
           className={cn(
             "w-5 h-5 rounded-sm border shrink-0 flex items-center justify-center transition-all duration-300",

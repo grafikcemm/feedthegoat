@@ -24,7 +24,6 @@ import WarFund from "@/components/WarFund";
 import RightPanel from "@/components/RightPanel";
 
 import { createServerSupabase } from "@/lib/supabaseServer";
-import { calculateDailyScore } from "@/lib/scoring";
 import { computeFinanceSummary } from "@/lib/financeCalc";
 import { getCurrentISOWeekKey, getCurrentWeekRange, formatDateForDB, DAY_LABELS_TR } from '@/lib/weekUtils';
 
@@ -58,19 +57,16 @@ import {
   getTodayDayKey, 
   getEnglishGroupForToday 
 } from '@/lib/dayUtils';
-import { ensureTodayTasks } from '@/app/actions/dailyResetActions';
 import { ensureTodayQuote } from "@/app/actions/quoteActions";
 import { RealityCheckCard } from "@/components/daily/RealityCheckCard";
+import { DuaPanel } from "@/components/daily/DuaPanel";
 
 export default async function Page({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  await Promise.all([
-    ensureTodayTasks(),
-    ensureTodayQuote(),
-  ]);
+  await ensureTodayQuote();
   const resolvedParams = await searchParams;
   const tab = resolvedParams.tab || "GUNLUK";
   const supabase = createServerSupabase();
@@ -439,15 +435,16 @@ export default async function Page({
   }
 
   // Daily Tab (Default)
-  // Daily Tab (Default)
 
   const sevenDaysAgo = format(subDays(new Date(), 7), "yyyy-MM-dd");
   const englishGroupKey = getEnglishGroupForToday();
 
-  // Parallelize primary Daily tab fetches
+  // Parallelize primary Daily tab fetches — new architecture
   const [
     { data: goatState },
-    { data: tasks },
+    { data: templates },
+    { data: completions },
+    { data: rawActiveTasks },
     { data: energyCheckIn },
     { data: recentScores },
     { data: focus },
@@ -458,7 +455,9 @@ export default async function Page({
     { data: skincareCompletions }
   ] = await Promise.all([
     supabase.from("goat_state").select("*").eq("id", 1).single(),
-    supabase.from("tasks").select("*").eq("date", today).order("created_at", { ascending: true }),
+    supabase.from("task_templates").select("*").order("sort_order"),
+    supabase.from("daily_completions").select("template_id").eq("date", today),
+    supabase.from("active_tasks").select("*").order("sort_order"),
     supabase.from("energy_checkins").select("*").eq("date", today).maybeSingle(),
     supabase.from("daily_scores").select("*").gte("date", sevenDaysAgo),
     supabase.from("daily_focus").select("*").eq("date", today).maybeSingle(),
@@ -484,7 +483,7 @@ export default async function Page({
   }
 
   const isTreadmillActive = todayWorkout?.day_type !== 'strength';
-  
+
   // Vitamin Packages
   const takenVitaminSet = new Set(vitaminCompletions?.map(c => c.package_id) ?? []);
   const vitaminPackages = vitaminPackagesData?.map(p => ({
@@ -500,22 +499,21 @@ export default async function Page({
     score: s.total_score,
   }));
 
-  // Task filtering and sorting
-  const allTasks = tasks || [];
-  const xPostTasks = allTasks.filter(t => t.system_type === 'x_post');
-  const otherTasks = allTasks.filter(t => t.system_type !== 'x_post');
+  // --- New template-based scoring ---
+  const completedIds = new Set(completions?.map(c => c.template_id) ?? []);
+  const allTemplates = templates ?? [];
 
-  const groupOrder: Record<string, number> = { morning: 1, day: 2, evening: 3 };
-  const sortedTasks = [...otherTasks].sort((a, b) => {
-    const orderDiff = (groupOrder[a.time_of_day] || 0) - (groupOrder[b.time_of_day] || 0);
-    if (orderDiff !== 0) return orderDiff;
-    return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-  });
+  const todayScore = allTemplates
+    .filter(t => completedIds.has(t.id))
+    .reduce((sum, t) => sum + (t.points ?? 0), 0);
 
-  // Calculate live score from tasks (Using all tasks including x-posts for correct scoring)
-  const breakdown = calculateDailyScore(allTasks);
-  const remainingTasks = allTasks.filter(t => !t.is_done && !t.is_bonus).length;
-  
+  const kritikTasks = allTemplates.filter(t => t.section === 'kritik');
+  const xPostTask = allTemplates.find(t => t.section === 'x_post');
+  const sistemTasks = allTemplates.filter(t => t.section === 'sistem');
+  const activeTasks = rawActiveTasks ?? [];
+
+  const remainingTasks = allTemplates.filter(t => !completedIds.has(t.id)).length;
+
   // Safe state
   const safeGoatState = goatState || {
     current_stage: "OGLAK" as const,
@@ -529,27 +527,39 @@ export default async function Page({
       <DailyShell>
         <TopBar state={safeGoatState} />
         <TabNav />
+
+        {/* Dua Paneli — tab bar'ın altında, quote'tan önce */}
+        <div className="px-8 pt-4">
+          <DuaPanel />
+        </div>
+
         <QuoteBar quote={quote} />
         <HeroZone 
-          total={breakdown.total}
-          discipline={breakdown.discipline}
-          production={breakdown.production}
-          health={breakdown.health}
+          total={todayScore}
+          discipline={0}
+          production={0}
+          health={0}
           mood={safeGoatState.current_mood}
           remainingTaskCount={remainingTasks}
         />
         
-        {/* X-Post Section (Separate from daily routines) */}
+        {/* X-Post Section */}
         <div className="px-8 mt-6">
-          <XPostSection tasks={xPostTasks} />
+          <XPostSection
+            task={xPostTask}
+            isDone={xPostTask ? completedIds.has(xPostTask.id) : false}
+          />
         </div>
 
         {/* Main Content Layout */}
         <div className="grid grid-cols-[1fr_320px] gap-8 px-8 py-8">
           {/* Left Column: Task Lists */}
           <div>
-            <TaskGroup 
-              tasks={sortedTasks} 
+            <TaskGroup
+              kritikTasks={kritikTasks}
+              sistemTasks={sistemTasks}
+              activeTasks={activeTasks}
+              completedIds={completedIds}
               englishSubtasks={englishSubtasks}
               isTreadmillActive={isTreadmillActive}
               vitaminPackages={vitaminPackages}
@@ -567,9 +577,9 @@ export default async function Page({
         </div>
 
         <RealityCheckCard
-          score={breakdown.total}
-          tasksCompleted={allTasks.filter((t) => t.is_done).length}
-          tasksTotal={allTasks.length}
+          score={todayScore}
+          tasksCompleted={completedIds.size}
+          tasksTotal={allTemplates.length}
           date={today}
           savedWorkHours={todayDailyScore?.work_hours ?? null}
         />
