@@ -220,7 +220,7 @@ export function TaskCard({
         onClose={() => setVitaminModalOpen(false)}
         completedPackageIds={localVitaminCompletedIds}
         onPackageTaken={handleVitaminPackageTaken}
-        parentTaskId={id}
+        templateId={id}
       />
 
       {/* Skincare Modal */}
@@ -229,7 +229,7 @@ export function TaskCard({
         onClose={() => setSkincareModalOpen(false)}
         completedPackageIds={localSkincareCompletedIds}
         onPackageTaken={handleSkincarePackageTaken}
-        parentTaskId={id}
+        templateId={id}
       />
     </div>
   );
