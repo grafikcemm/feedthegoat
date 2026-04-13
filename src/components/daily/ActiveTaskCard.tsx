@@ -14,7 +14,13 @@ export function ActiveTaskCard({ task }: ActiveTaskCardProps) {
   const [optimisticDone, setOptimisticDone] = useState(task.is_done)
 
   const handleToggle = () => {
+    const isCurrentlyDone = optimisticDone;
     setOptimisticDone(prev => !prev)
+
+    if (!isCurrentlyDone) {
+      import('@/lib/confetti').then(m => m.fireTaskConfetti());
+    }
+
     startTransition(() => {
       toggleActiveTask(task.id, task.is_done)
     })

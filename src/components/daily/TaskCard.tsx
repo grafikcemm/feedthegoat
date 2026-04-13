@@ -94,6 +94,7 @@ export function TaskCard({
 
     // Normal or Production Handlers
     if (!isDone && !isProduction) {
+      import('@/lib/confetti').then(m => m.fireTaskConfetti());
       setIsFlying(true);
       setTimeout(() => setIsFlying(false), 800);
     }

@@ -34,16 +34,19 @@ export function DuaPanel() {
         isOpen ? 'bg-ftg-surface/30' : 'bg-transparent'
       )}
     >
-      {/* Header */}
-      <button
-        onClick={() => setIsOpen(prev => !prev)}
-        className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-ftg-elevated/50 transition-colors group"
+      {/* Header — More prominent */}
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between px-4 py-3
+                   bg-zinc-900 border border-zinc-700 rounded-lg
+                   text-left hover:border-zinc-500 transition-colors group"
       >
-        <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-ftg-text-mute group-hover:text-ftg-text-dim transition-colors">
-          ☽ DUA
-        </span>
-        <span className="font-mono text-[10px] text-ftg-text-mute transition-transform duration-300">
-          {isOpen ? '▲' : '▼'}
+        <div className="flex items-center gap-2">
+          <span className="text-zinc-300 text-xs tracking-widest font-medium">🤲 DUA</span>
+          <span className="text-zinc-600 text-[10px]">— Günü bitirmeden önce oku</span>
+        </div>
+        <span className="text-zinc-500 text-xs transition-transform duration-300" style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+          ▼
         </span>
       </button>
 

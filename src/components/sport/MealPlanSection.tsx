@@ -25,13 +25,10 @@ export function MealPlanSection({ meals }: MealPlanSectionProps) {
 
   return (
     <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center mb-4">
         <h3 className="font-mono text-[10px] tracking-widest text-ftg-text-mute uppercase">
           BESLENME PROGRAMI
         </h3>
-        <label className="font-mono text-[10px] text-ftg-success/80 bg-ftg-success/10 px-2 py-0.5 rounded border border-ftg-success/20">
-          DAILY PLAN
-        </label>
       </div>
 
       <div className="flex flex-col gap-4">

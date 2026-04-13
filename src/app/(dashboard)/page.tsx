@@ -8,7 +8,6 @@ import { TabNav } from "@/components/daily/TabNav";
 import { HeroZone } from "@/components/daily/HeroZone";
 import { TaskGroup } from "@/components/daily/TaskGroup";
 import { EnergyCheckIn } from "@/components/daily/EnergyCheckIn";
-import { FocusCard } from "@/components/daily/FocusCard";
 import { QuoteBar } from "@/components/daily/QuoteBar";
 import { XPostSection } from "@/components/daily/XPostSection";
 import { MountainMini } from "@/components/daily/MountainMini";
@@ -17,10 +16,6 @@ import { BottomActionBar } from "@/components/daily/BottomActionBar";
 import { FinanceShell } from "@/components/finance/FinanceShell";
 
 // Legacy components for other tabs
-import HealthDashboard from "@/components/health/HealthDashboard";
-import CareerDashboard from "@/components/career/CareerDashboard";
-import WeeklyScreen from "@/components/WeeklyScreen";
-import WarFund from "@/components/WarFund";
 import RightPanel from "@/components/RightPanel";
 
 import { createServerSupabase } from "@/lib/supabaseServer";
@@ -39,7 +34,6 @@ import { SportShell } from "@/components/sport/SportShell";
 import { WorkoutPlanColumn } from "@/components/sport/WorkoutPlanColumn";
 import { NutritionPanel } from "@/components/sport/NutritionPanel";
 import { MealPlanSection } from "@/components/sport/MealPlanSection";
-import { WaterActions } from "@/components/sport/WaterActions";
 import { DailySystemsCard } from "@/components/sport/DailySystemsCard";
 
 // New Career Components
@@ -60,6 +54,7 @@ import {
 import { ensureTodayQuote } from "@/app/actions/quoteActions";
 import { RealityCheckCard } from "@/components/daily/RealityCheckCard";
 import { DuaPanel } from "@/components/daily/DuaPanel";
+import { EndDayButton } from "@/components/daily/EndDayButton";
 
 export default async function Page({
   searchParams,
@@ -92,18 +87,14 @@ export default async function Page({
       { data: completionsThisWeek },
       { data: sportState },
       { data: todayNutrition },
-      { data: todayWaterLogs },
       { data: weekNutrition },
-      { data: weekWater },
       { data: meals }
     ] = await Promise.all([
       supabase.from("workout_days").select("id, day_type, day_of_week, sort_order, title, is_required, is_bonus, amac, exercises:workout_exercises(id, name, sets_reps, sort_order)").order("sort_order"),
       supabase.from("workout_completions").select("day_id, date").gte("date", startStr).lte("date", endStr),
       supabase.from("sport_state").select("id, protein_target_g, calorie_target, water_target_ml, ceo_breakfast_note").eq("id", 1).single(),
       supabase.from("nutrition_logs").select("protein_g, calories").eq("date", today),
-      supabase.from("water_logs").select("amount_ml").eq("date", today),
       supabase.from("nutrition_logs").select("date, protein_g, calories").gte("date", startStr).lte("date", endStr),
-      supabase.from("water_logs").select("date, amount_ml").gte("date", startStr).lte("date", endStr),
       supabase.from("meal_plan").select("id, meal_time, meal_label, items, total_protein_g, sort_order").order("sort_order", { ascending: true })
     ]);
 
@@ -122,30 +113,21 @@ export default async function Page({
       todayNutrition?.reduce((s, l) => s + Number(l.protein_g), 0) ?? 0;
     const todayCalories =
       todayNutrition?.reduce((s, l) => s + l.calories, 0) ?? 0;
-    const todayWater =
-      todayWaterLogs?.reduce((s, l) => s + l.amount_ml, 0) ?? 0;
 
     const proteinByDate: Record<string, number> = {};
     const caloriesByDate: Record<string, number> = {};
-    const waterByDate: Record<string, number> = {};
 
     weekNutrition?.forEach((n) => {
       proteinByDate[n.date] = (proteinByDate[n.date] ?? 0) + Number(n.protein_g);
       caloriesByDate[n.date] = (caloriesByDate[n.date] ?? 0) + n.calories;
     });
-    weekWater?.forEach((w) => {
-      waterByDate[w.date] = (waterByDate[w.date] ?? 0) + w.amount_ml;
-    });
 
     const daysWithData = Object.keys(proteinByDate).length || 1;
-    const daysWithWater = Object.keys(waterByDate).length || 1;
 
     const avgProtein =
       Object.values(proteinByDate).reduce((a, b) => a + b, 0) / daysWithData;
     const avgCalories =
       Object.values(caloriesByDate).reduce((a, b) => a + b, 0) / daysWithData;
-    const avgWater =
-      Object.values(waterByDate).reduce((a, b) => a + b, 0) / daysWithWater;
 
     return (
       <div className="min-h-screen">
@@ -162,23 +144,21 @@ export default async function Page({
               todayDayKey={todayDayKey}
             />
 
-            {/* Right Column: Nutrition + Water + Systems */}
+            {/* Right Column: Nutrition + Systems */}
             <div className="flex flex-col gap-6">
               <NutritionPanel
                 todayProtein={todayProtein}
                 todayCalories={todayCalories}
-                todayWater={todayWater}
+                todayWater={0}
                 proteinTarget={sportState?.protein_target_g || 180}
                 calorieTarget={sportState?.calorie_target || 1600}
                 waterTarget={sportState?.water_target_ml || 3000}
                 avgProtein={avgProtein}
                 avgCalories={avgCalories}
-                avgWater={avgWater}
+                avgWater={0}
               />
 
               <MealPlanSection meals={meals || []} />
-
-              <WaterActions />
 
               <DailySystemsCard
                 ceo_breakfast_note={sportState?.ceo_breakfast_note}
@@ -447,7 +427,7 @@ export default async function Page({
     { data: rawActiveTasks },
     { data: energyCheckIn },
     { data: recentScores },
-    { data: focus },
+    _, // Focus removal placeholder
     { data: quote },
     { data: todayWorkout },
     { data: vitaminPackagesData },
@@ -460,7 +440,7 @@ export default async function Page({
     supabase.from("active_tasks").select("*").order("sort_order"),
     supabase.from("energy_checkins").select("*").eq("date", today).maybeSingle(),
     supabase.from("daily_scores").select("*").gte("date", sevenDaysAgo),
-    supabase.from("daily_focus").select("*").eq("date", today).maybeSingle(),
+    null, // Focus removal
     supabase.from("daily_quotes").select("*").eq("date", today).maybeSingle(),
     supabase.from('workout_days').select('*').eq('day_of_week', todayDayKey).maybeSingle(),
     supabase.from('vitamin_packages').select('*').eq('is_active', true).order('sort_order'),
@@ -499,6 +479,17 @@ export default async function Page({
     score: s.total_score,
   }));
 
+  // --- Energy Selection: Cap + Tema ---
+  const ENERGY_CONFIG = {
+    LOW:    { label: 'DÜŞÜK', cap: 40, theme: 'muted'  },
+    MID:    { label: 'ORTA',  cap: 55, theme: 'normal' },
+    HIGH:   { label: 'YÜKSEK', cap: 70, theme: 'vivid' },
+  } as const;
+
+  const rawEnergy = (energyCheckIn?.energy as 'LOW' | 'MID' | 'HIGH') || 'HIGH';
+  const energyLevel = rawEnergy === 'LOW' ? 'low' : rawEnergy === 'MID' ? 'medium' : 'high';
+  const energyCap = ENERGY_CONFIG[rawEnergy]?.cap ?? 70;
+
   // --- New template-based scoring ---
   const completedIds = new Set(completions?.map(c => c.template_id) ?? []);
   const allTemplates = templates ?? [];
@@ -507,10 +498,31 @@ export default async function Page({
     .filter(t => completedIds.has(t.id))
     .reduce((sum, t) => sum + (t.points ?? 0), 0);
 
+  // --- IYILEŞTİRME 1 — Category-based Scores ---
+  const disciplineMax = allTemplates
+    .filter(t => t.category === 'discipline')
+    .reduce((sum, t) => sum + (t.points ?? 0), 0);
+
+  const healthMax = allTemplates
+    .filter(t => t.category === 'health')
+    .reduce((sum, t) => sum + (t.points ?? 0), 0);
+
+  const disciplineScore = allTemplates
+    .filter(t => t.category === 'discipline' && completedIds.has(t.id))
+    .reduce((sum, t) => sum + (t.points ?? 0), 0);
+
+  const healthScore = allTemplates
+    .filter(t => t.category === 'health' && completedIds.has(t.id))
+    .reduce((sum, t) => sum + (t.points ?? 0), 0);
+
+  // Production bar: active_tasks (is_done = true) / total active_tasks
+  const activeTasks = rawActiveTasks ?? [];
+  const productionDone = activeTasks.filter(t => t.is_done).length;
+  const productionTotal = activeTasks.length;
+
   const kritikTasks = allTemplates.filter(t => t.section === 'kritik');
   const xPostTask = allTemplates.find(t => t.section === 'x_post');
   const sistemTasks = allTemplates.filter(t => t.section === 'sistem');
-  const activeTasks = rawActiveTasks ?? [];
 
   const remainingTasks = allTemplates.filter(t => !completedIds.has(t.id)).length;
 
@@ -536,11 +548,16 @@ export default async function Page({
         <QuoteBar quote={quote} />
         <HeroZone 
           total={todayScore}
-          discipline={0}
-          production={0}
-          health={0}
+          disciplineScore={disciplineScore}
+          disciplineMax={disciplineMax}
+          healthScore={healthScore}
+          healthMax={healthMax}
+          productionDone={productionDone}
+          productionTotal={productionTotal}
           mood={safeGoatState.current_mood}
           remainingTaskCount={remainingTasks}
+          energyLevel={energyLevel}
+          energyCap={energyCap}
         />
         
         {/* X-Post Section */}
@@ -565,12 +582,13 @@ export default async function Page({
               vitaminPackages={vitaminPackages}
               completedSkincareIds={completedSkincareIds}
             />
+            {/* End Day Button */}
+            <EndDayButton />
           </div>
 
           {/* Right Column: Mini Cards */}
           <div className="flex flex-col gap-4">
             <EnergyCheckIn currentEnergy={energyCheckIn?.energy || null} />
-            <FocusCard focus={focus} />
             <MountainMini />
             <HeatmapMini last7Days={formatted7Days} />
           </div>
