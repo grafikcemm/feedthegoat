@@ -35,9 +35,11 @@ export async function takeSkincarePackage(packageId: string, parentTaskId: strin
   // 4. Update parent Skincare task if all packages are completed
   if (totalCount > 0 && completedCount === totalCount) {
     await supabase
-      .from('tasks')
-      .update({ is_done: true, updated_at: new Date().toISOString() })
-      .eq('id', parentTaskId);
+      .from('daily_completions')
+      .upsert({ 
+        template_id: parentTaskId, 
+        date: today 
+      }, { onConflict: 'template_id,date' });
   }
 
   revalidatePath('/');

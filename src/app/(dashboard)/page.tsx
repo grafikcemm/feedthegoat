@@ -30,9 +30,7 @@ import { ChargeDayCard } from "@/components/weekly/ChargeDayCard";
 // New Sport Components
 import { SportShell } from "@/components/sport/SportShell";
 import { WorkoutPlanColumn } from "@/components/sport/WorkoutPlanColumn";
-import { NutritionPanel } from "@/components/sport/NutritionPanel";
 import { MealPlanSection } from "@/components/sport/MealPlanSection";
-import { DailySystemsCard } from "@/components/sport/DailySystemsCard";
 
 // New Career Components
 import { CAREER_PHASES, getPhaseCompletionPct, computeCurrentPhase } from '@/lib/careerConfig';
@@ -109,25 +107,9 @@ export default async function Page({
               todayDayKey={todayDayKey}
             />
 
-            {/* Right Column: Nutrition + Systems */}
+            {/* Right Column: Meal Plan Only (Placeholders removed as requested) */}
             <div className="flex flex-col gap-6">
-              <NutritionPanel
-                todayProtein={0}
-                todayCalories={0}
-                todayWater={0}
-                proteinTarget={sportState?.protein_target_g || 180}
-                calorieTarget={sportState?.calorie_target || 1600}
-                waterTarget={sportState?.water_target_ml || 3000}
-                avgProtein={0}
-                avgCalories={0}
-                avgWater={0}
-              />
-
               <MealPlanSection meals={meals || []} />
-
-              <DailySystemsCard
-                ceo_breakfast_note={sportState?.ceo_breakfast_note}
-              />
             </div>
           </SportShell>
         </div>
@@ -497,11 +479,11 @@ export default async function Page({
         <TopBar state={safeGoatState} />
         <TabNav />
 
-        {/* --- Top Section: Always Full Width --- */}
+        {/* --- Top Section --- */}
         <div className="px-10 pt-4">
           <DuaPanel />
         </div>
-        <QuoteBar quote={quote} />
+        
         <HeroZone 
           total={todayScore}
           mood={safeGoatState.current_mood}
@@ -536,7 +518,7 @@ export default async function Page({
             </div>
           </div>
 
-          {/* Right Column (col-span-1): Stats & Energy */}
+          {/* Right Column (col-span-1): Stats, Energy & Quote */}
           <div className="xl:col-span-1 flex flex-col gap-6">
             <EnergyCheckIn currentEnergy={energyCheckIn?.energy || null} />
             <ScoringBars 
@@ -547,6 +529,8 @@ export default async function Page({
               productionDone={productionDone}
               productionTotal={productionTotal}
             />
+            {/* QuoteBar moved here from the top */}
+            <QuoteBar quote={quote} />
           </div>
 
         </div>

@@ -38,9 +38,11 @@ export async function takeVitaminPackage(packageId: string, parentTaskId: string
   // 4. Update parent Vitamin task if all active packages are taken
   if (allTaken) {
     const { error: taskError } = await supabase
-      .from('tasks')
-      .update({ is_done: true, updated_at: new Date().toISOString() })
-      .eq('id', parentTaskId);
+      .from('daily_completions')
+      .upsert({ 
+        template_id: parentTaskId, 
+        date: today 
+      }, { onConflict: 'template_id,date' });
       
     if (taskError) {
       console.error('[vitaminActions] Task Update Error:', taskError);
