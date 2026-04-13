@@ -84,11 +84,19 @@ export function TaskCard({
       return;
     }
     if (isVitamin) {
-      setVitaminModalOpen(true);
+      if (isDone) {
+        onComplete(id);
+      } else {
+        setVitaminModalOpen(true);
+      }
       return;
     }
     if (isSkincare) {
-      setSkincareModalOpen(true);
+      if (isDone) {
+        onComplete(id);
+      } else {
+        setSkincareModalOpen(true);
+      }
       return;
     }
 
