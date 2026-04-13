@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useTransition } from "react";
+import React, { useState, useTransition, useOptimistic } from "react";
 import { TaskCard } from "./TaskCard";
 import { ActiveTaskCard } from "./ActiveTaskCard";
 import { toggleTemplateTask, addActiveTask } from "@/app/actions/taskActions";
@@ -28,13 +28,30 @@ export function TaskGroup({
   vitaminPackages = [],
   completedSkincareIds = [],
 }: TaskGroupProps) {
-  const [isPending, startTransition] = useTransition();
+  // useOptimistic: anında görsel güncelleme, sunucu yanıtını bekleme
+  const [optimisticIds, toggleOptimistic] = useOptimistic(
+    completedIds,
+    (current: Set<string>, templateId: string) => {
+      const next = new Set(current);
+      if (next.has(templateId)) {
+        next.delete(templateId);
+      } else {
+        next.add(templateId);
+      }
+      return next;
+    }
+  );
+
+  const [, startTransition] = useTransition();
   const [newTaskValue, setNewTaskValue] = useState('');
   const [isAdding, startAddTransition] = useTransition();
 
   const handleComplete = (templateId: string) => {
-    const isCompleted = completedIds.has(templateId);
+    const isCompleted = optimisticIds.has(templateId);
     startTransition(() => {
+      // Önce optimistic güncelleme — anında
+      toggleOptimistic(templateId);
+      // Arkaplanda server action
       toggleTemplateTask(templateId, isCompleted);
     });
   };
@@ -66,7 +83,7 @@ export function TaskGroup({
                 key={t.id}
                 id={t.id}
                 title={t.title}
-                isDone={completedIds.has(t.id)}
+                isDone={optimisticIds.has(t.id)}
                 category={t.category}
                 systemType={t.system_type}
                 points={t.points}
@@ -131,7 +148,7 @@ export function TaskGroup({
                 key={t.id}
                 id={t.id}
                 title={t.title}
-                isDone={completedIds.has(t.id)}
+                isDone={optimisticIds.has(t.id)}
                 category={t.category}
                 systemType={t.system_type}
                 points={t.points}

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useTransition } from 'react';
+import React, { useOptimistic, useTransition } from 'react';
 import { cn } from '@/utils/cn';
 import { toggleTemplateTask } from '@/app/actions/taskActions';
 import type { TaskTemplate } from '@/types/tasks';
@@ -11,17 +11,16 @@ interface XPostSectionProps {
 }
 
 export function XPostSection({ task, isDone }: XPostSectionProps) {
-  const [isFlying, setIsFlying] = useState(false);
-  const [isPending, startTransition] = useTransition();
+  const [optimisticDone, setOptimisticDone] = useOptimistic(isDone);
+  const [, startTransition] = useTransition();
 
   if (!task) return null;
 
   const handleComplete = () => {
-    if (isDone) return;
-    setIsFlying(true);
-    setTimeout(() => setIsFlying(false), 800);
+    if (optimisticDone) return;
     startTransition(() => {
-      toggleTemplateTask(task.id, isDone);
+      setOptimisticDone(true);
+      toggleTemplateTask(task.id, false);
     });
   };
 
@@ -40,14 +39,13 @@ export function XPostSection({ task, isDone }: XPostSectionProps) {
         onClick={handleComplete}
         className={cn(
           "flex items-center gap-4 px-5 py-4 rounded-ftg-card border transition-all relative group overflow-hidden",
-          isDone 
+          optimisticDone 
             ? "bg-[#8b92ff]/5 border-[#8b92ff]/20 grayscale-[0.5] opacity-60" 
-            : "bg-[#0a0a0a] border-[#8b92ff]/30 hover:border-[#8b92ff] hover:bg-[#8b92ff]/5 cursor-pointer shadow-[0_0_20px_rgba(139,146,255,0.05)]",
-          isPending && "opacity-70"
+            : "bg-[#0a0a0a] border-[#8b92ff]/30 hover:border-[#8b92ff] hover:bg-[#8b92ff]/5 cursor-pointer shadow-[0_0_20px_rgba(139,146,255,0.05)]"
         )}
       >
         {/* Background Accent */}
-        {!isDone && (
+        {!optimisticDone && (
           <div className="absolute inset-y-0 left-0 w-1 bg-[#8b92ff] shadow-[0_0_15px_rgba(139,146,255,0.5)]" />
         )}
 
@@ -55,7 +53,7 @@ export function XPostSection({ task, isDone }: XPostSectionProps) {
         <div
           className={cn(
             "w-1.5 h-1.5 rounded-full shrink-0 transition-all duration-500",
-            isDone ? "bg-[#8b92ff]/40" : "bg-[#8b92ff] animate-pulse shadow-[0_0_8px_rgba(139,146,255,0.8)]"
+            optimisticDone ? "bg-[#8b92ff]/40" : "bg-[#8b92ff] animate-pulse shadow-[0_0_8px_rgba(139,146,255,0.8)]"
           )}
         />
 
@@ -63,7 +61,7 @@ export function XPostSection({ task, isDone }: XPostSectionProps) {
         <span
           className={cn(
             "flex-1 font-mono text-sm transition-all tracking-tight",
-            isDone ? "text-ftg-text-mute line-through" : "text-ftg-text-bright"
+            optimisticDone ? "text-ftg-text-mute line-through" : "text-ftg-text-bright"
           )}
         >
           {task.title}
@@ -73,7 +71,7 @@ export function XPostSection({ task, isDone }: XPostSectionProps) {
         <div className="flex items-center gap-3">
           <span className={cn(
             "font-mono text-xs font-bold transition-colors", 
-            isDone ? "text-[#8b92ff]/40" : "text-[#8b92ff]"
+            optimisticDone ? "text-[#8b92ff]/40" : "text-[#8b92ff]"
           )}>
             +{task.points}p
           </span>
@@ -82,25 +80,18 @@ export function XPostSection({ task, isDone }: XPostSectionProps) {
           <div
             className={cn(
               "w-5 h-5 rounded-sm border shrink-0 flex items-center justify-center transition-all duration-300",
-              isDone 
+              optimisticDone 
                 ? "bg-[#8b92ff] border-[#8b92ff] text-black" 
                 : "border-[#8b92ff]/40 bg-transparent group-hover:border-[#8b92ff]"
             )}
           >
-            {isDone && (
+            {optimisticDone && (
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>
             )}
           </div>
         </div>
-
-        {/* XP Animation */}
-        {isFlying && (
-          <span className="absolute right-16 top-1/2 -translate-y-1/2 font-mono text-sm text-[#8b92ff] font-bold pointer-events-none animate-fly-up">
-            +{task.points}p
-          </span>
-        )}
       </div>
     </div>
   );
