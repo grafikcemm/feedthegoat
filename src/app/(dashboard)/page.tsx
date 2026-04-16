@@ -4,7 +4,6 @@ import { format, subDays } from "date-fns";
 
 import { DailyShell } from "@/components/daily/DailyShell";
 import { TopBar } from "@/components/daily/TopBar";
-import { TabNav } from "@/components/daily/TabNav";
 import { HeroZone } from "@/components/daily/HeroZone";
 import { TaskGroup } from "@/components/daily/TaskGroup";
 import { EnergyCheckIn } from "@/components/daily/EnergyCheckIn";
@@ -98,9 +97,6 @@ export default async function Page({
     return (
       <div className="min-h-screen bg-[#000000]">
         <div className="pt-8">
-          <nav className="mb-6 px-8 max-w-5xl mx-auto">
-            <TabNav />
-          </nav>
           <SportShell>
             {/* Left Column: Workout Plan */}
             <WorkoutPlanColumn
@@ -171,9 +167,6 @@ export default async function Page({
     return (
       <div className="min-h-screen bg-[#000000]">
         <div className="pt-8">
-          <nav className="mb-6 px-8 max-w-5xl mx-auto">
-            <TabNav />
-          </nav>
           <WeeklyShell>
             {/* Zone 1: Top Metric Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -238,9 +231,6 @@ export default async function Page({
     return (
       <div className="min-h-screen bg-[#000000]">
         <div className="pt-8">
-          <nav className="mb-6 px-8 max-w-5xl mx-auto">
-            <TabNav />
-          </nav>
           <CareerShell>
             {/* Header */}
             <div className="text-center mb-6">
@@ -276,8 +266,8 @@ export default async function Page({
       { data: subscriptions = [] }
     ] = await Promise.all([
       supabase.from("finance_state").select("net_balance, status_label, status_description, severity").eq("id", 1).single(),
-      supabase.from("finance_transactions").select("id, amount, type, description, category, created_at, month").eq("month", currentMonth).order("created_at", { ascending: false }),
-      supabase.from("finance_subscriptions").select("id, name, amount, is_active, billing_day").eq("is_active", true).order("amount", { ascending: false })
+      supabase.from("finance_transactions").select("id, amount, type, title, created_at, month").eq("month", currentMonth).order("created_at", { ascending: false }),
+      supabase.from("finance_subscriptions").select("id, title, amount, currency, is_active, notes, created_at").eq("is_active", true).order("amount", { ascending: false })
     ]);
 
     const incomeItems = (transactions || []).filter((t) => t.type === "income");
@@ -302,9 +292,6 @@ export default async function Page({
     return (
       <div className="min-h-screen bg-[#000000]">
         <div className="pt-8">
-          <nav className="mb-6 px-8 max-w-5xl mx-auto">
-            <TabNav />
-          </nav>
           <FinanceShell
             summary={summary}
             status={{
