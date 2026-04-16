@@ -1,97 +1,73 @@
-'use client';
+"use client";
 
-import React, { useOptimistic, useTransition } from 'react';
-import { cn } from '@/utils/cn';
-import { toggleTemplateTask } from '@/app/actions/taskActions';
-import type { TaskTemplate } from '@/types/tasks';
+import React, { useState } from "react";
+import { cn } from "@/utils/cn";
+import { completeTask } from "@/app/actions/completeTask";
 
 interface XPostSectionProps {
-  task: TaskTemplate | undefined;
+  task?: any;
   isDone: boolean;
 }
 
 export function XPostSection({ task, isDone }: XPostSectionProps) {
-  const [optimisticDone, setOptimisticDone] = useOptimistic(isDone);
-  const [, startTransition] = useTransition();
+  const [isDoneOptimistic, setIsDoneOptimistic] = useState(isDone);
 
-  if (!task) return null;
-
-  const handleComplete = () => {
-    if (optimisticDone) return;
-    startTransition(() => {
-      setOptimisticDone(true);
-      toggleTemplateTask(task.id, false);
-    });
+  const handleShare = async () => {
+    if (!task) return;
+    
+    // In a real app, this would open X share dialog
+    // For now, we just complete the task
+    
+    if (!isDoneOptimistic) {
+        setIsDoneOptimistic(true);
+        import('@/lib/confetti').then(m => m.fireTaskConfetti());
+        try {
+            await completeTask(task.id);
+        } catch (err) {
+            console.error("Failed to complete X task:", err);
+            setIsDoneOptimistic(false);
+        }
+    }
   };
 
   return (
-    <div className="mb-10 animate-in fade-in slide-in-from-top-4 duration-700">
-      <div className="flex items-center justify-between mb-3 px-1">
-        <h3 className="font-mono text-[10px] tracking-[0.2em] text-[#8b92ff] uppercase font-bold">
-          X PAYLAŞIMI
-        </h3>
-        <span className="font-mono text-[9px] text-[#8b92ff]/60 uppercase tracking-widest">
+    <div className={cn(
+        "border rounded-2xl px-6 py-5 transition-all group relative overflow-hidden",
+        isDoneOptimistic 
+            ? "border-[#2a2a2a] bg-[#141414] opacity-70" 
+            : "bg-[#141414] border-[#6366f1]/40 hover:border-[#6366f1]/60 shadow-[0_4px_20px_rgba(99,102,241,0.15)]"
+    )}>
+      <div className="flex items-center justify-between mb-4 border-b border-[#2a2a2a]/50 pb-2">
+        <span className="text-[#6366f1] text-[10px] tracking-[0.2em] font-bold uppercase">
+          X GELİŞİM RAPORU
+        </span>
+        <span className="text-[#666666] text-[9px] border border-[#2a2a2a] rounded px-2 py-0.5 uppercase tracking-wider">
           AKTİF SİSTEM
         </span>
       </div>
       
-      <div
-        onClick={handleComplete}
-        className={cn(
-          "flex items-center gap-4 px-5 py-4 rounded-ftg-card border transition-all relative group overflow-hidden",
-          optimisticDone 
-            ? "bg-[#8b92ff]/5 border-[#8b92ff]/20 grayscale-[0.5] opacity-60" 
-            : "bg-[#0a0a0a] border-[#8b92ff]/30 hover:border-[#8b92ff] hover:bg-[#8b92ff]/5 cursor-pointer shadow-[0_0_20px_rgba(139,146,255,0.05)]"
-        )}
-      >
-        {/* Background Accent */}
-        {!optimisticDone && (
-          <div className="absolute inset-y-0 left-0 w-1 bg-[#8b92ff] shadow-[0_0_15px_rgba(139,146,255,0.5)]" />
-        )}
-
-        {/* Icon */}
-        <div
+      <div className="flex flex-col gap-4">
+        <div className="bg-[#0a0a0a] rounded-xl p-4 border border-[#2a2a2a]">
+          <p className="text-[#ababab] text-sm leading-relaxed italic">
+            "Sistem, disiplin ve istikrar üzerine kuruludur. Bugünün küçük bir başarısı, yarının büyük bir karakter zaferidir."
+          </p>
+        </div>
+        
+        <button 
+          onClick={handleShare}
+          disabled={isDoneOptimistic}
           className={cn(
-            "w-1.5 h-1.5 rounded-full shrink-0 transition-all duration-500",
-            optimisticDone ? "bg-[#8b92ff]/40" : "bg-[#8b92ff] animate-pulse shadow-[0_0_8px_rgba(139,146,255,0.8)]"
-          )}
-        />
-
-        {/* Title */}
-        <span
-          className={cn(
-            "flex-1 font-mono text-sm transition-all tracking-tight",
-            optimisticDone ? "text-ftg-text-mute line-through" : "text-ftg-text-bright"
+            "w-full py-3.5 rounded-xl text-xs font-bold tracking-wider transition-all flex items-center justify-center gap-2",
+            isDoneOptimistic
+                ? "bg-[#1c1c1c] text-[#666666] cursor-default"
+                : "bg-[#6366f1] text-white hover:bg-[#4f46e5] hover:scale-[1.01] active:scale-[0.98] shadow-sm shadow-[#6366f1]/30"
           )}
         >
-          {task.title}
-        </span>
-
-        {/* Points */}
-        <div className="flex items-center gap-3">
-          <span className={cn(
-            "font-mono text-xs font-bold transition-colors", 
-            optimisticDone ? "text-[#8b92ff]/40" : "text-[#8b92ff]"
-          )}>
-            +{task.points}p
-          </span>
-
-          {/* Checkbox */}
-          <div
-            className={cn(
-              "w-5 h-5 rounded-sm border shrink-0 flex items-center justify-center transition-all duration-300",
-              optimisticDone 
-                ? "bg-[#8b92ff] border-[#8b92ff] text-black" 
-                : "border-[#8b92ff]/40 bg-transparent group-hover:border-[#8b92ff]"
-            )}
-          >
-            {optimisticDone && (
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-            )}
-          </div>
-        </div>
+          <span>{isDoneOptimistic ? "PAYLAŞILDI" : "GÜNÜ PAYLAŞ"}</span>
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+          </svg>
+        </button>
       </div>
     </div>
   );

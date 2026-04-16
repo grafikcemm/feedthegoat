@@ -9,6 +9,8 @@ export interface HeroZoneProps {
   remainingTaskCount: number;
   energyLevel?: 'low' | 'medium' | 'high';
   energyCap?: number;
+  currentStreak?: number;
+  weeklyConsistency?: number;
 }
 
 export function HeroZone({ 
@@ -16,25 +18,33 @@ export function HeroZone({
   mood, 
   remainingTaskCount,
   energyLevel = 'high',
-  energyCap = 70
+  energyCap = 70,
+  currentStreak = 0,
+  weeklyConsistency = 0,
 }: HeroZoneProps) {
-  const moodDesc = energyLevel === 'low' 
-    ? "Bugün dinlenme günü. Az ama öz." 
-    : energyLevel === 'high' 
-      ? "Bugün tam güç. Sistemi çalıştır." 
-      : moodLineFor(mood, total, remainingTaskCount);
+  // Match 'low', 'medium', 'high' or 'LOW', 'MID', 'HIGH'
+  const isLow = energyLevel?.toLowerCase() === 'low';
+  const isHigh = energyLevel?.toLowerCase() === 'high';
+  const isMid = energyLevel?.toLowerCase() === 'mid' || energyLevel?.toLowerCase() === 'medium';
 
-  const isLow = energyLevel === 'low';
-  const isHigh = energyLevel === 'high';
+  const moodDesc = isLow 
+    ? "Bugün dinlenme modu. Az ama öz." 
+    : isMid
+      ? "Bugün tam güç. Sistemi çalıştır." 
+      : isHigh
+        ? "Yüksek enerji. Maksimum çıktı."
+        : moodLineFor(mood, total, remainingTaskCount);
+
+
 
   return (
     <div className={cn(
-      "grid grid-cols-[280px_1fr] gap-12 items-center px-10 py-12 border-b border-ftg-border-subtle transition-colors duration-500",
-      isHigh && "bg-ftg-success/5"
+      "grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-12 items-center p-5 bg-[#141414] border border-[#2a2a2a] rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.4)] transition-all duration-500",
+      isHigh && "border-[#6366f1]/50 shadow-[0_4px_20px_rgba(99,102,241,0.2)]"
     )}>
       {/* Column 1 — Pixel goat stage */}
       <div className={cn(
-        "bg-ftg-mountain-1 rounded-ftg-card border border-ftg-border-subtle p-8 flex items-center justify-center transition-all shadow-inner",
+        "bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl p-10 flex items-center justify-center transition-all",
         isLow && "grayscale opacity-50"
       )}>
         <PixelGoat mood={mood} />
@@ -42,24 +52,49 @@ export function HeroZone({
 
       {/* Column 2 — Score block */}
       <div className="flex flex-col justify-center">
-        <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-ftg-text-mute mb-3">
-          BUGÜNKÜ SİSTEM SKORU
-        </span>
-        <div className="flex items-baseline">
+        <div className="flex items-center gap-3 mb-4">
+           <span className="text-[11px] font-semibold tracking-widest uppercase text-[#555555]">
+            GÜNLÜK SİSTEM SKORU
+          </span>
+          <div className="flex-1 h-px bg-[#2a2a2a]" />
+        </div>
+        
+        <div className="flex items-baseline gap-1 mt-2">
           {/* Keyed by total so it remounts and flashes on change */}
           <span key={total} className={cn(
-            "font-display text-[140px] leading-none animate-score-flash tracking-tighter",
-            isLow ? "text-zinc-600" : "text-ftg-amber"
+            "text-7xl font-black leading-none animate-score-flash",
+            isLow ? "text-[#666666]" : "text-white"
           )}>
             {total}
           </span>
-          <span className="font-display text-[50px] text-ftg-text-mute ml-3 opacity-50">
+          <span className="text-3xl font-thin text-[#555555] ml-2">
             /{energyCap}
           </span>
         </div>
-        <p className="font-mono text-base italic text-ftg-text-dim mt-4 border-l-2 border-ftg-amber/30 pl-4">
+
+        <p className="text-sm text-[#666666] italic mt-2 mt-8 border-l-4 border-[#6366f1] pl-6 font-medium leading-relaxed max-w-xl">
           {moodDesc}
         </p>
+
+        {/* Streak + Consistency */}
+        <div className="flex flex-wrap items-center gap-6 mt-10">
+          {currentStreak > 0 && (
+            <div className="flex items-center gap-3 bg-[#141414] px-5 py-2.5 rounded-full border border-[#6366f1]/40 shadow-sm transition-transform hover:scale-105">
+              <span className="text-[#6366f1] text-xl">🔥</span>
+              <span className="text-[#6366f1] text-xs font-semibold uppercase">
+                {currentStreak} GÜN SERİ
+              </span>
+            </div>
+          )}
+          {weeklyConsistency > 0 && (
+            <div className="flex items-center gap-3 bg-[#0a0a0a] px-5 py-2.5 rounded-full border border-[#2a2a2a]">
+               <span className="w-2 h-2 rounded-full bg-[#30d158]" />
+               <span className="text-[#ababab] text-xs font-semibold uppercase">
+                HAFTALIK %{weeklyConsistency} TUTARLILIK
+              </span>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -2,12 +2,13 @@
 
 import React, { useState, useTransition } from "react";
 import { addTransaction } from "@/app/actions/addTransaction";
+import { cn } from "@/utils/cn";
 
 export function AddTransactionForm() {
   const [isPending, startTransition] = useTransition();
-  const [type, setType] = useState<"income" | "expense">("expense");
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
+  const [type, setType] = useState<"income" | "expense">("expense");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,9 +17,9 @@ export function AddTransactionForm() {
     startTransition(async () => {
       try {
         await addTransaction({
-          type,
           title,
           amount: parseFloat(amount),
+          type,
         });
         setTitle("");
         setAmount("");
@@ -31,44 +32,71 @@ export function AddTransactionForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex items-center gap-3 mb-8 animate-in fade-in slide-in-from-top-2 duration-500"
+      className="bg-[#141414] border border-[#2a2a2a] rounded-2xl p-6 shadow-sm"
     >
-      <select
-        value={type}
-        onChange={(e) => setType(e.target.value as "income" | "expense")}
-        disabled={isPending}
-        className="bg-ftg-surface border border-ftg-border-subtle rounded-ftg-card px-4 py-3 font-mono text-sm text-ftg-text outline-none focus:border-ftg-amber transition-colors appearance-none cursor-pointer"
-      >
-        <option value="income">Gelir (+)</option>
-        <option value="expense">Gider (-)</option>
-      </select>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+        <div className="md:col-span-1 flex flex-col gap-2">
+          <label className="text-[10px] font-bold text-[#666666] uppercase tracking-[0.2em] px-1">Tip</label>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => setType("expense")}
+              className={cn(
+                "flex-1 py-3.5 rounded-xl text-[10px] font-bold tracking-widest transition-all uppercase",
+                type === "expense"
+                  ? "bg-[#ff453a] text-[#ff453a] border border-[#ff453a]/30"
+                  : "bg-[#0a0a0a] border border-[#2a2a2a] text-[#666666] hover:text-[#ababab]"
+              )}
+            >
+              GİDER
+            </button>
+            <button
+              type="button"
+              onClick={() => setType("income")}
+              className={cn(
+                "flex-1 py-3.5 rounded-xl text-[10px] font-bold tracking-widest transition-all uppercase",
+                type === "income"
+                  ? "bg-[#30d158] text-[#30d158] border border-[#30d158]/30"
+                  : "bg-[#0a0a0a] border border-[#2a2a2a] text-[#666666] hover:text-[#ababab]"
+              )}
+            >
+              GELİR
+            </button>
+          </div>
+        </div>
 
-      <input
-        type="text"
-        placeholder="Açıklama"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        disabled={isPending}
-        className="flex-1 bg-ftg-surface border border-ftg-border-subtle rounded-ftg-card px-4 py-3 font-mono text-sm text-ftg-text outline-none focus:border-ftg-amber transition-colors placeholder:text-ftg-text-mute"
-      />
+        <div className="md:col-span-1 flex flex-col gap-2">
+          <label className="text-[10px] font-bold text-[#666666] uppercase tracking-[0.2em] px-1">İşlem Adı</label>
+          <input
+            type="text"
+            placeholder="Market, Kira, Side Hustle..."
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            disabled={isPending}
+            className="w-full bg-[#141414] border border-[#2a2a2a] rounded-xl px-4 py-3 text-xs text-[#ffffff] font-medium placeholder:text-[#666666] focus:outline-none focus:border-[#6366f1]/50 transition-all shadow-sm"
+          />
+        </div>
 
-      <input
-        type="number"
-        placeholder="Miktar (₺)"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-        disabled={isPending}
-        step="0.01"
-        className="w-32 bg-ftg-surface border border-ftg-border-subtle rounded-ftg-card px-4 py-3 font-mono text-sm text-ftg-text outline-none focus:border-ftg-amber transition-colors placeholder:text-ftg-text-mute [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-      />
+        <div className="md:col-span-1 flex flex-col gap-2">
+            <label className="text-[10px] font-bold text-[#666666] uppercase tracking-[0.2em] px-1">Miktar (₺)</label>
+            <input
+                type="number"
+                placeholder="0.00"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                disabled={isPending}
+                className="w-full bg-[#141414] border border-[#2a2a2a] rounded-xl px-4 py-3 text-xs text-[#ffffff] font-medium placeholder:text-[#666666] focus:outline-none focus:border-[#6366f1]/50 transition-all shadow-sm"
+            />
+        </div>
 
-      <button
-        type="submit"
-        disabled={isPending || !title || !amount}
-        className="border border-ftg-amber text-ftg-amber font-mono text-[11px] tracking-wider uppercase px-8 py-3 rounded-ftg-card hover:bg-ftg-amber-glow transition-colors disabled:opacity-50"
-      >
-        {isPending ? "EKLENİYOR..." : "EKLE"}
-      </button>
+        <button
+          type="submit"
+          disabled={isPending || !title || !amount}
+          className="bg-[#ababab] text-white text-[10px] tracking-[0.2em] uppercase font-bold py-4 rounded-xl hover:bg-[#ffffff] transition-all disabled:opacity-50 shadow-md active:scale-[0.98]"
+        >
+          {isPending ? "EKLENİYOR..." : "İŞLEMİ EKLE"}
+        </button>
+      </div>
     </form>
   );
 }

@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useState, useTransition } from "react";
 import dynamic from "next/dynamic";
 import { cn } from "@/utils/cn";
 import { EnglishSubtaskPanel } from "./EnglishSubtaskPanel";
 import { isEnglishActiveToday } from "@/lib/dayUtils";
+import { toggleTemplateTask } from "@/app/actions/taskActions";
 
 const VitaminModal = dynamic(() => import("./VitaminModal").then(mod => mod.VitaminModal), {
   ssr: false,
@@ -36,6 +39,7 @@ export function TaskCard({
   englishSubtasks = EMPTY_ARRAY, isTreadmillActive = true, vitaminPackages = EMPTY_ARRAY,
   completedSkincareIds = EMPTY_ARRAY
 }: TaskCardProps) {
+  const [isPending, startTransition] = useTransition();
   const [isFlying, setIsFlying] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [vitaminModalOpen, setVitaminModalOpen] = useState(false);
@@ -72,13 +76,11 @@ export function TaskCard({
 
   const isPassive = (isEnglish && !englishActive) || (isTreadmill && !treadmillActive);
 
-  // system_type varsa priority badge gösterilmez
   const showPriorityBadge = !isProduction && !systemType && priority;
 
   const handleClick = () => {
     if (isPassive) return;
 
-    // Special System Handlers
     if (isEnglish && !isDone) {
       setExpanded(!expanded);
       return;
@@ -100,12 +102,12 @@ export function TaskCard({
       return;
     }
 
-    // Normal or Production Handlers
     if (!isDone && !isProduction) {
       import('@/lib/confetti').then(m => m.fireTaskConfetti());
       setIsFlying(true);
       setTimeout(() => setIsFlying(false), 800);
     }
+    
     onComplete(id);
   };
 
@@ -128,83 +130,79 @@ export function TaskCard({
       <div
         onClick={handleClick}
         className={cn(
-          "flex items-center gap-4 px-5 py-4 rounded-ftg-card border transition-all relative group",
-          isPassive ? "opacity-40 grayscale cursor-not-allowed bg-transparent border-ftg-border-subtle" : 
-          isBonus ? "border-dashed border-ftg-border-subtle bg-transparent" :
-          "border-ftg-border-subtle bg-ftg-surface hover:border-ftg-amber/40 hover:bg-ftg-elevated cursor-pointer"
+          "flex items-center gap-4 px-4 py-3.5 rounded-xl border transition-colors relative group",
+          isPassive ? "opacity-40 grayscale cursor-not-allowed bg-transparent border-[#2a2a2a]" : 
+          isBonus ? "border-dashed border-[#2a2a2a] bg-transparent hover:bg-[#1a1a1a]" :
+          "bg-[#141414] border-[#2a2a2a] hover:border-[#333333] cursor-pointer"
         )}
       >
-        {/* Icon */}
+        {/* Icon (Status Dot) */}
         <div
           className={cn(
-            "w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-colors",
-            isDone ? "bg-ftg-success/20 text-ftg-success" : isPassive ? "bg-ftg-border-strong text-ftg-text-mute" : "bg-ftg-amber-glow"
+            "w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-all text-white",
+            isDone ? "bg-[#30d158]" : isPassive ? "border border-[#2a2a2a] bg-transparent" : "border-2 border-[#333333] group-hover:border-[#6366f1]"
           )}
         >
           {isDone && (
-            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
+             <svg className="w-1.5 h-1.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={6}>
+               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+             </svg>
           )}
         </div>
 
         {/* Title */}
         <span
           className={cn(
-            "flex-1 font-mono text-base transition-all",
-            isDone ? "text-ftg-text-mute line-through" : isPassive ? "text-ftg-text-mute" : isBonus ? "text-ftg-text-dim" : "text-ftg-text"
+            "flex-1 text-[15px] font-medium transition-all w-full truncate",
+            isDone ? "text-[#444444] line-through" : isPassive ? "text-[#666666]" : "text-white"
           )}
         >
           {title}
           {isPassive && (
-            <span className="ml-3 text-[9px] font-bold tracking-widest text-ftg-text-mute border border-ftg-text-mute/30 px-1.5 py-0.5 rounded">
+            <span className="ml-3 text-[10px] bg-[#141414] text-[#6366f1] px-2 py-0.5 rounded-full font-medium">
               {getPassiveLabel()}
             </span>
           )}
         </span>
 
-        {/* Priority Badge — system_type olan task'larda gösterilmez */}
+        {/* Priority Badge */}
         {showPriorityBadge && (
           <span
             className={cn(
-              "px-2 py-1 rounded text-[10px] tracking-wider font-mono",
-              priority === "P1" && "bg-ftg-danger/15 text-ftg-danger",
-              priority === "P2" && "bg-ftg-amber/15 text-ftg-amber",
-              priority === "P3" && "bg-ftg-text-mute/15 text-ftg-text-mute"
+              "px-2 py-0.5 rounded text-[10px] tracking-wider font-bold",
+              priority === "P1" && "bg-[#ff453a] text-[#ff453a]",
+              priority === "P2" && "bg-[#451a03] text-[#ffd60a]",
+              priority === "P3" && "bg-[#1c1c1c] text-[#ababab]"
             )}
           >
             {priority}
           </span>
         )}
 
-        {/* Points (Hide for production) */}
+        {/* Points */}
         {!isProduction && (
-          <span className={cn("font-mono text-sm transition-colors", isDone ? "text-ftg-success" : "text-ftg-amber")}>
-            +{points}p
+          <span className={cn("text-xs font-bold transition-colors", isDone ? "text-[#30d158]" : "text-[#6366f1]")}>
+            +{points}P
           </span>
         )}
 
-        {/* Floating XP Animation — dopamine */}
+        {/* XP Animation */}
         {isFlying && !isProduction && (
-          <span className="absolute right-16 top-1/2 -translate-y-1/2 font-mono text-sm text-ftg-amber-bright pointer-events-none animate-fly-up">
-            +{points}p
+          <span className="absolute right-16 top-1/2 -translate-y-1/2 text-xs font-bold text-[#6366f1] pointer-events-none animate-fly-up">
+            +{points}P
           </span>
         )}
 
-        {/* Checkbox */}
         <div
           className={cn(
-            "w-5 h-5 rounded-sm border shrink-0 flex items-center justify-center transition-all duration-300",
-            isDone ? "bg-ftg-success border-ftg-success text-white" : "border-ftg-border-subtle bg-transparent group-hover:border-ftg-amber/50",
-            (isEnglish || isVitamin || isSkincare) && !isDone && !isPassive && "border-ftg-amber/40 bg-ftg-amber/5"
+            "shrink-0 flex items-center justify-center transition-all duration-300",
+            (isEnglish || isVitamin || isSkincare) && !isPassive && !isDone
+               ? "w-7 h-7 rounded-lg bg-[#222222] border border-[#333333] text-[#666666] hover:border-[#6366f1] hover:text-[#6366f1]"
+               : "hidden"
           )}
         >
-          {isDone ? (
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-          ) : (isEnglish || isVitamin || isSkincare) && !isPassive && (
-            <span className="text-ftg-amber font-mono text-[10px] select-none">...</span>
+          {(isEnglish || isVitamin || isSkincare) && !isPassive && !isDone && (
+            <span className="leading-none pb-1">...</span>
           )}
         </div>
       </div>

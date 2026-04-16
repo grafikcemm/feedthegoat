@@ -18,7 +18,7 @@ import RightPanel from "@/components/RightPanel";
 
 import { createServerSupabase } from "@/lib/supabaseServer";
 import { computeFinanceSummary } from "@/lib/financeCalc";
-import { getCurrentISOWeekKey, getCurrentWeekRange, formatDateForDB, DAY_LABELS_TR } from '@/lib/weekUtils';
+import { getCurrentISOWeekKey, getCurrentWeekRange, formatDateForDB } from '@/lib/weekUtils';
 
 // New Weekly Components
 import { WeeklyShell } from "@/components/weekly/WeeklyShell";
@@ -33,30 +33,32 @@ import { WorkoutPlanColumn } from "@/components/sport/WorkoutPlanColumn";
 import { MealPlanSection } from "@/components/sport/MealPlanSection";
 
 // New Career Components
-import { CAREER_PHASES, getPhaseCompletionPct, computeCurrentPhase } from '@/lib/careerConfig';
 import { CareerShell } from "@/components/career/CareerShell";
-import { KariyerOmurgasiCard } from "@/components/career/KariyerOmurgasiCard";
-import { FocusStrip } from "@/components/career/FocusStrip";
-import { ApiMetricsRow } from "@/components/career/ApiMetricsRow";
-import { FilterSearchRow } from "@/components/career/FilterSearchRow";
-import { PhaseTimeline } from "@/components/career/PhaseTimeline";
-import { ActivePhaseDetail } from "@/components/career/ActivePhaseDetail";
-import { OtherPhasesAccordion } from "@/components/career/OtherPhasesAccordion";
+import { ActivePhaseCard } from "@/components/career/ActivePhaseCard";
+import { PhaseCollapse } from "@/components/career/PhaseCollapse";
+import { PhaseProgressBar } from "@/components/career/PhaseProgressBar";
 
 import { 
   getTodayDayKey, 
   getEnglishGroupForToday 
 } from '@/lib/dayUtils';
 import { ensureTodayQuote } from "@/app/actions/quoteActions";
+import { ensureWeekTEDRecommendations } from "@/app/actions/tedActions";
+import { getWeekStart } from "@/lib/dates";
 import { DuaPanel } from "@/components/daily/DuaPanel";
 import { EndDayButton } from "@/components/daily/EndDayButton";
+import { TEDCard } from "@/components/daily/TEDCard";
+import { EveningAlert } from "@/components/daily/EveningAlert";
 
 export default async function Page({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  await ensureTodayQuote();
+  await Promise.all([
+    ensureTodayQuote(),
+    ensureWeekTEDRecommendations(),
+  ]);
   const resolvedParams = await searchParams;
   const tab = resolvedParams.tab || "GUNLUK";
   const supabase = createServerSupabase();
@@ -94,7 +96,7 @@ export default async function Page({
     );
 
     return (
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-[#000000]">
         <div className="pt-8">
           <nav className="mb-6 px-8 max-w-5xl mx-auto">
             <TabNav />
@@ -119,55 +121,47 @@ export default async function Page({
 
   if (tab === "HAFTALIK") {
     const { start, end, days: weekDays } = getCurrentWeekRange();
-    const isoWeek = getCurrentISOWeekKey();
     const startStr = formatDateForDB(start);
     const endStr = formatDateForDB(end);
+    const isoWeek = getCurrentISOWeekKey();
 
     // Parallelize all HAFTALIK data fetching
     const [
       { data: scores },
       { data: gains },
       { data: completions },
-      { data: rituals }
+      { data: weeklyGoatState },
     ] = await Promise.all([
-      supabase.from("daily_scores").select("date, total_score, finalized").gte("date", startStr).lte("date", endStr),
-      supabase.from("weekly_minimum_gains").select("id, title, sort_order, is_active").eq("is_active", true).order("sort_order"),
+      supabase.from("daily_scores").select("date, total_score, completion_rate, finalized").gte("date", startStr).lte("date", endStr),
+      supabase.from("weekly_minimum_gains").select("id, title, due_day, sort_order, is_active").eq("is_active", true).order("sort_order"),
       supabase.from("weekly_gain_completions").select("gain_id").eq("iso_week", isoWeek),
-      supabase.from("charge_day_rituals").select("id, title, description, sort_order").order("sort_order")
+      supabase.from("goat_state").select("current_streak, longest_streak, weekly_consistency").eq("id", 1).single(),
     ]);
 
-    // Build a date -> score map
-    const scoresByDate: Record<string, number> = {};
+    // Build a date -> full score data map (for heatmap colors)
+    const scoresByDate: Record<string, { date: string; total_score: number; completion_rate: number }> = {};
     scores?.forEach((s) => {
-      scoresByDate[s.date] = s.total_score;
+      scoresByDate[s.date] = {
+        date: s.date,
+        total_score: s.total_score ?? 0,
+        completion_rate: s.completion_rate ?? 0,
+      };
     });
 
     // Compute metrics
     const completedDays =
-      scores?.filter((s) => s.finalized && s.total_score >= 50).length ?? 0;
+      scores?.filter((s) => s.finalized && (s.completion_rate ?? 0) >= 70).length ?? 0;
     const weeklyTotal =
-      scores?.reduce((sum, s) => sum + (s.finalized ? s.total_score : 0), 0) ?? 0;
-
-    let bestDayLabel = "—";
-    let bestDayScore = 0;
-    if (scores && scores.length > 0) {
-      const best = scores.reduce((max, s) =>
-        s.total_score > max.total_score ? s : max
-      );
-      if (best.total_score > 0) {
-        const dayIndex = weekDays.findIndex((d) => formatDateForDB(d) === best.date);
-        if (dayIndex >= 0) {
-          bestDayLabel = DAY_LABELS_TR[dayIndex];
-          bestDayScore = best.total_score;
-        }
-      }
-    }
+      scores?.reduce((sum, s) => sum + (s.finalized ? (s.total_score ?? 0) : 0), 0) ?? 0;
+    const weeklyConsistency = weeklyGoatState?.weekly_consistency ?? 0;
 
     const completedGainIds = new Set(completions?.map((c) => c.gain_id) ?? []);
+    const totalGains = gains?.length ?? 0;
     const gainsWithStatus =
       gains?.map((g) => ({
         id: g.id,
         title: g.title,
+        due_day: g.due_day ?? undefined,
         isCompleted: completedGainIds.has(g.id),
       })) ?? [];
     const gainsCompleted = completedGainIds.size;
@@ -175,14 +169,14 @@ export default async function Page({
     const isTodayCharge = new Date().getDay() === 0; // 0 Sunday
 
     return (
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-[#000000]">
         <div className="pt-8">
           <nav className="mb-6 px-8 max-w-5xl mx-auto">
             <TabNav />
           </nav>
           <WeeklyShell>
             {/* Zone 1: Top Metric Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <WeeklyMetricCard
                 label="TAMAMLANAN GÜN"
                 value={completedDays}
@@ -193,14 +187,8 @@ export default async function Page({
                 value={weeklyTotal}
               />
               <WeeklyMetricCard
-                label="MİNİMUM KAZANIM"
-                value={gainsCompleted}
-                total={5}
-              />
-              <WeeklyMetricCard
-                label="EN İYİ GÜN"
-                value={bestDayLabel}
-                subValue={bestDayLabel !== "—" ? `${bestDayScore} puan` : ""}
+                label="TUTARLILIK"
+                value={`%${weeklyConsistency}`}
               />
             </div>
 
@@ -212,9 +200,9 @@ export default async function Page({
               <MinimumGainsCard
                 gains={gainsWithStatus}
                 completedCount={gainsCompleted}
+                totalCount={totalGains}
               />
               <ChargeDayCard
-                rituals={rituals || []}
                 isTodayCharge={isTodayCharge}
               />
             </div>
@@ -226,77 +214,52 @@ export default async function Page({
 
   if (tab === "KARIYER") {
 
-    // Parallelize all KARIYER data fetching
+    // Parallelize all KARIYER data fetching — new DB-driven architecture
     const [
-      { data: backbone },
-      { data: completions },
-      { data: state }
+      { data: phases },
+      { data: skills },
+      { data: notes },
     ] = await Promise.all([
-      supabase.from("career_backbone").select("id, title, subtitle, su_an_odaklanilacak, simdilik_dokunma, ana_yon, ana_gelir_motoru, yardimci_motor, fiziksel_sigorta, karar_filtresi").eq("id", 1).single(),
-      supabase.from("career_task_completions").select("task_key"),
-      supabase.from("career_state").select("id, override_active, current_phase").eq("id", 1).single()
+      supabase.from('career_phases').select('*').order('sort_order'),
+      supabase.from('career_skills').select('*').order('sort_order'),
+      supabase.from('career_notes').select('*').order('created_at', { ascending: false }),
     ]);
 
-    const completedKeys = new Set(completions?.map((c) => c.task_key) ?? []);
+    // Fazlara skill ve notları bağla
+    const phasesWithData = phases?.map(phase => ({
+      ...phase,
+      skills: skills?.filter(s => s.phase_id === phase.id) ?? [],
+      notes: notes?.filter(n => n.phase_id === phase.id) ?? [],
+    })) ?? [];
 
-    // 4. Determine current phase
-    const currentPhaseNumber = state?.override_active
-      ? state.current_phase
-      : computeCurrentPhase(completedKeys);
-
-    const activePhase =
-      CAREER_PHASES.find((p) => p.number === currentPhaseNumber) ||
-      CAREER_PHASES[0];
-    const otherPhases = CAREER_PHASES.filter(
-      (p) => p.number !== currentPhaseNumber
-    );
-
-    // 5. Compute completion % for each phase (for the timeline dots)
-    const completionsByPhase: Record<number, number> = {};
-    CAREER_PHASES.forEach((p) => {
-      completionsByPhase[p.number] = getPhaseCompletionPct(p, completedKeys);
-    });
+    const activePhase = phasesWithData.find(p => p.is_active);
+    const otherPhases = phasesWithData.filter(p => !p.is_active);
 
     return (
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-[#000000]">
         <div className="pt-8">
           <nav className="mb-6 px-8 max-w-5xl mx-auto">
             <TabNav />
           </nav>
           <CareerShell>
-            {/* Zone 1: Backbone & Focus */}
-            <div className="flex flex-col gap-6">
-              {backbone && <KariyerOmurgasiCard backbone={backbone} />}
-              {backbone && (
-                <FocusStrip
-                  su_an_odaklanilacak={backbone.su_an_odaklanilacak}
-                  simdilik_dokunma={backbone.simdilik_dokunma}
-                />
-              )}
+            {/* Header */}
+            <div className="text-center mb-6">
+              <h1 className="text-[#ffffff] text-xl font-bold tracking-tight uppercase">
+                KARİYER YOL HARİTASI
+              </h1>
+              <p className="text-xs text-[#666666] mt-1">
+                B2B AaaS Builder & AI-Native Creative Orchestrator
+              </p>
             </div>
 
-            {/* Zone 2: Static Placeholders */}
-            <ApiMetricsRow />
-            <FilterSearchRow />
+            {/* Phase Progress Bar */}
+            <PhaseProgressBar phases={phasesWithData} />
 
-            {/* Zone 3: Roadmap Timeline */}
-            <PhaseTimeline
-              phases={CAREER_PHASES}
-              currentPhase={currentPhaseNumber}
-              completionsByPhase={completionsByPhase}
-            />
+            {/* Active Phase */}
+            {activePhase && <ActivePhaseCard phase={activePhase} />}
 
-            {/* Zone 4: Active Phase Detail */}
-            <ActivePhaseDetail
-              phase={activePhase}
-              completedKeys={completedKeys}
-            />
-
-            {/* Zone 5: Other Phases */}
-            <OtherPhasesAccordion
-              phases={otherPhases}
-              completedKeys={completedKeys}
-            />
+            {/* Other Phases */}
+            {otherPhases.length > 0 && <PhaseCollapse phases={otherPhases} />}
           </CareerShell>
         </div>
       </div>
@@ -337,7 +300,7 @@ export default async function Page({
     };
 
     return (
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-[#000000]">
         <div className="pt-8">
           <nav className="mb-6 px-8 max-w-5xl mx-auto">
             <TabNav />
@@ -406,7 +369,10 @@ export default async function Page({
     englishSubtasks = subtasks?.map((s: any) => ({ ...s, isCompleted: completedSet.has(s.id) })) ?? [];
   }
 
-  const isTreadmillActive = todayWorkout?.day_type !== 'strength';
+  // Treadmill is passive on Sundays (0) and Wednesdays (3)
+  const dayOfWeekCheck = new Date().getDay();
+  const isTreadmillPassive = dayOfWeekCheck === 0 || dayOfWeekCheck === 3;
+  const isTreadmillActive = !isTreadmillPassive;
 
   // Vitamin Packages
   const takenVitaminSet = new Set(vitaminCompletions?.map(c => c.package_id) ?? []);
@@ -417,6 +383,26 @@ export default async function Page({
 
   // Skincare Packages
   const completedSkincareIds = skincareCompletions?.map(c => c.package_id) ?? [];
+
+  // TED Recommendation — weekend only
+  const todayDate = new Date();
+  const dayOfWeek = todayDate.getDay(); // 0=Pazar, 6=Cumartesi
+  const isSaturday = dayOfWeek === 6;
+  const isSunday = dayOfWeek === 0;
+  const isWeekend = isSaturday || isSunday;
+
+  let tedRecommendation: { title: string; speaker: string; description: string; url: string | null; language: 'tr' | 'en'; day: 'saturday' | 'sunday' } | null = null;
+  if (isWeekend) {
+    const weekStartStr = getWeekStart(todayDate);
+    const tedDay = isSaturday ? 'saturday' : 'sunday';
+    const { data } = await supabase
+      .from('ted_recommendations')
+      .select('*')
+      .eq('week_start', weekStartStr)
+      .eq('day', tedDay)
+      .maybeSingle();
+    tedRecommendation = data;
+  }
 
   // --- Energy Selection: Cap + Tema ---
   const ENERGY_CONFIG = {
@@ -454,10 +440,11 @@ export default async function Page({
     .filter(t => t.category === 'health' && completedIds.has(t.id))
     .reduce((sum, t) => sum + (t.points ?? 0), 0);
 
-  // Production bar: active_tasks (is_done = true) / total active_tasks
+  // Production bar: active_tasks (is_done = true) / total active_tasks (only 'active' category)
   const activeTasks = rawActiveTasks ?? [];
-  const productionDone = activeTasks.filter(t => t.is_done).length;
-  const productionTotal = activeTasks.length;
+  const activeOnlyTasks = activeTasks.filter(t => t.category === 'active');
+  const productionDone = activeOnlyTasks.filter(t => t.is_done).length;
+  const productionTotal = activeOnlyTasks.length;
 
   const kritikTasks = allTemplates.filter(t => t.section === 'kritik');
   const xPostTask = allTemplates.find(t => t.section === 'x_post');
@@ -470,17 +457,34 @@ export default async function Page({
     current_stage: "OGLAK" as const,
     current_streak: 0,
     consistency_days: 0,
-    current_mood: "AC" as const
+    current_mood: "AC" as const,
+    weekly_consistency: 0,
+    last_finalized: null,
   };
 
+  // Streak & finalization data
+  const isAlreadyFinalized = safeGoatState.last_finalized === today;
+  const incompleteCriticalTasks = kritikTasks
+    .filter(t => !completedIds.has(t.id))
+    .map(t => t.title);
+
   return (
-    <div className="min-h-screen bg-ftg-bg font-mono">
+    <div className="min-h-screen font-sans">
       <DailyShell>
-        <TopBar state={safeGoatState} />
-        <TabNav />
+        {/* Karşılama Header */}
+        <div className="mb-0 px-2 lg:px-10">
+          <h1 className="text-2xl font-bold text-[#ffffff]">
+            Merhaba, <span className="text-[#6366f1]">Ali Cem!</span> 👋
+          </h1>
+          <p className="text-[#666666] text-sm mt-1">
+            {new Date().toLocaleDateString('tr-TR', {
+              weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+            })}
+          </p>
+        </div>
 
         {/* --- Top Section --- */}
-        <div className="px-10 pt-4">
+        <div className="px-2 lg:px-10 pt-4">
           <DuaPanel />
         </div>
         
@@ -490,6 +494,8 @@ export default async function Page({
           remainingTaskCount={remainingTasks}
           energyLevel={energyLevel}
           energyCap={energyCap}
+          currentStreak={safeGoatState.current_streak ?? 0}
+          weeklyConsistency={safeGoatState.weekly_consistency ?? 0}
         />
 
         {/* --- Grid Section: 2 Columns --- */}
@@ -497,6 +503,11 @@ export default async function Page({
           
           {/* Left Column (col-span-2): Tasks */}
           <div className="xl:col-span-2 flex flex-col gap-10">
+            <EveningAlert
+              incompleteCriticalTasks={incompleteCriticalTasks}
+              score={todayScore}
+              isFinalized={isAlreadyFinalized}
+            />
             <XPostSection
               task={xPostTask}
               isDone={xPostTask ? completedIds.has(xPostTask.id) : false}
@@ -513,8 +524,19 @@ export default async function Page({
               completedSkincareIds={completedSkincareIds}
             />
             
-            <div className="mt-4 border-t border-zinc-800 pt-8">
-              <EndDayButton />
+            {isWeekend && tedRecommendation && (
+              <TEDCard
+                title={tedRecommendation.title}
+                speaker={tedRecommendation.speaker}
+                description={tedRecommendation.description}
+                url={tedRecommendation.url}
+                language={tedRecommendation.language}
+                day={tedRecommendation.day}
+              />
+            )}
+
+            <div className="mt-4 border-t border-[#2a2a2a] pt-8">
+              <EndDayButton score={todayScore} isAlreadyFinalized={isAlreadyFinalized} />
             </div>
           </div>
 

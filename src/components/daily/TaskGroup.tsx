@@ -3,32 +3,31 @@
 import React, { useState, useTransition, useOptimistic } from "react";
 import { TaskCard } from "./TaskCard";
 import { ActiveTaskCard } from "./ActiveTaskCard";
+import { cn } from "@/utils/cn";
 import { toggleTemplateTask, addActiveTask } from "@/app/actions/taskActions";
-import type { TaskTemplate, ActiveTask } from "@/types/tasks";
 
 interface TaskGroupProps {
-  kritikTasks: TaskTemplate[];
-  sistemTasks: TaskTemplate[];
-  activeTasks: ActiveTask[];
+  kritikTasks: any[];
+  sistemTasks: any[];
+  activeTasks: any[];
   completedIds: Set<string>;
-  // System task specific props (passed through to cards)
-  englishSubtasks?: { id: string; title: string; isCompleted: boolean }[];
-  isTreadmillActive?: boolean;
-  vitaminPackages?: { id: string; title: string; isTaken: boolean; items: string[] }[];
-  completedSkincareIds?: string[];
+  englishSubtasks: any[];
+  isTreadmillActive: boolean;
+  vitaminPackages: any[];
+  completedSkincareIds: string[];
 }
 
-export function TaskGroup({ 
+export function TaskGroup({
   kritikTasks,
   sistemTasks,
   activeTasks,
   completedIds,
-  englishSubtasks = [],
-  isTreadmillActive = true,
-  vitaminPackages = [],
-  completedSkincareIds = [],
+  englishSubtasks,
+  isTreadmillActive,
+  vitaminPackages,
+  completedSkincareIds,
 }: TaskGroupProps) {
-  // useOptimistic: anında görsel güncelleme, sunucu yanıtını bekleme
+  // Optimistic UI update
   const [optimisticIds, toggleOptimistic] = useOptimistic(
     completedIds,
     (current: Set<string>, templateId: string) => {
@@ -43,41 +42,45 @@ export function TaskGroup({
   );
 
   const [, startTransition] = useTransition();
-  const [newTaskValue, setNewTaskValue] = useState('');
+  const [newTaskValue, setNewTaskValue] = useState("");
   const [isAdding, startAddTransition] = useTransition();
 
   const handleComplete = (templateId: string) => {
     const isCompleted = optimisticIds.has(templateId);
     startTransition(() => {
-      // Önce optimistic güncelleme — anında
       toggleOptimistic(templateId);
-      // Arkaplanda server action
       toggleTemplateTask(templateId, isCompleted);
     });
   };
 
-  const handleAddTask = () => {
+  const handleAddTask = (category: "active" | "waiting") => {
     if (!newTaskValue.trim()) return;
     const title = newTaskValue.trim();
-    setNewTaskValue('');
+    setNewTaskValue("");
     startAddTransition(() => {
-      addActiveTask(title);
+      addActiveTask(title, category);
     });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') handleAddTask();
+    if (e.key === "Enter") handleAddTask("active");
   };
+
+  const activeOnly = activeTasks.filter((t) => t.category === "active");
+  const waitingOnly = activeTasks.filter((t) => t.category === "waiting");
 
   return (
     <div className="flex flex-col gap-10">
       {/* KRİTİK RUTİNLER */}
       {kritikTasks.length > 0 && (
-        <div className="flex flex-col gap-4">
-          <h3 className="font-mono text-[10px] tracking-[0.18em] uppercase text-ftg-text-mute pb-2 border-b border-zinc-800 mb-4">
-            KRİTİK RUTİNLER
-          </h3>
-          <div className="flex flex-col gap-3">
+        <section>
+          <div className="flex items-center gap-3 mb-6">
+            <p className="text-[11px] font-semibold tracking-widest uppercase text-[#555555]">
+              KRİTİK RUTİNLER
+            </p>
+            <div className="flex-1 h-px bg-[#1a1a1a]" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {kritikTasks.map((t) => (
               <TaskCard
                 key={t.id}
@@ -90,33 +93,38 @@ export function TaskGroup({
                 priority={null}
                 isBonus={false}
                 onComplete={handleComplete}
-                englishSubtasks={t.system_type === 'english' ? englishSubtasks : []}
+                englishSubtasks={t.system_type === "english" ? englishSubtasks : []}
                 isTreadmillActive={isTreadmillActive}
-                vitaminPackages={t.system_type === 'vitamin' ? vitaminPackages : []}
-                completedSkincareIds={t.system_type === 'skincare' ? completedSkincareIds : []}
+                vitaminPackages={t.system_type === "vitamin" ? vitaminPackages : []}
+                completedSkincareIds={t.system_type === "skincare" ? completedSkincareIds : []}
               />
             ))}
           </div>
-        </div>
+        </section>
       )}
 
       {/* AKTİF GÖREVLER */}
-      <div className="flex flex-col gap-4">
-        <h3 className="font-mono text-[10px] tracking-[0.18em] uppercase text-ftg-text-mute pb-2 border-b border-zinc-800 mb-4">
-          AKTİF GÖREVLER
-        </h3>
+      <section>
+        <div className="flex items-center gap-3 mb-6">
+          <p className="text-[11px] font-semibold tracking-widest uppercase text-[#555555]">
+            AKTİF GÖREVLER
+          </p>
+          <div className="flex-1 h-px bg-[#1a1a1a]" />
+        </div>
+        
         <div className="flex flex-col gap-3">
-          {activeTasks.length === 0 && (
-            <p className="font-mono text-xs text-ftg-text-mute italic px-1">
-              Henüz görev yok. Aşağıdan ekle.
+          {activeOnly.length === 0 && (
+            <p className="text-xs text-[#666666] italic px-1">
+              Henüz aktif görev yok.
             </p>
           )}
-          {activeTasks.map((t) => (
+          {activeOnly.map((t) => (
             <ActiveTaskCard key={t.id} task={t} />
           ))}
         </div>
+
         {/* Görev Ekleme Input */}
-        <div className="flex gap-2 mt-2">
+        <div className="flex gap-2 mt-4">
           <input
             type="text"
             value={newTaskValue}
@@ -124,24 +132,50 @@ export function TaskGroup({
             onKeyDown={handleKeyDown}
             placeholder="Yeni görev ekle..."
             disabled={isAdding}
-            className="flex-1 bg-transparent border border-ftg-border-subtle rounded-ftg-card px-4 py-3 font-mono text-sm text-ftg-text placeholder:text-ftg-text-mute focus:outline-none focus:border-ftg-amber/40 transition-colors disabled:opacity-50"
+            className="flex-1 bg-[#141414] border border-[#222222] rounded-xl px-4 py-2.5 text-sm text-white placeholder-[#444444] focus:border-[#6366f1] focus:outline-none focus:ring-1 focus:ring-[#6366f1]/30 transition-all disabled:opacity-50"
           />
           <button
-            onClick={handleAddTask}
+            onClick={() => handleAddTask("active")}
             disabled={isAdding || !newTaskValue.trim()}
-            className="px-4 py-3 border border-ftg-border-subtle rounded-ftg-card font-mono text-sm text-ftg-amber hover:border-ftg-amber/50 hover:bg-ftg-elevated/50 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-9 h-9 bg-[#6366f1] rounded-xl flex items-center justify-center hover:bg-[#4f46e5] transition-colors text-white text-sm font-semibold shadow-lg shadow-[#6366f1]/30 disabled:opacity-50"
           >
             +
           </button>
+          <button
+            onClick={() => handleAddTask("waiting")}
+            disabled={isAdding || !newTaskValue.trim()}
+            className="w-9 h-9 bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl flex items-center justify-center text-[#555555] hover:border-[#333333] transition-colors disabled:opacity-50"
+            title="Bekleyenlere Ekle"
+          >
+            ⏳
+          </button>
         </div>
-      </div>
+
+        {/* BEKLEYENLER */}
+        {waitingOnly.length > 0 && (
+          <div className="mt-8">
+            <div className="flex items-center gap-3 mt-4 mb-2">
+              <p className="text-[10px] font-semibold tracking-widest uppercase text-[#444444]">BEKLEYENLER</p>
+              <div className="flex-1 h-px bg-[#1a1a1a]" />
+            </div>
+            <div className="flex flex-col gap-1">
+              {waitingOnly.map((t) => (
+                <ActiveTaskCard key={t.id} task={t} />
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
 
       {/* SİSTEMLER */}
       {sistemTasks.length > 0 && (
-        <div className="flex flex-col gap-4">
-          <h3 className="font-mono text-[10px] tracking-[0.18em] uppercase text-ftg-text-mute pb-2 border-b border-zinc-800 mb-4">
-            SİSTEMLER
-          </h3>
+        <section>
+          <div className="flex items-center gap-3 mb-6">
+            <p className="text-[11px] font-semibold tracking-widest uppercase text-[#555555]">
+              SİSTEMLER
+            </p>
+            <div className="flex-1 h-px bg-[#1a1a1a]" />
+          </div>
           <div className="flex flex-col gap-3">
             {sistemTasks.map((t) => (
               <TaskCard
@@ -155,14 +189,14 @@ export function TaskGroup({
                 priority={null}
                 isBonus={false}
                 onComplete={handleComplete}
-                englishSubtasks={t.system_type === 'english' ? englishSubtasks : []}
+                englishSubtasks={t.system_type === "english" ? englishSubtasks : []}
                 isTreadmillActive={isTreadmillActive}
-                vitaminPackages={t.system_type === 'vitamin' ? vitaminPackages : []}
-                completedSkincareIds={t.system_type === 'skincare' ? completedSkincareIds : []}
+                vitaminPackages={t.system_type === "vitamin" ? vitaminPackages : []}
+                completedSkincareIds={t.system_type === "skincare" ? completedSkincareIds : []}
               />
             ))}
           </div>
-        </div>
+        </section>
       )}
     </div>
   );

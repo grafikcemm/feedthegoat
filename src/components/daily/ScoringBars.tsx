@@ -10,80 +10,56 @@ interface ScoringBarsProps {
   productionTotal: number;
 }
 
-export function ScoringBars({
-  disciplineScore,
-  disciplineMax,
-  healthScore,
-  healthMax,
-  productionDone,
-  productionTotal
+export function ScoringBars({ 
+  disciplineScore, 
+  disciplineMax, 
+  healthScore, 
+  healthMax, 
+  productionDone, 
+  productionTotal 
 }: ScoringBarsProps) {
+  const bars = [
+    { label: "DİSİPLİN", current: disciplineScore, max: disciplineMax, color: "bg-[#e8b86d]" },
+    { label: "ÜRETİM", current: productionDone, max: productionTotal, color: "bg-[#6ee7a0]" },
+    { label: "SAĞLIK", current: healthScore, max: healthMax, color: "bg-[#fb923c]" },
+  ];
+
   return (
-    <div className="flex flex-col gap-4 bg-ftg-surface border border-ftg-border-subtle rounded-ftg-card p-6">
-      <h3 className="font-mono text-[10px] tracking-[0.18em] uppercase text-ftg-text-mute mb-2">
-        SİSTEM DURUMU
-      </h3>
-      
-      <div className="flex flex-col gap-5">
-        {/* DİSİPLİN */}
-        {disciplineMax > 0 && (
-          <div className="flex flex-col gap-2">
-            <div className="flex justify-between items-center">
-              <span className="font-mono text-[10px] tracking-[0.15em] uppercase text-ftg-text-mute">
-                DİSİPLİN
-              </span>
-              <span className="font-mono text-[10px] text-ftg-amber">
-                {disciplineScore}/{disciplineMax}
-              </span>
-            </div>
-            <div className="w-full h-1.5 bg-ftg-border-strong rounded-full overflow-hidden flex">
-              <div
-                className="bg-ftg-amber h-full transition-all duration-500 ease-out"
-                style={{ width: `${(disciplineScore / disciplineMax) * 100}%` }}
-              ></div>
-            </div>
-          </div>
-        )}
+    <div className="bg-white border border-[#E5DDD4] rounded-2xl px-5 py-4 shadow-sm">
+      <div className="flex items-center justify-between mb-6 border-b border-[#E5DDD4]/60 pb-3">
+        <span className="text-[10px] font-semibold tracking-[0.15em] uppercase text-[#B5A090]">
+          SİSTEM DURUMU
+        </span>
+        <div className="flex items-center gap-1.5">
+           <span className="w-1.5 h-1.5 rounded-full bg-[#E8956D] animate-pulse" />
+           <span className="text-[#E8956D] text-[9px] font-extrabold uppercase tracking-widest">CANLI</span>
+        </div>
+      </div>
 
-        {/* ÜRETİM */}
-        {productionTotal > 0 && (
-          <div className="flex flex-col gap-2">
-            <div className="flex justify-between items-center">
-              <span className="font-mono text-[10px] tracking-[0.15em] uppercase text-ftg-text-mute">
-                ÜRETİM
+      <div className="flex flex-col gap-6">
+        {[
+          { label: "DİSİPLİN", current: disciplineScore, max: disciplineMax, color: "bg-[#E8956D]" },
+          { label: "ÜRETİM", current: productionDone, max: productionTotal, color: "bg-[#4CAF82]" },
+          { label: "SAĞLIK", current: healthScore, max: healthMax, color: "bg-[#F5A623]" },
+        ].map((bar) => (
+          <div key={bar.label} className="flex flex-col">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#B5A090]">
+                {bar.label}
               </span>
-              <span className="font-mono text-[10px] text-ftg-text-bright">
-                {productionDone}/{productionTotal}
-              </span>
-            </div>
-            <div className="w-full h-1.5 bg-ftg-border-strong rounded-full overflow-hidden flex">
-              <div
-                className="bg-blue-500 h-full transition-all duration-500 ease-out"
-                style={{ width: `${(productionDone / productionTotal) * 100}%` }}
-              ></div>
-            </div>
-          </div>
-        )}
-
-        {/* SAĞLIK */}
-        {healthMax > 0 && (
-          <div className="flex flex-col gap-2">
-            <div className="flex justify-between items-center">
-              <span className="font-mono text-[10px] tracking-[0.15em] uppercase text-ftg-text-mute">
-                SAĞLIK
-              </span>
-              <span className="font-mono text-[10px] text-ftg-success">
-                {healthScore}/{healthMax}
+              <span className="text-xs font-semibold text-[#2C2420]">
+                {bar.current} / {bar.max}
               </span>
             </div>
-            <div className="w-full h-1.5 bg-ftg-border-strong rounded-full overflow-hidden flex">
-              <div
-                className="bg-ftg-success h-full transition-all duration-500 ease-out"
-                style={{ width: `${(healthScore / healthMax) * 100}%` }}
-              ></div>
+            {/* Bar Track */}
+            <div className="w-full bg-[#F0EBE3] rounded-full h-1.5">
+              <div 
+                className={cn("h-1.5 rounded-full transition-all duration-1000 ease-out", bar.color)}
+                style={{ width: `${bar.max > 0 ? Math.min((bar.current / bar.max) * 100, 100) : 0}%` }}
+              />
             </div>
           </div>
-        )}
+        ))}
       </div>
     </div>
   );

@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import { Lexend, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import { ToastProvider } from "@/components/Toast";
 import "./globals.css";
 
-const lexend = Lexend({
-  variable: "--font-body",
+const inter = Inter({
+  variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["300", "400", "500"],
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -14,6 +13,8 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
 });
+
+import { Sidebar } from "@/components/layout/Sidebar";
 
 export const metadata: Metadata = {
   title: "Feed The Goat",
@@ -27,14 +28,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="tr" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=VT323&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-      </head>
-      <body className={`${lexend.variable} ${jetbrainsMono.variable}`}>
+      <body className={`${inter.variable} ${jetbrainsMono.variable} antialiased font-sans`}>
         <ToastProvider>
-          {children}
+          <div className="flex min-h-screen bg-[#000000]">
+            {/* Sol Sidebar */}
+            <Sidebar />
+            
+            {/* Ana içerik */}
+            <main className="flex-1 ml-[72px] min-h-screen">
+              {children}
+            </main>
+          </div>
         </ToastProvider>
       </body>
     </html>

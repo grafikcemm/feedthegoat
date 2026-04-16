@@ -24,7 +24,7 @@ export function TabNav() {
   };
 
   return (
-    <div className="flex border-b border-ftg-border-subtle px-8">
+    <div className="flex border-b border-[#E5DDD4] bg-white px-8">
       {TABS.map((tab) => {
         const active = isActive(tab.id);
         return (
@@ -32,10 +32,10 @@ export function TabNav() {
             key={tab.id}
             href={tab.href}
             className={cn(
-              "px-5 py-4 font-mono text-[11px] tracking-[0.18em] uppercase transition-colors",
+              "px-5 py-4 text-sm transition-all duration-300",
               active
-                ? "text-ftg-amber border-b-2 border-ftg-amber -mb-px"
-                : "text-ftg-text-mute hover:text-ftg-text-dim"
+                ? "text-[#E8956D] border-b-2 border-[#E8956D] font-semibold -mb-px"
+                : "text-[#B5A090] font-medium hover:text-[#8B7355]"
             )}
           >
             {tab.label}

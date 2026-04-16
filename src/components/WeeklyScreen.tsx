@@ -212,7 +212,7 @@ export default function WeeklyScreen() {
                     {
                         label: "Tamamlanan Gün",
                         value: `${weeklySummary.completedDays} / 7`,
-                        color: weeklySummary.completedDays >= 5 ? "#22c55e" : weeklySummary.completedDays >= 3 ? "#f59e0b" : "#ef4444",
+                        color: weeklySummary.completedDays >= 5 ? "#22c55e" : weeklySummary.completedDays >= 3 ? "#ffd60a" : "#ff453a",
                     },
                     {
                         label: "Haftalık Toplam Puan",
@@ -222,7 +222,7 @@ export default function WeeklyScreen() {
                     {
                         label: "Antrenman",
                         value: `${weeklySummary.trainingDays} / 4`,
-                        color: weeklySummary.trainingDays >= 4 ? "#22c55e" : weeklySummary.trainingDays >= 2 ? "#f59e0b" : "#ef4444",
+                        color: weeklySummary.trainingDays >= 4 ? "#22c55e" : weeklySummary.trainingDays >= 2 ? "#ffd60a" : "#ff453a",
                     },
                     {
                         label: "En İyi Gün",

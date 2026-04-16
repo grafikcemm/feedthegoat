@@ -9,34 +9,26 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ftg: {
-          bg: "#0A0A0C",
-          surface: "#121215",
-          elevated: "#18181C",
-          "border-strong": "#23232A",
-          "border-subtle": "#1A1A1F",
-          text: "#F5F2E8",
-          "text-dim": "#8A8580",
-          "text-mute": "#5A554F",
-          amber: "#F5B544",
-          "amber-bright": "#FFD17A",
-          "amber-dim": "#8B6420",
-          "amber-glow": "rgba(245, 181, 68, 0.12)",
-          success: "#7BC96F",
-          danger: "#E5484D",
-          "mountain-1": "#0E0E11",
-          "mountain-2": "#161619",
-          "mountain-3": "#1E1E22",
+        dark: {
+          base: '#0d0d1a',
+          sidebar: '#111124',
+          card: '#1a1a2e',
+          elevated: '#22223a',
+          border: '#2a2a45',
         },
+        accent: {
+          DEFAULT: '#6366f1',
+          hover: '#4f46e5',
+          light: '#1e1b4b',
+        }
       },
       fontFamily: {
-        display: ["VT323", "monospace"],
-        mono: ['"JetBrains Mono"', "monospace"],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
       },
-      borderRadius: {
-        "ftg-card": "10px",
-        "ftg-shell": "14px",
-      },
+      boxShadow: {
+        'card': '0 4px 20px rgba(0, 0, 0, 0.4)',
+        'elevated': '0 8px 32px rgba(0, 0, 0, 0.5)',
+      }
     },
   },
   plugins: [],

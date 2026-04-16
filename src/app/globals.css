@@ -1,133 +1,56 @@
 @import "tailwindcss";
 @config "../../tailwind.config.ts";
 
-
 :root {
-  --bg-void: #0D0D0D;
-  --bg-base: #111111;
-  --bg-raised: #181818;
-  --bg-overlay: #1F1F1F;
-  --bg-hover: #242424;
+  /* Arka planlar */
+  --bg-base: #000000;        /* Tam siyah */
+  --bg-sidebar: #0a0a0a;     /* Sidebar — çok hafif gri */
+  --bg-card: #141414;        /* Kart — koyu gri */
+  --bg-card-2: #1c1c1c;      /* İkinci katman kart */
+  --bg-elevated: #222222;    /* Üst eleman */
+  --bg-input: #111111;       /* Input */
 
-  --text-0: #F2F2F2;
-  --text-1: #B8B8B8;
-  --text-2: #6E6E6E;
-  --text-3: #3A3A3A;
+  /* Borderlar */
+  --border-default: #2a2a2a; /* Çok ince border */
+  --border-muted: #1a1a1a;   /* Neredeyse görünmez */
 
-  --border-0: rgba(255,255,255,0.08);
-  --border-1: rgba(255,255,255,0.04);
+  /* Yazılar */
+  --text-primary: #ffffff;   /* Saf beyaz başlık */
+  --text-secondary: #ababab; /* Gri metin */
+  --text-muted: #666666;     /* Çok soluk */
 
-  --amber: #C8963E;
-  --amber-dim: rgba(200,150,62,0.12);
-  --amber-border: rgba(200,150,62,0.25);
+  /* Renkler */
+  --accent: #6366f1;         /* İndigo — tek renkli aksan */
+  --accent-hover: #4f46e5;
+  --accent-light: #1e1b4b;
 
-  --green-signal: #3D7A5C;
-  --green-dim: rgba(61,122,92,0.15);
-  --red-signal: #8B3A3A;
-  --red-dim: rgba(139,58,58,0.12);
+  --success: #30d158;        /* Apple yeşili */
+  --success-light: #064e3b;  
+  --warning: #ffd60a;        /* Apple sarısı */
+  --warning-light: #451a03;
+  --danger: #ff453a;         /* Apple kırmızısı */
+  --danger-light: #450a0a;
+  --info: #3b82f6;
+  --info-light: #1e3a5f;
 
-  --font-display: 'DM Serif Display', Georgia, serif;
-  --font-sans: var(--font-body, 'Lexend'), 'DM Sans', system-ui, sans-serif;
-  --font-mono: var(--font-mono, 'JetBrains Mono'), 'Fira Code', monospace;
-
-  --size-xs: 10px;
-  --size-sm: 12px;
-  --size-base: 13px;
-  --size-md: 15px;
-  --size-lg: 18px;
-  --size-xl: 24px;
-  --size-2xl: 32px;
-
-  --weight-normal: 400;
-  --weight-medium: 500;
-
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
-
-  --radius-sm: 2px;
-  --radius-md: 4px;
-  --radius-none: 0px;
+  /* Gölgeler */
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
 body {
-  background: var(--bg-void);
-  color: var(--text-0);
-  font-family: "JetBrains Mono", monospace;
-  font-size: var(--size-base);
-  line-height: 1.5;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-* {
-  box-sizing: border-box;
-}
-
-/* ── UI Elemanları (Adım 2) ─────────────────────────────────────────────── */
-
-/* KARTLAR */
-.card-panel {
-  border-radius: 0;
-  background: var(--bg-raised);
-  border: 1px solid var(--border-0);
-  padding: 16px;
-  box-shadow: none !important;
-}
-
-/* AYRAÇLAR */
-.divider {
-  border: none;
-  border-top: 1px solid var(--border-1);
-  margin: 16px 0;
-}
-
-/* TAB NAVIGASYON (Alt çizgi indicator kaldır, monospaced vb) */
-.tab-btn {
-  font-family: var(--font-mono);
-  font-size: var(--size-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-2);
-  padding: 8px 12px;
-  transition: all 0.2s ease;
-  border-radius: 0 !important;
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-.tab-btn.active {
-  color: var(--text-0);
-  font-weight: 500;
-}
-
-.tab-container {
-  border-bottom: 1px solid var(--border-1);
-}
-
-/* ── Scrollbar ─────────────────────────────────────────────── */
-::-webkit-scrollbar {
-  width: 2px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: var(--border-0);
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-2);
-}
+::-webkit-scrollbar { width: 0px; } /* Scrollbar gizle — Apple tarzı */
 
 /* ── Selection ─────────────────────────────────────────────── */
 ::selection {
-  background: var(--amber);
-  color: #000;
+  background: var(--accent-light);
+  color: var(--accent);
 }
 
 /* ── Animations ───────────────────────────────────────── */
@@ -163,13 +86,13 @@ body {
   animation: fade-in 0.2s ease-out, slide-in-from-bottom 0.2s ease-out;
 }
 
-@keyframes flash-amber {
+@keyframes flash-accent {
   0%   { border-color: transparent; }
-  50%  { border-color: var(--amber); }
+  50%  { border-color: var(--accent); }
   100% { border-color: transparent; }
 }
-.animate-flash-amber {
-  animation: flash-amber 0.2s ease-out;
+.animate-flash-accent {
+  animation: flash-accent 0.2s ease-out;
 }
 
 @media (prefers-reduced-motion: reduce) { 
@@ -190,8 +113,8 @@ body {
 }
 
 @keyframes score-flash {
-  0% { color: #FFD17A; transform: scale(1.05); }
-  100% { color: #F5B544; transform: scale(1); }
+  0% { color: var(--accent); transform: scale(1.05); }
+  100% { color: var(--text-primary); transform: scale(1); }
 }
 .animate-score-flash {
   animation: score-flash 600ms ease-out;

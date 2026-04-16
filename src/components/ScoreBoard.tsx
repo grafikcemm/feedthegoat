@@ -11,8 +11,8 @@ interface ScoreBoardProps {
 
 export default function ScoreBoard({ score, maxPuan, percentage, puanRengi }: ScoreBoardProps) {
   const colors = {
-    red: "#ef4444",
-    yellow: "#f59e0b",
+    red: "#ff453a",
+    yellow: "#ffd60a",
     green: "#7C9A72", // accent-sage for success
   };
 

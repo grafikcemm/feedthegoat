@@ -60,37 +60,40 @@ export function WorkoutDayCard({ day, isToday, isCompleted }: WorkoutDayCardProp
   return (
     <div
       className={cn(
-        "rounded-ftg-card border bg-ftg-surface transition-all duration-300 overflow-hidden",
+        "rounded-2xl border transition-all duration-300 overflow-hidden",
         isToday
-          ? "border-l-4 border-l-ftg-amber border-ftg-border-subtle shadow-lg"
-          : "border-ftg-border-subtle"
+          ? "border-[#6366f1]/50 bg-[#141414] shadow-xl"
+          : "border-[#2a2a2a] bg-[#141414] shadow-sm"
       )}
     >
       {/* Header — clickable */}
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-ftg-elevated/50 transition-colors"
+        className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-[#0a0a0a]/50 transition-colors"
       >
-        <div className="flex items-center gap-3">
-          <span className="font-mono text-sm text-ftg-text font-medium">
+        <div className="flex items-center gap-4">
+          <span className={cn(
+            "text-sm font-bold transition-colors uppercase tracking-tight",
+            isToday ? "text-[#6366f1]" : "text-[#ababab]"
+          )}>
             {dayLabelMap[day.day_of_week]} — {day.title}
           </span>
           {isToday && (
-            <span className="font-mono text-[9px] tracking-wider uppercase px-2 py-0.5 rounded bg-ftg-amber-glow text-ftg-amber animate-pulse">
+            <span className="bg-[#6366f1] text-white text-[9px] px-2 py-0.5 rounded-lg font-bold animate-pulse uppercase tracking-widest">
               BUGÜN
             </span>
           )}
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-6">
           {isCompleted && (
-            <span className="font-mono text-[9px] tracking-wider uppercase text-ftg-success flex items-center gap-1">
-              <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+            <span className="text-[10px] tracking-widest uppercase text-[#30d158] flex items-center gap-1.5 font-bold">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                 <path d="M2 6L5 9L10 3" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
               TAMAMLANDI
             </span>
           )}
-          <span className="font-mono text-[10px] tracking-wider uppercase text-ftg-text-mute">
+          <span className="text-[10px] tracking-widest uppercase text-[#666666] font-bold">
             {open ? "KAPAT" : "AYRINTILAR"}
           </span>
         </div>
@@ -103,50 +106,50 @@ export function WorkoutDayCard({ day, isToday, isCompleted }: WorkoutDayCardProp
           open ? "max-h-[800px] opacity-100" : "max-h-0 opacity-0"
         )}
       >
-        <div className="px-5 pb-5 border-t border-ftg-border-subtle pt-4 flex flex-col gap-4">
+        <div className="px-6 pb-6 border-t border-[#2a2a2a] bg-[#000000]/30 pt-5 flex flex-col gap-5">
           {day.amac && (
-            <div className="font-mono text-xs italic text-ftg-text-dim border-l-2 border-ftg-border-strong pl-3 py-1">
+            <div className="text-[11px] italic text-[#ababab] border-l-4 border-[#6366f1] pl-4 py-2 bg-[#141414] rounded-r-xl font-medium">
               {day.amac}
             </div>
           )}
           
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3">
             {day.exercises.map((ex) => (
               <div key={ex.id} className="flex items-start gap-3 group">
-                <div className="w-1.5 h-1.5 rounded-full bg-ftg-border-strong mt-1.5 group-hover:bg-ftg-amber transition-colors" />
-                <div className="font-mono text-xs text-ftg-text">
-                  <span className="font-medium">{ex.name}</span>
+                <div className="w-1.5 h-1.5 rounded-full bg-[#2a2a2a] mt-2 group-hover:bg-[#6366f1] transition-colors" />
+                <div className="text-sm">
+                  <span className="text-[#ababab] font-medium">{ex.name}</span>
                   {ex.sets_reps && (
-                    <span className="text-ftg-text-mute ml-2">— {ex.sets_reps}</span>
+                    <span className="text-[#666666] ml-3 text-xs font-bold uppercase tracking-tight">/ {ex.sets_reps}</span>
                   )}
                 </div>
               </div>
             ))}
             
             {day.exercises.length === 0 && (
-              <div className="font-mono text-xs text-ftg-text-mute italic">
+              <div className="text-xs text-[#666666] italic py-2">
                 Bu gün için egzersiz tanımlanmamış.
               </div>
             )}
           </div>
 
-          <div className="mt-2 pt-4 border-t border-ftg-border-subtle/50">
+          <div className="mt-2 pt-5 border-t border-[#2a2a2a]/50">
             {buttonLabel && !isCompleted && (
               <button
                 onClick={handleComplete}
                 disabled={isPending}
-                className="w-full md:w-auto px-6 py-2.5 rounded-ftg-card border border-ftg-amber text-ftg-amber font-mono text-[10px] tracking-wider uppercase hover:bg-ftg-amber-glow transition-all active:scale-[0.98] disabled:opacity-50"
+                className="w-full md:w-auto px-8 py-3.5 rounded-xl border-2 border-[#6366f1] text-[#6366f1] text-[10px] tracking-widest font-bold uppercase hover:bg-[#141414] transition-all active:scale-[0.98] disabled:opacity-50"
               >
                 {isPending ? "İŞLENİYOR..." : buttonLabel}
               </button>
             )}
             {isCompleted && (
-              <div className="w-full md:w-auto px-6 py-2.5 rounded-ftg-card border border-ftg-success/40 bg-ftg-success/5 text-ftg-success font-mono text-[10px] tracking-wider uppercase flex items-center justify-center gap-2">
-                 BUGÜN TAMAMLANDI
+              <div className="w-full md:w-auto px-8 py-3.5 rounded-xl border border-[#30d158]/20 bg-[#30d158] text-[#30d158] text-[10px] tracking-widest font-bold uppercase flex items-center justify-center gap-2">
+                 TAMAMLANDI
               </div>
             )}
             {!buttonLabel && (
-              <div className="font-mono text-xs text-ftg-text-mute italic">
+              <div className="text-xs text-[#666666] italic leading-relaxed font-medium">
                 Pazar günü sadece zihinsel ve bedensel dinlenmeye ayrılmıştır.
               </div>
             )}

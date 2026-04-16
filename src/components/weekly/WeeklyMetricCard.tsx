@@ -9,18 +9,18 @@ interface WeeklyMetricCardProps {
 
 export function WeeklyMetricCard({ label, value, subValue, total }: WeeklyMetricCardProps) {
   return (
-    <div className="rounded-ftg-card border border-ftg-border-subtle bg-ftg-surface p-5">
-      <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-ftg-text-mute mb-2">
+    <div className="rounded-2xl border border-[#2a2a2a] bg-[#141414] p-6 shadow-sm hover:border-[#6366f1]/30 transition-all group">
+      <div className="text-[#666666] text-[10px] tracking-[0.2em] uppercase font-bold mb-3">
         {label}
       </div>
-      <div className="font-display text-4xl text-ftg-amber flex items-baseline gap-2">
+      <div className="text-3xl text-[#6366f1] font-bold flex items-baseline gap-2 font-sans">
         {value} 
         {total !== undefined && (
-          <span className="text-ftg-text-mute text-2xl truncate">/ {total}</span>
+          <span className="text-[#2a2a2a] text-xl font-medium">/ {total}</span>
         )}
       </div>
       {subValue !== undefined && (
-        <div className="font-mono text-[10px] text-ftg-text-mute mt-1">
+        <div className="text-[10px] text-[#ababab] mt-2 tracking-wide font-medium italic">
           {subValue}
         </div>
       )}

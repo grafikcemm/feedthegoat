@@ -28,10 +28,13 @@ export async function toggleTemplateTask(
 }
 
 // Aktif görev ekle
-export async function addActiveTask(title: string): Promise<void> {
+export async function addActiveTask(
+  title: string,
+  category: 'active' | 'waiting' = 'active'
+): Promise<void> {
   const supabase = createClient()
   if (!title.trim()) return
-  await supabase.from('active_tasks').insert({ title: title.trim() })
+  await supabase.from('active_tasks').insert({ title: title.trim(), category })
   revalidatePath('/')
 }
 
@@ -52,5 +55,14 @@ export async function toggleActiveTask(
     .from('active_tasks')
     .update({ is_done: !isCurrentlyDone })
     .eq('id', id)
+  revalidatePath('/')
+}
+
+export async function moveActiveTask(
+  id: string,
+  to: 'active' | 'waiting'
+): Promise<void> {
+  const supabase = createClient()
+  await supabase.from('active_tasks').update({ category: to }).eq('id', id)
   revalidatePath('/')
 }

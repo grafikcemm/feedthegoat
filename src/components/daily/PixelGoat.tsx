@@ -90,7 +90,7 @@ export function PixelGoat({ className, mood = "AC" }: { className?: string, mood
   const moodClass = {
     AC: "opacity-90",
     TOK: "opacity-100",
-    ALFA: "opacity-100 drop-shadow-[0_0_12px_rgba(245,181,68,0.6)] scale-105",
+    ALFA: "opacity-100 drop-shadow-[0_0_12px_rgba(232,149,109,0.4)] scale-105",
     DURGUN: "opacity-60 saturate-50",
   }[mood];
 

@@ -38,41 +38,44 @@ export function TransactionColumn({
   };
 
   return (
-    <div className="bg-ftg-surface border border-ftg-border-subtle rounded-ftg-card p-5 h-full flex flex-col">
-      <div className="flex items-baseline justify-between mb-4 pb-3 border-b border-ftg-border-subtle">
-        <h3 className="font-mono text-[10px] tracking-[0.18em] uppercase text-ftg-text-mute">
+    <div className={cn(
+        "bg-[#141414] border rounded-2xl p-6 h-full flex flex-col shadow-sm transition-all",
+        isIncome ? "border-[#30d158]/20" : "border-[#2a2a2a]"
+    )}>
+      <div className="flex items-baseline justify-between mb-5 pb-4 border-b border-[#2a2a2a]/50">
+        <h3 className="text-[#666666] text-[10px] tracking-[0.2em] font-bold uppercase">
           {title}
         </h3>
         <span
           className={cn(
-            "font-display text-xl",
-            isIncome ? "text-ftg-success" : "text-ftg-danger"
+            "text-2xl font-bold font-sans",
+            isIncome ? "text-[#30d158]" : "text-[#ff453a]"
           )}
         >
           {total.toLocaleString("tr-TR")} ₺
         </span>
       </div>
 
-      <div className="flex-1 flex flex-col gap-1 overflow-y-auto max-h-[500px] pr-2 scrollbar-thin scrollbar-thumb-ftg-border-strong scrollbar-track-transparent">
+      <div className="flex-1 flex flex-col gap-1 overflow-y-auto max-h-[500px] pr-2 custom-scrollbar mt-2">
         {transactions.map((tx) => (
           <div
             key={tx.id}
-            className="group flex items-center justify-between gap-4 py-2 border-b border-ftg-border-subtle last:border-0 px-1 hover:bg-ftg-elevated/50 transition-colors rounded-sm w-full"
+            className="group flex items-center justify-between gap-4 py-3.5 border-b border-[#2a2a2a]/30 last:border-0 px-3 hover:bg-[#0a0a0a]/50 transition-colors rounded-xl w-full"
           >
             <div className="flex-1 min-w-0 pr-2">
-              <span className="font-mono text-sm text-ftg-text block truncate">
+              <span className="text-sm text-[#ababab] block truncate font-semibold">
                 {tx.title}
               </span>
             </div>
-            <div className="flex items-center gap-3 shrink-0">
-              <span className="font-mono text-sm text-ftg-text tabular-nums whitespace-nowrap">
+            <div className="flex items-center gap-4 shrink-0">
+              <span className="text-xs text-[#ffffff] font-bold tabular-nums whitespace-nowrap">
                 {tx.amount.toLocaleString("tr-TR")} ₺
               </span>
               <button
                 onClick={() => handleDelete(tx.id)}
                 disabled={isPending}
-                className="opacity-0 group-hover:opacity-100 text-ftg-text-mute hover:text-ftg-danger transition-all px-1"
-                title="Silt"
+                className="opacity-0 group-hover:opacity-100 text-[#ff453a] hover:scale-110 transition-all px-1 text-xl leading-none font-bold"
+                title="Sil"
               >
                 ×
               </button>
@@ -81,7 +84,7 @@ export function TransactionColumn({
         ))}
 
         {transactions.length === 0 && (
-          <div className="font-mono text-xs text-ftg-text-mute text-center py-8">
+          <div className="text-xs text-[#666666] text-center py-12 italic font-medium">
             Henüz kayıt yok.
           </div>
         )}

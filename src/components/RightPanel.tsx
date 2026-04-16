@@ -58,34 +58,34 @@ export default function RightPanel() {
                 {openCard !== 0 && (
                     <button 
                         onClick={() => toggleCard(0)}
-                        className="bg-surface/80 backdrop-blur-sm border border-r-0 border-border text-text hover:text-white hover:bg-surface transition-all py-4 px-2 flex items-center justify-center cursor-pointer shadow-lg"
+                        className="bg-white/90 backdrop-blur-sm border border-r-0 border-[#E5DDD4] text-[#8B7355] hover:text-[#2C2420] hover:bg-white transition-all py-4 px-2 flex items-center justify-center cursor-pointer shadow-lg rounded-l-xl"
                         style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
                     >
                         <span className="text-[10px] font-bold uppercase tracking-widest whitespace-nowrap">🧭 Karar Filtresi</span>
                     </button>
                 )}
                 {openCard === 0 && (
-                    <div className="bg-[#0A0A0A]/95 backdrop-blur-md border border-r-0 border-border shadow-2xl w-[320px] md:w-[380px] max-h-[70vh] flex flex-col animate-slide-in-right rounded-l-md overflow-hidden">
-                        <div className="p-3 border-b border-border bg-black flex items-center justify-between sticky top-0">
-                            <span className="font-bold text-xs tracking-widest uppercase text-accent-green flex items-center gap-2">
+                    <div className="bg-white/98 backdrop-blur-md border border-r-0 border-[#E5DDD4] shadow-2xl w-[320px] md:w-[380px] max-h-[70vh] flex flex-col animate-slide-in-right rounded-l-2xl overflow-hidden">
+                        <div className="p-3 border-b border-[#E5DDD4] bg-[#F5F1EB] flex items-center justify-between sticky top-0">
+                            <span className="font-bold text-xs tracking-widest uppercase text-[#E8956D] flex items-center gap-2">
                                 🧭 Karar Filtresi
                             </span>
-                            <button onClick={() => setOpenCard(null)} className="text-text-muted hover:text-white px-2 py-1">✕</button>
+                            <button onClick={() => setOpenCard(null)} className="text-[#B5A090] hover:text-[#2C2420] px-2 py-1">✕</button>
                         </div>
-                        <div className="p-4 overflow-y-auto space-y-5">
-                            <div className="p-3 border-l-2 border-accent-green bg-accent-green/5 text-[11px] text-text-muted font-medium italic leading-relaxed">
+                        <div className="p-4 overflow-y-auto space-y-5 bg-white">
+                            <div className="p-3 border-l-2 border-[#E8956D] bg-[#FDF0E8] text-[11px] text-[#8B7355] font-medium italic leading-relaxed">
                                 &quot;Hayatının merkezine tekrar kendini koy. Daha net teklif. Daha az belirsiz müşteri. Daha yüksek görünürlük.&quot;
                             </div>
                             {DECISION_FILTER.map((section, idx) => (
                                 <div key={idx} className="space-y-3">
-                                    <h4 className="text-[10px] uppercase font-bold text-text-muted tracking-[0.2em] border-b border-border/50 pb-1">
+                                    <h4 className="text-[10px] uppercase font-bold text-[#B5A090] tracking-[0.2em] border-b border-[#E5DDD4]/50 pb-1">
                                         {section.title}
                                     </h4>
                                     <div className="grid grid-cols-1 gap-2">
                                         {section.cards.map((card, cidx) => (
-                                            <div key={cidx} className="p-3 border border-border/50 bg-surface/30 hover:border-text-muted/50 transition-colors">
-                                                <span className="text-xs font-bold text-text block mb-1 uppercase tracking-widest">{card.h}</span>
-                                                <span className="text-[10px] text-text-muted leading-snug block">{card.p}</span>
+                                            <div key={cidx} className="p-3 border border-[#E5DDD4]/50 bg-[#F5F1EB]/30 hover:border-[#E8956D]/30 transition-colors rounded-lg">
+                                                <span className="text-xs font-bold text-[#2C2420] block mb-1 uppercase tracking-widest">{card.h}</span>
+                                                <span className="text-[10px] text-[#8B7355] leading-snug block">{card.p}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -101,25 +101,25 @@ export default function RightPanel() {
                 {openCard !== 1 && (
                     <button 
                         onClick={() => toggleCard(1)}
-                        className="bg-surface/80 backdrop-blur-sm border border-r-0 border-border text-text hover:text-white hover:bg-surface transition-all py-4 px-2 flex items-center justify-center cursor-pointer shadow-lg"
+                        className="bg-white/90 backdrop-blur-sm border border-r-0 border-[#E5DDD4] text-[#8B7355] hover:text-[#2C2420] hover:bg-white transition-all py-4 px-2 flex items-center justify-center cursor-pointer shadow-lg rounded-l-xl"
                         style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
                     >
                         <span className="text-[10px] font-bold uppercase tracking-widest whitespace-nowrap">🛡️ Karakter & Disiplin</span>
                     </button>
                 )}
                 {openCard === 1 && (
-                    <div className="bg-[#0A0A0A]/95 backdrop-blur-md border border-r-0 border-border shadow-2xl w-[320px] md:w-[380px] max-h-[70vh] flex flex-col animate-slide-in-right rounded-l-md overflow-hidden">
-                        <div className="p-3 border-b border-border bg-black flex items-center justify-between sticky top-0">
-                            <span className="font-bold text-xs tracking-widest uppercase text-text flex items-center gap-2">
+                    <div className="bg-white/98 backdrop-blur-md border border-r-0 border-[#E5DDD4] shadow-2xl w-[320px] md:w-[380px] max-h-[70vh] flex flex-col animate-slide-in-right rounded-l-2xl overflow-hidden">
+                        <div className="p-3 border-b border-[#E5DDD4] bg-[#F5F1EB] flex items-center justify-between sticky top-0">
+                            <span className="font-bold text-xs tracking-widest uppercase text-[#2C2420] flex items-center gap-2">
                                 🛡️ Karakter & Disiplin
                             </span>
-                            <button onClick={() => setOpenCard(null)} className="text-text-muted hover:text-white px-2 py-1">✕</button>
+                            <button onClick={() => setOpenCard(null)} className="text-[#B5A090] hover:text-[#2C2420] px-2 py-1">✕</button>
                         </div>
-                        <div className="p-4 overflow-y-auto space-y-2">
+                        <div className="p-4 overflow-y-auto space-y-2 bg-white">
                             {MALE_TRUTHS.map((truth, idx) => (
-                                <div key={idx} className="p-3 border border-border/30 bg-surface/10 hover:bg-surface/20 transition-colors flex flex-col gap-1">
-                                    <span className="text-[11px] font-bold text-text uppercase tracking-widest leading-snug">{truth.title}</span>
-                                    <span className="text-[10px] text-text-muted italic">{truth.subtitle}</span>
+                                <div key={idx} className="p-3 border border-[#E5DDD4]/30 bg-[#F5F1EB]/20 hover:bg-[#F5F1EB]/40 transition-colors flex flex-col gap-1 rounded-lg">
+                                    <span className="text-[11px] font-bold text-[#2C2420] uppercase tracking-widest leading-snug">{truth.title}</span>
+                                    <span className="text-[10px] text-[#8B7355] italic">{truth.subtitle}</span>
                                 </div>
                             ))}
                         </div>

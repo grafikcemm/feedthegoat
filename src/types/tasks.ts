@@ -19,6 +19,7 @@ export interface ActiveTask {
   id: string
   title: string
   is_done: boolean
+  category: 'active' | 'waiting'
   sort_order: number
   created_at: string
 }

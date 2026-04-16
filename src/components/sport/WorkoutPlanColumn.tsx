@@ -38,9 +38,12 @@ export function WorkoutPlanColumn({
     ?.filter((d) => d.is_bonus && completedDayIds.has(d.id)).length ?? 0;
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-ftg-text-mute">
-        SPOR PLANI
+    <div className="flex flex-col gap-5">
+      <div className="flex items-center gap-3 mb-2">
+        <p className="text-[#666666] text-xs font-semibold tracking-widest uppercase">
+          HAFTALIK SPOR PLANI
+        </p>
+        <div className="flex-1 h-px bg-[#2a2a2a]" />
       </div>
 
       {/* Haftalık ilerleme card */}
@@ -52,7 +55,7 @@ export function WorkoutPlanColumn({
       />
 
       {/* 7 gün accordion */}
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-4 mt-2">
         {days.map((day) => (
           <WorkoutDayCard
             key={day.id}

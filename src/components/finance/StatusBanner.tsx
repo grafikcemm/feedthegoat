@@ -14,23 +14,26 @@ export function StatusBanner({
   severity,
 }: StatusBannerProps) {
   const styles = {
-    positive: "border-ftg-success bg-ftg-success/5 text-ftg-success",
-    neutral: "border-ftg-text-mute bg-ftg-surface text-ftg-text-dim",
-    warning: "border-ftg-amber bg-ftg-amber-glow text-ftg-amber",
-    danger: "border-ftg-danger bg-ftg-danger/10 text-ftg-danger",
+    positive: "border-[#30d158]/30 bg-[#30d158] text-[#30d158]",
+    neutral: "border-[#2a2a2a] bg-[#0a0a0a] text-[#ababab]",
+    warning: "border-[#6366f1]/30 bg-[#141414] text-[#6366f1]",
+    danger: "border-[#ff453a]/30 bg-[#ff453a] text-[#ff453a]",
   };
 
   return (
     <div
       className={cn(
-        "block w-full rounded-ftg-card border-l-4 p-5 mb-8 transition-colors",
+        "block w-full rounded-2xl border-l-4 p-5 mb-8 transition-all shadow-sm",
         styles[severity]
       )}
     >
-      <div className="font-mono text-sm font-medium uppercase tracking-wider">
+      <div className="text-[10px] font-bold uppercase tracking-[0.2em]">
         {label}
       </div>
-      <div className="font-mono text-xs text-ftg-text-dim mt-1">
+      <div className={cn(
+        "text-xs mt-2 italic leading-relaxed font-medium",
+        severity === 'neutral' ? "text-[#ababab]/70" : "opacity-90"
+      )}>
         {description}
       </div>
     </div>
