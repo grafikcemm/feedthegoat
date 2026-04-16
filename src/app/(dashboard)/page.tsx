@@ -471,8 +471,7 @@ export default async function Page({
   return (
     <div className="min-h-screen font-sans">
       <DailyShell>
-        {/* Karşılama Header */}
-        <div className="mb-0 px-2 lg:px-10">
+        <div className="mb-0 px-4 lg:px-10">
           <h1 className="text-2xl font-bold text-[#ffffff]">
             Merhaba, <span className="text-[#6366f1]">Ali Cem!</span> 👋
           </h1>
@@ -484,22 +483,24 @@ export default async function Page({
         </div>
 
         {/* --- Top Section --- */}
-        <div className="px-2 lg:px-10 pt-4">
+        <div className="px-4 lg:px-10 pt-4">
           <DuaPanel />
         </div>
         
-        <HeroZone 
-          total={todayScore}
-          mood={safeGoatState.current_mood}
-          remainingTaskCount={remainingTasks}
-          energyLevel={energyLevel}
-          energyCap={energyCap}
-          currentStreak={safeGoatState.current_streak ?? 0}
-          weeklyConsistency={safeGoatState.weekly_consistency ?? 0}
-        />
+        <div className="px-4 lg:px-10">
+          <HeroZone 
+            total={todayScore}
+            mood={safeGoatState.current_mood}
+            remainingTaskCount={remainingTasks}
+            energyLevel={energyLevel}
+            energyCap={energyCap}
+            currentStreak={safeGoatState.current_streak ?? 0}
+            weeklyConsistency={safeGoatState.weekly_consistency ?? 0}
+          />
+        </div>
 
         {/* --- Grid Section: 2 Columns --- */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-10 px-10 py-10">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-10 px-4 lg:px-10 py-10">
           
           {/* Left Column (col-span-2): Tasks */}
           <div className="xl:col-span-2 flex flex-col gap-10">
