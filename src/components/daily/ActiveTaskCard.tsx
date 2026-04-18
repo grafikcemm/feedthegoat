@@ -2,8 +2,9 @@
 
 import React, { useState, useTransition } from "react";
 import { cn } from "@/utils/cn";
-import { toggleActiveTask, deleteActiveTask, moveActiveTask } from "@/app/actions/taskActions";
+import { toggleActiveTask, deleteActiveTask, moveActiveTask, toggleTaskPriority } from "@/app/actions/taskActions";
 import type { ActiveTask } from "@/types/tasks";
+import { AlertCircle } from "lucide-react"; // Import icon
 
 interface ActiveTaskCardProps {
   task: ActiveTask;
@@ -12,6 +13,7 @@ interface ActiveTaskCardProps {
 export function ActiveTaskCard({ task }: ActiveTaskCardProps) {
   const [isPending, startTransition] = useTransition();
   const [optimisticDone, setOptimisticDone] = useState(task.is_done);
+  const [optimisticPriority, setOptimisticPriority] = useState(task.is_priority);
 
   const isWaiting = task.category === "waiting";
 
@@ -39,6 +41,15 @@ export function ActiveTaskCard({ task }: ActiveTaskCardProps) {
     e.stopPropagation();
     startTransition(() => {
       moveActiveTask(task.id, to);
+    });
+  };
+
+  const handlePriorityToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const isCurrentlyPriority = optimisticPriority;
+    setOptimisticPriority((prev) => !prev);
+    startTransition(() => {
+      toggleTaskPriority(task.id, !!isCurrentlyPriority);
     });
   };
 
@@ -99,11 +110,20 @@ export function ActiveTaskCard({ task }: ActiveTaskCardProps) {
   return (
     <div
       className={cn(
-        "flex items-center gap-3 px-4 py-3 rounded-xl border transition-colors group",
-        "bg-[#141414] border-[#222222] hover:border-[#2a2a2a]",
+        "flex items-center gap-3 px-4 py-3 rounded-xl border transition-all group",
+        optimisticPriority 
+          ? "bg-[#1a1111] border-[#ef4444]/40" 
+          : "bg-[#141414] border-[#222222] hover:border-[#2a2a2a]",
         isPending && "opacity-60",
         optimisticDone && "opacity-70"
       )}
+      style={{
+        borderLeft: optimisticPriority 
+          ? "4px solid #EF4444" 
+          : "3px solid transparent",
+        paddingLeft: optimisticPriority ? "12px" : "16px",
+        marginBottom: "8px"
+      }}
     >
       <button
         onClick={handleToggle}
@@ -130,17 +150,42 @@ export function ActiveTaskCard({ task }: ActiveTaskCardProps) {
         {task.title}
       </span>
 
+      {/* Priority Toggle Button */}
+      <button
+        onClick={handlePriorityToggle}
+        style={{
+          marginLeft: "auto",
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          color: optimisticPriority ? "#EF4444" : "#444444",
+          fontWeight: "bold",
+          fontSize: "16px",
+          padding: "4px 8px",
+          lineHeight: 1,
+          borderRadius: "6px"
+        }}
+        className={cn(
+          "transition-all",
+          !optimisticPriority && "opacity-0 group-hover:opacity-100",
+          optimisticPriority && "scale-125"
+        )}
+        title={optimisticPriority ? "Önceliği kaldır" : "Öncelikli işaretle"}
+      >
+        !
+      </button>
+
       <button
         onClick={(e) => handleMove(e, "waiting")}
-        className="w-9 h-9 bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl flex items-center justify-center text-[#555555] hover:border-[#333333] transition-colors ml-auto opacity-0 group-hover:opacity-100"
+        className="w-7 h-7 bg-[#1c1c1c] border border-[#2a2a2a] rounded-lg flex items-center justify-center text-[#555555] hover:border-[#333333] transition-colors ml-1 opacity-0 group-hover:opacity-100"
         title="Bekleyene taşı"
       >
-        ⏳
+        <span className="text-[10px]">⏳</span>
       </button>
 
       <button
         onClick={handleDelete}
-        className="opacity-0 group-hover:opacity-100 transition-opacity w-5 h-5 flex items-center justify-center text-[#666666] hover:text-[#ff453a] shrink-0"
+        className="opacity-0 group-hover:opacity-100 transition-opacity w-5 h-5 flex items-center justify-center text-[#666666] hover:text-[#ff453a] shrink-0 ml-1"
         title="Görevi sil"
       >
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

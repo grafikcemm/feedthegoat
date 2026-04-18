@@ -24,7 +24,6 @@ export function EndDayButton({ score, isAlreadyFinalized }: EndDayButtonProps) {
       const res = await finalizeDay(score)
       setResult(res)
       setIsDone(true)
-
       if (!res.streakBroken) {
         fireDayCompleteConfetti()
       }
@@ -37,28 +36,24 @@ export function EndDayButton({ score, isAlreadyFinalized }: EndDayButtonProps) {
 
   if (isDone && result?.streakBroken) {
     return (
-      <div className="w-full py-4 bg-[#ff453a] border border-[#ff453a]/30 rounded-2xl text-center animate-in fade-in duration-500">
-        <p className="text-[#ff453a] text-sm font-semibold mb-1 uppercase tracking-tight">
-          ⚠️ Seri kırıldı
-        </p>
-        <p className="text-[#ababab] text-[10px] font-bold tracking-widest uppercase">
-          YENİ SERİ BAŞLIYOR. YARIN DEVAM ET.
-        </p>
+      <div className="w-full h-14 bg-[var(--bg-card)] border border-[var(--border-strong)] rounded-[16px] flex flex-col items-center justify-center animate-in fade-in duration-500">
+        <p className="text-white/60 text-xs font-semibold uppercase tracking-widest">⚠️ Seri kırıldı</p>
+        <p className="text-[var(--text-tertiary)] text-[10px] font-bold tracking-widest uppercase mt-0.5">YENİ SERİ BAŞLIYOR. YARIN DEVAM ET.</p>
       </div>
     )
   }
 
   if (isDone) {
     return (
-      <div className="w-full py-4 bg-[#30d158] border border-[#30d158]/30 rounded-2xl text-center animate-in fade-in duration-500">
-        <p className="text-[#30d158] text-sm font-semibold uppercase tracking-tight">✓ GÜN TAMAMLANDI</p>
+      <div className="w-full h-14 bg-[var(--success)]/10 border border-[var(--success)]/30 rounded-[16px] flex flex-col items-center justify-center animate-in fade-in duration-500">
+        <p className="text-[var(--success)] text-sm font-semibold uppercase tracking-tight">✓ GÜN TAMAMLANDI</p>
         {result && (
-          <p className="text-[#30d158]/70 text-[10px] mt-1 font-bold tracking-widest uppercase">
+          <p className="text-[var(--success)]/70 text-[10px] mt-1 font-bold tracking-widest uppercase">
             {result.newStreak} GÜNLÜK SERİ 🔥
           </p>
         )}
         {isAlreadyFinalized && !result && (
-          <p className="text-[#666666] text-[10px] mt-1 font-bold uppercase tracking-widest">
+          <p className="text-[var(--text-tertiary)] text-[10px] mt-1 font-bold uppercase tracking-widest">
             BUGÜN ZATEN KAYDEDİLDİ
           </p>
         )}
@@ -71,7 +66,7 @@ export function EndDayButton({ score, isAlreadyFinalized }: EndDayButtonProps) {
       onClick={handleEndDay}
       disabled={loading}
       className={cn(
-        "w-full py-4 bg-[#141414] border border-[#2a2a2a] rounded-2xl text-[#555555] text-sm font-semibold tracking-wide hover:border-[#6366f1] hover:text-[#6366f1] hover:shadow-lg hover:shadow-[#6366f1]/20 transition-all cursor-pointer active:scale-[0.98] uppercase",
+        "w-full h-14 bg-white text-black text-sm font-semibold tracking-wide rounded-[16px] hover:bg-white/90 transition-all cursor-pointer active:scale-[0.98] uppercase",
         loading && "opacity-50 cursor-wait"
       )}
     >

@@ -1,0 +1,2 @@
+ALTER TABLE active_tasks 
+ADD COLUMN IF NOT EXISTS is_urgent BOOLEAN DEFAULT false;

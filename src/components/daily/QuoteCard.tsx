@@ -10,26 +10,32 @@ export function QuoteCard({ quote, author }: QuoteCardProps) {
   const defaultAuthor = "SENECA";
 
   return (
-    <div className="bg-[#141414] border border-[#2a2a2a] rounded-2xl px-4 py-4 shadow-[0_4px_20px_rgba(0,0,0,0.4)] relative overflow-hidden group">
-      <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-         <span className="text-8xl font-black text-[#6366f1]">"</span>
+    <div
+      className="bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-[24px] px-6 py-5 relative overflow-hidden group"
+      style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.4)' }}
+    >
+      {/* Background decorative quote mark */}
+      <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity pointer-events-none">
+        <span className="text-[96px] font-black text-white leading-none select-none">"</span>
       </div>
 
-      <div className="flex items-center gap-2 mb-6 border-b border-[#2a2a2a]/60 pb-3">
-        <span className="text-[#6366f1] text-sm font-black italic">"</span>
-        <span className="text-[10px] font-semibold tracking-widest uppercase text-[#555555] mb-3">
+      {/* Header */}
+      <div className="flex items-center gap-2 mb-5 pb-3 border-b border-[var(--border-subtle)]">
+        <span className="text-[11px] font-medium tracking-[0.15em] uppercase text-[var(--text-tertiary)]">
           GÜNLÜK SÖZ
         </span>
       </div>
-      
-      <p className="text-sm italic text-[#888888] leading-relaxed relative z-10">
-        “{quote || defaultQuote}”
+
+      {/* Quote text */}
+      <p className="text-sm italic text-[var(--text-secondary)] leading-relaxed relative z-10">
+        "{quote || defaultQuote}"
       </p>
-      
-      <div className="mt-8 flex justify-end">
+
+      {/* Author */}
+      <div className="mt-6 flex justify-end">
         <div className="flex flex-col items-end">
-          <div className="h-px w-8 bg-[#2a2a2a] mb-2" />
-          <span className="text-[#666666] text-[10px] font-black uppercase tracking-[0.2em]">
+          <div className="h-px w-8 bg-[var(--border-strong)] mb-2" />
+          <span className="text-[11px] font-medium uppercase tracking-[0.2em] text-[var(--text-tertiary)]">
             {author || defaultAuthor}
           </span>
         </div>

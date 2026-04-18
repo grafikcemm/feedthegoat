@@ -10,20 +10,37 @@ const config: Config = {
     extend: {
       colors: {
         dark: {
-          base: '#0d0d1a',
-          sidebar: '#111124',
-          card: '#1a1a2e',
-          elevated: '#22223a',
-          border: '#2a2a45',
+          base: 'var(--bg-primary)',
+          card: 'var(--bg-card)',
+          elevated: 'var(--bg-card-elevated)',
+          hover: 'var(--bg-card-hover)',
+          border: 'var(--border-subtle)',
+          'border-strong': 'var(--border-strong)',
         },
         accent: {
-          DEFAULT: '#6366f1',
-          hover: '#4f46e5',
-          light: '#1e1b4b',
+          DEFAULT: 'var(--accent)',
+          muted: 'var(--accent-muted)',
+          glow: 'var(--accent-glow)',
+        },
+        status: {
+          success: 'var(--success)',
+          fire: 'var(--fire)',
+        },
+        text: {
+          primary: 'var(--text-primary)',
+          secondary: 'var(--text-secondary)',
+          tertiary: 'var(--text-tertiary)',
+          quaternary: 'var(--text-quaternary)',
         }
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-inter-tight)', 'sans-serif'],
+        serif: ['var(--font-instrument-serif)', 'serif'],
+        mono: ['var(--font-mono)', 'monospace'],
+      },
+      borderRadius: {
+        '2xl': '20px',
       },
       boxShadow: {
         'card': '0 4px 20px rgba(0, 0, 0, 0.4)',

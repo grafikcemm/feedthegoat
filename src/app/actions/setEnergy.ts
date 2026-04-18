@@ -31,3 +31,17 @@ export async function setEnergy(input: { energy: "LOW" | "MID" | "HIGH" }) {
   revalidatePath("/");
   return { success: true as const };
 }
+
+export async function getEnergy(): Promise<"LOW" | "MID" | "HIGH" | null> {
+  const supabase = createServerSupabase();
+  const today = new Date().toISOString().split("T")[0];
+
+  const { data, error } = await supabase
+    .from("energy_checkins")
+    .select("energy")
+    .eq("date", today)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  return data.energy as "LOW" | "MID" | "HIGH";
+}

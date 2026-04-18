@@ -21,5 +21,6 @@ export interface ActiveTask {
   is_done: boolean
   category: 'active' | 'waiting'
   sort_order: number
+  is_priority?: boolean
   created_at: string
 }

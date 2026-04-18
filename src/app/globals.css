@@ -2,55 +2,42 @@
 @config "../../tailwind.config.ts";
 
 :root {
-  /* Arka planlar */
-  --bg-base: #000000;        /* Tam siyah */
-  --bg-sidebar: #0a0a0a;     /* Sidebar — çok hafif gri */
-  --bg-card: #141414;        /* Kart — koyu gri */
-  --bg-card-2: #1c1c1c;      /* İkinci katman kart */
-  --bg-elevated: #222222;    /* Üst eleman */
-  --bg-input: #111111;       /* Input */
+  --bg-primary: #0A0A0B;
+  --bg-card: #141416;
+  --bg-card-elevated: #1C1C20;
+  --bg-card-hover: #242428;
+  --border-subtle: #242428;
+  --border-strong: #3F3F46;
 
-  /* Borderlar */
-  --border-default: #2a2a2a; /* Çok ince border */
-  --border-muted: #1a1a1a;   /* Neredeyse görünmez */
+  /* Accent artık BEYAZ */
+  --accent: #FAFAFA;
+  --accent-muted: rgba(255, 255, 255, 0.6);
+  --accent-glow: rgba(255, 255, 255, 0.08);
 
-  /* Yazılar */
-  --text-primary: #ffffff;   /* Saf beyaz başlık */
-  --text-secondary: #ababab; /* Gri metin */
-  --text-muted: #666666;     /* Çok soluk */
+  /* Özel durum renkleri */
+  --fire: #F97316;
+  --success: #10B981;
 
-  /* Renkler */
-  --accent: #6366f1;         /* İndigo — tek renkli aksan */
-  --accent-hover: #4f46e5;
-  --accent-light: #1e1b4b;
-
-  --success: #30d158;        /* Apple yeşili */
-  --success-light: #064e3b;  
-  --warning: #ffd60a;        /* Apple sarısı */
-  --warning-light: #451a03;
-  --danger: #ff453a;         /* Apple kırmızısı */
-  --danger-light: #450a0a;
-  --info: #3b82f6;
-  --info-light: #1e3a5f;
-
-  /* Gölgeler */
-  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
-  --shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.5);
+  /* Text hiyerarşisi */
+  --text-primary: #FAFAFA;
+  --text-secondary: #A1A1AA;
+  --text-tertiary: #52525B;
+  --text-quaternary: #3F3F46;
 }
 
 body {
-  background-color: var(--bg-base);
+  background-color: var(--bg-primary);
   color: var(--text-primary);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-::-webkit-scrollbar { width: 0px; } /* Scrollbar gizle — Apple tarzı */
+::-webkit-scrollbar { width: 0px; } /* Scrollbar gizle */
 
 /* ── Selection ─────────────────────────────────────────────── */
 ::selection {
-  background: var(--accent-light);
-  color: var(--accent);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
 }
 
 /* ── Animations ───────────────────────────────────────── */
@@ -88,7 +75,7 @@ body {
 
 @keyframes flash-accent {
   0%   { border-color: transparent; }
-  50%  { border-color: var(--accent); }
+  50%  { border-color: var(--border-strong); }
   100% { border-color: transparent; }
 }
 .animate-flash-accent {
@@ -113,7 +100,7 @@ body {
 }
 
 @keyframes score-flash {
-  0% { color: var(--accent); transform: scale(1.05); }
+  0% { color: var(--text-primary); transform: scale(1.05); }
   100% { color: var(--text-primary); transform: scale(1); }
 }
 .animate-score-flash {
@@ -139,4 +126,53 @@ body {
 .mood-durgun {
   animation: idle-bob 4s ease-in-out infinite;
   opacity: 0.6;
+}
+
+.pixelated { image-rendering: pixelated; }
+
+/* ── ENERJİ TEMALARI ────────────────────────────────────────── */
+
+/* DÜŞÜK ENERJİ — Gri/soluk */
+.theme-low {
+  --bg-primary: #111113;
+  --bg-card: #181818;
+  --bg-card-elevated: #1F1F1F;
+  --border-subtle: #2A2A2A;
+  --text-primary: rgba(250, 250, 250, 0.55);
+  --text-secondary: rgba(161, 161, 170, 0.5);
+  --text-tertiary: rgba(82, 82, 91, 0.6);
+  --accent: rgba(250, 250, 250, 0.4);
+}
+
+/* ORTA ENERJİ — Mevcut (default) */
+.theme-mid {
+  --bg-primary: #0A0A0B;
+  --bg-card: #141416;
+  --bg-card-elevated: #1C1C20;
+  --border-subtle: #242428;
+  --text-primary: #FAFAFA;
+  --text-secondary: #A1A1AA;
+  --text-tertiary: #52525B;
+  --accent: #FAFAFA;
+}
+
+/* YÜKSEK ENERJİ — Keskin/Focus */
+.theme-high {
+  --bg-primary: #000000;
+  --bg-card: #0F0F0F;
+  --bg-card-elevated: #171717;
+  --border-subtle: #2A2A2A;
+  --border-strong: #404040;
+  --text-primary: #FFFFFF;
+  --text-secondary: #C4C4C4;
+  --text-tertiary: #6B6B6B;
+  --accent: #FFFFFF;
+}
+
+/* Smooth geçiş */
+body {
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+* {
+  transition: border-color 0.4s ease, background-color 0.4s ease, color 0.4s ease;
 }

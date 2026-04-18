@@ -66,3 +66,15 @@ export async function moveActiveTask(
   await supabase.from('active_tasks').update({ category: to }).eq('id', id)
   revalidatePath('/')
 }
+
+export async function toggleTaskPriority(
+  id: string,
+  isCurrentlyPriority: boolean
+): Promise<void> {
+  const supabase = createClient()
+  await supabase
+    .from('active_tasks')
+    .update({ is_priority: !isCurrentlyPriority })
+    .eq('id', id)
+  revalidatePath('/')
+}
