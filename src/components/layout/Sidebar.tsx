@@ -8,12 +8,14 @@ import {
   Archive,
   BarChart3,
   Dumbbell,
-  Wallet
+  Wallet,
+  GraduationCap
 } from 'lucide-react'
 
 const navItems = [
   { href: '/?tab=GUNLUK',  icon: CalendarDays, label: 'Ana Sayfa' },
   { href: '/?tab=KARIYER', icon: Rocket,        label: 'Kariyer'   },
+  { href: '/universite',   icon: GraduationCap, label: 'Üniversite' },
 ]
 
 function SidebarInner() {
