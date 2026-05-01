@@ -24,7 +24,7 @@ export function GoatEvolution({
   const stage = getGoatStage(streak);
 
   return (
-    <div className="rounded-[24px] border border-[var(--border-subtle)] bg-[var(--bg-card)] px-8 py-12 flex flex-col items-center justify-center gap-6 min-h-[420px]">
+    <div className="bg-[#111111] border border-[#1E1E1E] rounded-xl px-8 py-12 flex flex-col items-center justify-center gap-6 min-h-[420px]">
       
       {/* ORB — merkezi büyük daire */}
       <div className="relative flex items-center justify-center">
@@ -95,36 +95,29 @@ export function GoatEvolution({
       </div>
 
       {/* SKOR */}
-      <div className="flex flex-col items-center gap-2 mt-4">
-        <div 
-          className="font-mono tabular-nums text-white"
-          style={{ fontSize: "72px", lineHeight: "1", letterSpacing: "-0.02em" }}
-        >
-          {score}<span className="text-[var(--text-tertiary)]">/{cap}</span>
+      <div className="flex flex-col items-center mt-4">
+        <div className="flex items-baseline">
+          <span className="text-white font-bold text-6xl">
+            {score}
+          </span>
+          <span className="text-[#444444] font-bold text-6xl">
+            /{cap}
+          </span>
         </div>
-        <div 
-          className="uppercase font-medium text-[var(--text-tertiary)]"
-          style={{ fontSize: "11px", letterSpacing: "0.15em" }}
-        >
-          Günlük Sistem Skoru
+        <div className="text-[#888888] text-xs uppercase tracking-widest mt-1">
+          GÜNLÜK SİSTEM SKORU
         </div>
         
-        <div style={{
-          fontSize: "11px",
-          color: "var(--text-tertiary)",
-          letterSpacing: "0.1em",
-          textTransform: "uppercase",
-          marginTop: "4px"
-        }}>
-          {cap === 70 ? 'Günlük Hedef · 70P' :
-           cap === 50 ? 'Orta Enerji · 50P Hedef' :
-                        'Düşük Enerji · 30P Hedef'}
+        <div className="text-[#444444] text-xs mt-1">
+          {cap === 70 ? 'GÜNLÜK HEDEF: 70P' :
+           cap === 50 ? 'ORTA ENERJİ: 50P HEDEF' :
+                        'DÜŞÜK ENERJİ: 30P HEDEF'}
         </div>
       </div>
 
       {/* ENERJI DURUM */}
       {energyStatus && (
-        <div className="text-sm italic text-[var(--text-secondary)] mt-2">
+        <div className="text-sm italic text-[#888888] mt-2">
           {energyStatus}
         </div>
       )}

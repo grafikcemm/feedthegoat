@@ -66,7 +66,7 @@ export function EndDayButton({ score, isAlreadyFinalized }: EndDayButtonProps) {
       onClick={handleEndDay}
       disabled={loading}
       className={cn(
-        "w-full h-14 bg-white text-black text-sm font-semibold tracking-wide rounded-[16px] hover:bg-white/90 transition-all cursor-pointer active:scale-[0.98] uppercase",
+        "w-full bg-[#F5C518] text-black font-bold text-sm py-3.5 rounded-xl hover:bg-[#e6b800] transition-all cursor-pointer active:scale-[0.98] uppercase",
         loading && "opacity-50 cursor-wait"
       )}
     >

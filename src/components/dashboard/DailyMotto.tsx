@@ -34,14 +34,9 @@ export function DailyMotto() {
   if (isWeekend) return null;
 
   return (
-    <div className="flex flex-col items-center justify-center text-center py-6">
-      {/* Tarih */}
-      <div className="text-[13px] text-[var(--text-tertiary)] mb-6">
-        {dateStr}
-      </div>
-      {/* Motto — Instrument Serif italic, 32px, no quotes */}
-      <div className="font-serif italic text-[32px] text-[var(--text-primary)] leading-snug max-w-2xl mx-auto">
-        {motto}
+    <div className="flex flex-col items-center justify-center text-center py-2">
+      <div className="italic text-[#888888] text-sm max-w-2xl mx-auto">
+        "{motto}"
       </div>
     </div>
   );

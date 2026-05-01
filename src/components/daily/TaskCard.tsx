@@ -130,17 +130,17 @@ export function TaskCard({
       <div
         onClick={handleClick}
         className={cn(
-          "flex items-center gap-4 px-4 py-3.5 rounded-xl border transition-colors relative group",
-          isPassive ? "opacity-40 grayscale cursor-not-allowed bg-transparent border-[#2a2a2a]" : 
-          isBonus ? "border-dashed border-[#2a2a2a] bg-transparent hover:bg-[#1a1a1a]" :
-          "bg-[#141414] border-[#2a2a2a] hover:border-[#333333] cursor-pointer"
+          "flex items-center gap-4 px-3 py-3 rounded-xl border transition-colors relative group",
+          isPassive ? "opacity-40 grayscale cursor-not-allowed bg-transparent border-[#1E1E1E]" : 
+          isBonus ? "border-dashed border-[#1E1E1E] bg-transparent hover:bg-[#1A1A1A]" :
+          "bg-[#111111] border-[#1E1E1E] hover:border-[#333333] cursor-pointer"
         )}
       >
         {/* Icon (Status Dot) */}
         <div
           className={cn(
-            "w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-all text-white",
-            isDone ? "bg-[#30d158]" : isPassive ? "border border-[#2a2a2a] bg-transparent" : "border-2 border-[#333333] group-hover:border-[#6366f1]"
+            "w-4 h-4 rounded-full flex items-center justify-center shrink-0 transition-all text-white",
+            isDone ? "bg-[#22C55E] border border-[#22C55E]" : isPassive ? "border border-[#1E1E1E] bg-transparent" : "border border-[#444444]"
           )}
         >
           {isDone && (
@@ -153,7 +153,7 @@ export function TaskCard({
         {/* Title */}
         <span
           className={cn(
-            "flex-1 text-[15px] font-medium transition-all w-full truncate",
+            "flex-1 text-sm font-medium transition-all w-full truncate",
             isDone ? "text-[#444444] line-through" : isPassive ? "text-[#666666]" : "text-white"
           )}
         >
@@ -181,7 +181,7 @@ export function TaskCard({
 
         {/* Points */}
         {!isProduction && (
-          <span className={cn("text-xs font-bold transition-colors", isDone ? "text-[#30d158]" : "text-[#6366f1]")}>
+          <span className={cn("px-2 py-0.5 rounded-full text-xs font-bold transition-colors", isDone ? "bg-[#22C55E]/10 text-[#22C55E]" : "bg-[#F5C518]/10 text-[#F5C518]")}>
             +{points}P
           </span>
         )}

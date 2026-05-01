@@ -141,19 +141,19 @@ export function TaskGroup({
           onKeyDown={handleKeyDown}
           placeholder="Yeni görev ekle..."
           disabled={isAdding}
-          className="flex-1 bg-[#141414] border border-[#222222] rounded-xl px-4 py-2.5 text-sm text-white placeholder-[#444444] focus:border-[#6366f1] focus:outline-none focus:ring-1 focus:ring-[#6366f1]/30 transition-all disabled:opacity-50"
+          className="flex-1 bg-[#111111] border border-[#1E1E1E] rounded-xl px-4 py-2.5 text-sm text-[#888888] placeholder-[#444444] focus:border-[#F5C518] focus:outline-none transition-all disabled:opacity-50"
         />
         <button
           onClick={() => handleAddTask("active")}
           disabled={isAdding || !newTaskValue.trim()}
-          className="w-9 h-9 bg-[#6366f1] rounded-xl flex items-center justify-center hover:bg-[#4f46e5] transition-colors text-white text-sm font-semibold shadow-lg shadow-[#6366f1]/30 disabled:opacity-50"
+          className="w-9 h-9 bg-[#F5C518] rounded-xl flex items-center justify-center hover:bg-[#e6b800] transition-colors text-black text-sm font-bold disabled:opacity-50"
         >
           +
         </button>
         <button
           onClick={() => handleAddTask("waiting")}
           disabled={isAdding || !newTaskValue.trim()}
-          className="w-9 h-9 bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl flex items-center justify-center text-[#555555] hover:border-[#333333] transition-colors disabled:opacity-50"
+          className="w-9 h-9 bg-[#111111] border border-[#1E1E1E] rounded-xl flex items-center justify-center text-[#555555] hover:border-[#333333] transition-colors disabled:opacity-50"
           title="Bekleyenlere Ekle"
         >
           ⏳

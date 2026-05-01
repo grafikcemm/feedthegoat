@@ -51,27 +51,27 @@ export function FinanceWidget() {
     return (
       <div
         onClick={() => setIsOpen(true)}
-        className={`${baseClass} bg-[var(--bg-card)] rounded-[16px] border border-[var(--border-subtle)] p-4 cursor-pointer hover:bg-[var(--bg-card-elevated)] hover:border-[var(--border-strong)] transition-all flex items-center justify-between shadow-2xl`}
+        className={`${baseClass} bg-[#111111] border border-[#1E1E1E] rounded-xl p-4 cursor-pointer hover:bg-[#1A1A1A] transition-all flex items-center justify-between shadow-2xl`}
       >
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
-            <span className="text-[18px] font-semibold text-[var(--text-primary)]">₺</span>
+            <span className="text-lg font-semibold text-[#F5C518]">₺</span>
           </div>
           <span className={cn(
-            "font-mono text-[15px] font-semibold tabular-nums",
-            isNegative ? "text-[#EF4444]" : "text-[var(--text-primary)]"
+            "font-mono text-sm font-bold tabular-nums",
+            isNegative ? "text-[#EF4444]" : "text-[#F5C518]"
           )}>
             {loading ? '...' : `₺${data?.netAmount.toLocaleString('tr-TR')}`}
           </span>
         </div>
-        <ChevronUp size={16} className="text-[var(--text-tertiary)]" />
+        <ChevronUp size={16} className="text-[#888888]" />
       </div>
     );
   }
 
   return (
     <div
-      className={`${baseClass} bg-[var(--bg-card)] rounded-[20px] border border-[var(--border-subtle)] p-5`}
+      className={`${baseClass} bg-[#111111] rounded-xl border border-[#1E1E1E] p-5`}
       style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}
     >
       <div className="flex items-center justify-between mb-6">

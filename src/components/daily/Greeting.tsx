@@ -24,31 +24,21 @@ export function Greeting() {
 
   if (!mounted) {
     return (
-      <div className="flex flex-col gap-2">
-        <div className="h-10 w-64 bg-[var(--bg-card)] rounded animate-pulse" />
-        <div className="h-4 w-40 bg-[var(--bg-card)] rounded animate-pulse" />
+      <div className="flex flex-col gap-1">
+        <div className="h-8 w-64 bg-[#111111] rounded animate-pulse" />
+        <div className="h-4 w-40 bg-[#111111] rounded animate-pulse" />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-2">
-      <h1 
-        className="text-white font-semibold tracking-tight"
-        style={{ 
-          fontFamily: "'Inter Tight', sans-serif",
-          fontSize: "32px",
-          lineHeight: "1.2"
-        }}
-      >
-        Merhaba, Ali Cem
-      </h1>
-      <div 
-        className="text-[var(--text-tertiary)]"
-        style={{ fontSize: "14px" }}
-      >
+    <div className="flex flex-col mb-2">
+      <div className="text-[#888888] text-sm">
         {dateString}
       </div>
+      <h1 className="text-white text-3xl font-bold mt-1">
+        Merhaba Cem,
+      </h1>
     </div>
   );
 }

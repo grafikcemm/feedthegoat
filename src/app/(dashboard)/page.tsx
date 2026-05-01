@@ -39,9 +39,8 @@ import { MealPlanSection } from "@/components/sport/MealPlanSection";
 
 // New Career Components
 import { CareerShell } from "@/components/career/CareerShell";
-import { ActivePhaseCard } from "@/components/career/ActivePhaseCard";
-import { PhaseCollapse } from "@/components/career/PhaseCollapse";
-import { PhaseProgressBar } from "@/components/career/PhaseProgressBar";
+import { CareerTargetBanner } from "@/components/career/CareerTargetBanner";
+import { CareerPhaseCard } from "@/components/career/CareerPhaseCard";
 
 import { 
   getTodayDayKey, 
@@ -202,37 +201,48 @@ export default async function Page({
     const [
       { data: phases },
       { data: skills },
-      { data: notes },
     ] = await Promise.all([
       supabase.from('career_phases').select('*').order('sort_order'),
       supabase.from('career_skills').select('*').order('sort_order'),
-      supabase.from('career_notes').select('*').order('created_at', { ascending: false }),
     ]);
 
-    const phasesWithData = phases?.map(phase => ({
+    const phasesWithSkills = phases?.map(phase => ({
       ...phase,
       skills: skills?.filter(s => s.phase_id === phase.id) ?? [],
-      notes: notes?.filter(n => n.phase_id === phase.id) ?? [],
-    })) ?? [];
+    })) || [];
 
-    const activePhase = phasesWithData.find(p => p.is_active);
-    const otherPhases = phasesWithData.filter(p => !p.is_active);
+    const activePhase = phasesWithSkills.find(p => p.is_active);
+    const sortedPhases = [...phasesWithSkills].sort((a, b) => a.sort_order - b.sort_order);
+    
+    const totalSkills = skills?.length || 0;
+    const completedSkills = skills?.filter(s => s.is_completed).length || 0;
+    const activePhaseNumber = activePhase?.phase_number || 0;
 
     return (
       <div className="min-h-screen bg-[#000000]">
         <div className="pt-8">
           <CareerShell>
-            <div className="text-center mb-6">
-              <h1 className="text-[#ffffff] text-xl font-bold tracking-tight uppercase">
-                KARİYER YOL HARİTASI
+            <div className="mb-6">
+              <span className="text-[#444444] text-[10px] uppercase tracking-widest block font-medium">
+                KARİYER ROTASI
+              </span>
+              <h1 className="text-white font-bold text-xl">
+                AI-Native Creative Director & Motion Strategist
               </h1>
-              <p className="text-xs text-[#666666] mt-1">
-                B2B AaaS Builder & AI-Native Creative Orchestrator
-              </p>
             </div>
-            <PhaseProgressBar phases={phasesWithData} />
-            {activePhase && <ActivePhaseCard phase={activePhase} />}
-            {otherPhases.length > 0 && <PhaseCollapse phases={otherPhases} />}
+
+            <CareerTargetBanner 
+              totalPhases={phases?.length || 0}
+              activePhaseNumber={activePhaseNumber}
+              completedSkills={completedSkills}
+              totalSkills={totalSkills}
+            />
+
+            <div className="space-y-4">
+              {sortedPhases.map(phase => (
+                <CareerPhaseCard key={phase.id} phase={phase} />
+              ))}
+            </div>
           </CareerShell>
         </div>
       </div>

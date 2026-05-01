@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono, Inter_Tight, Instrument_Serif } from "next/font/google";
+import { Inter } from "next/font/google";
 import { ToastProvider } from "@/components/Toast";
 import "./globals.css";
 
@@ -8,24 +8,6 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-mono",
-  subsets: ["latin"],
-  weight: ["400", "500"],
-});
-
-const interTight = Inter_Tight({
-  variable: "--font-inter-tight",
-  subsets: ["latin"],
-  weight: ["600", "700"],
-});
-
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument-serif",
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["italic"],
-});
 import { Sidebar } from "@/components/layout/Sidebar";
 
 export const metadata: Metadata = {
@@ -40,9 +22,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="tr" suppressHydrationWarning>
-      <body className={`${inter.variable} ${jetbrainsMono.variable} ${interTight.variable} ${instrumentSerif.variable} antialiased font-sans theme-mid`} suppressHydrationWarning>
+      <body className={`${inter.variable} antialiased font-sans bg-[#0A0A0A] text-white`} suppressHydrationWarning>
         <ToastProvider>
-          <div className="flex min-h-screen bg-[var(--bg-primary)]">
+          <div className="flex min-h-screen bg-[#0A0A0A]">
             {/* Sol Sidebar */}
             <Sidebar />
             

@@ -34,14 +34,14 @@ export function WaterTracker() {
 
   return (
     <div
-      className="bg-[var(--bg-card)] rounded-[24px] border border-[var(--border-subtle)] p-[20px]"
+      className="bg-[#111111] border border-[#1E1E1E] rounded-xl p-3"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-[11px] uppercase tracking-[0.15em] font-medium text-[var(--text-tertiary)]">
+        <h3 className="text-[#444444] text-xs uppercase tracking-widest">
           SU TAKİBİ
         </h3>
-        <span className="tabular-nums text-[var(--text-secondary)] text-[13px]">
+        <span className="tabular-nums text-white font-bold">
           {bottlesCompleted}/3
         </span>
       </div>
@@ -66,8 +66,8 @@ export function WaterTracker() {
                 strokeWidth={isFilled ? 2 : 1.5}
                 style={
                   isFilled
-                    ? { color: 'var(--accent)', fill: 'rgba(250,250,250,0.15)' }
-                    : { color: 'var(--border-strong)', fill: 'transparent' }
+                    ? { color: '#F5C518', fill: '#F5C518' }
+                    : { color: '#1E1E1E', fill: 'transparent' }
                 }
               />
             </button>

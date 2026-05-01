@@ -9,13 +9,7 @@ interface CardProps {
 export function Card({ children, className = "", noPadding = false }: CardProps) {
   return (
     <div
-      className={className}
-      style={{
-        backgroundColor: "#141416",
-        border: "1px solid #242428",
-        borderRadius: "20px",
-        padding: noPadding ? "0" : "24px",
-      }}
+      className={`bg-[#111111] border border-[#1E1E1E] rounded-xl ${noPadding ? "p-0" : "p-4"} ${className}`}
     >
       {children}
     </div>

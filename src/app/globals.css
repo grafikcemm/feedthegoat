@@ -2,31 +2,21 @@
 @config "../../tailwind.config.ts";
 
 :root {
-  --bg-primary: #0A0A0B;
-  --bg-card: #141416;
-  --bg-card-elevated: #1C1C20;
-  --bg-card-hover: #242428;
-  --border-subtle: #242428;
-  --border-strong: #3F3F46;
-
-  /* Accent artık BEYAZ */
-  --accent: #FAFAFA;
-  --accent-muted: rgba(255, 255, 255, 0.6);
-  --accent-glow: rgba(255, 255, 255, 0.08);
-
-  /* Özel durum renkleri */
-  --fire: #F97316;
-  --success: #10B981;
-
-  /* Text hiyerarşisi */
-  --text-primary: #FAFAFA;
-  --text-secondary: #A1A1AA;
-  --text-tertiary: #52525B;
-  --text-quaternary: #3F3F46;
+  --bg: #0A0A0A;
+  --surface: #111111;
+  --border: #1E1E1E;
+  
+  --text-primary: #FFFFFF;
+  --text-secondary: #888888;
+  --text-muted: #444444;
+  
+  --accent-yellow: #F5C518;
+  --accent-green: #22C55E;
+  --danger: #EF4444;
 }
 
 body {
-  background-color: var(--bg-primary);
+  background-color: var(--bg);
   color: var(--text-primary);
   font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;

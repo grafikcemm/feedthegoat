@@ -26,11 +26,8 @@ export function EnergyCheckIn({ currentEnergy, onSelect }: EnergyCheckInProps) {
   };
 
   return (
-    <div className="w-full relative">
-      <h3 className="text-[11px] font-medium tracking-[0.15em] uppercase text-[var(--text-tertiary)] mb-4 text-center">
-        BUGÜNÜN ENERJİSİ
-      </h3>
-      <div className="flex gap-2">
+    <div className="w-full flex justify-center">
+      <div className="bg-[#0A0A0A] border border-[#1E1E1E] rounded-lg p-1 flex gap-1">
         {buttons.map((btn) => {
           const isActive = btn.value === active;
           return (
@@ -38,10 +35,10 @@ export function EnergyCheckIn({ currentEnergy, onSelect }: EnergyCheckInProps) {
               key={btn.value}
               onClick={() => handleSetEnergy(btn.value)}
               className={cn(
-                "flex-1 py-2.5 text-center text-xs font-medium rounded-xl transition-all duration-200",
+                "transition-all duration-200",
                 isActive
-                  ? "bg-white/10 border border-white/20 text-white font-semibold"
-                  : "bg-[var(--bg-card-elevated)] text-[var(--text-tertiary)] border border-[var(--border-subtle)] hover:bg-white/5 hover:text-[var(--text-primary)]"
+                  ? "bg-[#F5C518] text-black rounded-md px-4 py-1.5 text-xs font-semibold"
+                  : "text-[#444444] rounded-md px-4 py-1.5 text-xs font-medium hover:text-[#888888]"
               )}
             >
               {btn.label}

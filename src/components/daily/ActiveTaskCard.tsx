@@ -112,16 +112,12 @@ export function ActiveTaskCard({ task }: ActiveTaskCardProps) {
       className={cn(
         "flex items-center gap-3 px-4 py-3 rounded-xl border transition-all group",
         optimisticPriority 
-          ? "bg-[#1a1111] border-[#ef4444]/40" 
-          : "bg-[#141414] border-[#222222] hover:border-[#2a2a2a]",
+          ? "bg-[#111111] border-[#1E1E1E] border-l-2 border-l-[#EF4444]" 
+          : "bg-[#111111] border-[#1E1E1E] border-l-2 border-l-transparent",
         isPending && "opacity-60",
         optimisticDone && "opacity-70"
       )}
       style={{
-        borderLeft: optimisticPriority 
-          ? "4px solid #EF4444" 
-          : "3px solid transparent",
-        paddingLeft: optimisticPriority ? "12px" : "16px",
         marginBottom: "8px"
       }}
     >
@@ -143,8 +139,8 @@ export function ActiveTaskCard({ task }: ActiveTaskCardProps) {
 
       <span
         className={cn(
-          "flex-1 transition-all",
-          optimisticDone ? "text-[15px] text-[#666666] line-through" : "text-[15px] text-[#ababab]"
+          "flex-1 transition-all text-sm font-medium",
+          optimisticDone ? "text-[#666666] line-through" : "text-white"
         )}
       >
         {task.title}

@@ -27,18 +27,18 @@ export function NutritionCard() {
   const totalProtein = meals.reduce((sum, m) => sum + (m.total_protein_g || 0), 0);
 
   return (
-    <div className="bg-[var(--bg-card)] rounded-[20px] border border-[var(--border-subtle)] overflow-hidden transition-all duration-300 shadow-sm">
+    <div className="bg-[#111111] border border-[#1E1E1E] rounded-xl p-3 overflow-hidden transition-all duration-300 shadow-sm">
       {/* Kapalı / Header Modu */}
       <div 
         onClick={() => setIsOpen(!isOpen)}
-        className="p-5 flex items-center justify-between cursor-pointer hover:bg-[var(--bg-card-elevated)] transition-colors"
+        className="flex items-center justify-between cursor-pointer hover:bg-[#1A1A1A] transition-colors rounded-lg"
       >
         <div className="flex items-center gap-4 flex-1">
-          <span className="uppercase tracking-wider text-[11px] text-[var(--text-tertiary)] font-bold">
+          <span className="text-[#444444] text-xs uppercase tracking-widest">
             BESLENME
           </span>
-          <div className="text-[var(--text-secondary)] text-[14px] truncate">
-            {totalProtein}g protein hedefi · <span className="text-[var(--text-tertiary)] italic">Sıradaki: Whey 12:30</span>
+          <div className="text-[#888888] text-sm truncate">
+            {totalProtein}g protein hedefi · <span className="text-[#444444] italic">Sıradaki: Whey 12:30</span>
           </div>
         </div>
         <div>
