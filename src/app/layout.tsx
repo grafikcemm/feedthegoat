@@ -9,6 +9,7 @@ const inter = Inter({
 });
 
 import { Sidebar } from "@/components/layout/Sidebar";
+import { FloatingAssistant } from "@/components/assistant/FloatingAssistant";
 
 export const metadata: Metadata = {
   title: "Feed The Goat",
@@ -33,6 +34,9 @@ export default function RootLayout({
               {children}
             </main>
           </div>
+
+          {/* Floating assistant bubble */}
+          <FloatingAssistant />
         </ToastProvider>
       </body>
     </html>

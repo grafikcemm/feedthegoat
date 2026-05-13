@@ -4,17 +4,22 @@ import Link from 'next/link'
 import React from 'react'
 import {
   CalendarDays,
-  Rocket,
-  BarChart3,
-  GraduationCap,
   Wallet,
+  GraduationCap,
+  Layers,
+  BarChart3,
+  Rocket,
+  Bot,
 } from 'lucide-react'
 
 const navItems = [
-  { href: '/?tab=GUNLUK',   icon: CalendarDays, label: 'Ana Sayfa' },
-  { href: '/?tab=KARIYER',  icon: Rocket,        label: 'Kariyer'   },
-  { href: '/?tab=FINANS',   icon: Wallet,        label: 'Finans'    },
-  { href: '/universite',    icon: GraduationCap, label: 'Üniversite' },
+  { href: '/?tab=GUNLUK',   icon: CalendarDays, label: 'Günlük'       },
+  { href: '/?tab=RITIMLER', icon: Layers,        label: 'Ritimler'     },
+  { href: '/?tab=BESLENME', icon: GraduationCap, label: 'Beslenme'     },
+  { href: '/?tab=GELISIM',  icon: Rocket,        label: 'Gelişim Yolu' },
+  { href: '/?tab=ANALIZ',   icon: BarChart3,     label: 'Analiz'       },
+  { href: '/?tab=ASISTAN',  icon: Bot,           label: 'Asistan'      },
+  { href: '/?tab=FINANS',   icon: Wallet,        label: 'Finans'       },
 ]
 
 function SidebarInner() {
@@ -30,7 +35,7 @@ function SidebarInner() {
                       py-5 gap-1 z-50">
 
       {/* FG Logo */}
-      <div className="w-9 h-9 bg-white rounded-xl flex items-center justify-center mb-6">
+      <div className="w-9 h-9 bg-white rounded-xl flex items-center justify-center mb-4">
         <span className="text-black font-bold text-xs">FG</span>
       </div>
 
@@ -82,7 +87,7 @@ export function Sidebar() {
   return (
     <React.Suspense fallback={
       <aside className="fixed left-0 top-0 h-full w-[64px] bg-[#0A0A0A] border-r border-[#1E1E1E] flex flex-col items-center py-5 gap-1 z-50">
-        <div className="w-9 h-9 bg-white rounded-xl flex items-center justify-center mb-6">
+        <div className="w-9 h-9 bg-white rounded-xl flex items-center justify-center mb-4">
           <span className="text-black font-bold text-xs">FG</span>
         </div>
       </aside>

@@ -10,6 +10,7 @@ import { getEnergy } from "@/app/actions/setEnergy";
 import { Greeting } from "@/components/daily/Greeting";
 import { DailyMotto } from "@/components/dashboard/DailyMotto";
 import { TodayEnergyCard } from "@/components/daily/TodayEnergyCard";
+import { TodayLockCard } from "@/components/daily/TodayLockCard";
 import { CriticalRoutinesSection } from "@/components/daily/CriticalRoutinesSection";
 import { DailyPeakCard } from "@/components/daily/DailyPeakCard";
 import { TodayTasksSection } from "@/components/daily/TodayTasksSection";
@@ -19,36 +20,50 @@ import { createServerSupabase } from "@/lib/supabaseServer";
 import { computeFinanceSummary } from "@/lib/financeCalc";
 import { getCurrentISOWeekKey, getCurrentWeekRange, formatDateForDB } from '@/lib/weekUtils';
 
-// New Weekly Components
+// Weekly Components
 import { WeeklyShell } from "@/components/weekly/WeeklyShell";
 import { WeeklyMetricCard } from "@/components/weekly/WeeklyMetricCard";
 import { WeeklyHeatmap } from "@/components/weekly/WeeklyHeatmap";
 import { MinimumGainsCard } from "@/components/weekly/MinimumGainsCard";
 import { ChargeDayCard } from "@/components/weekly/ChargeDayCard";
 
-// New Sport Components
+// Sport Components
 import { SportShell } from "@/components/sport/SportShell";
 import { WorkoutPlanColumn } from "@/components/sport/WorkoutPlanColumn";
 import { MealPlanSection } from "@/components/sport/MealPlanSection";
 
-// Nutrition Components
+// Nutrition
 import { NutritionShell } from "@/components/nutrition/NutritionShell";
 import { NutritionCard } from "@/components/dashboard/NutritionCard";
-import { FinanceWidget } from "@/components/dashboard/FinanceWidget";
 
-// New Career Components
+// Career / Gelişim Yolu
 import { CareerShell } from "@/components/career/CareerShell";
 import { CareerPhaseCard } from "@/components/career/CareerPhaseCard";
 
-import { 
-  getTodayDayKey, 
-  getEnglishGroupForToday 
+// Rhythms
+import { RhythmsShell } from "@/components/rhythms/RhythmsShell";
+
+// Analysis
+import { AnalysisShell } from "@/components/analysis/AnalysisShell";
+
+// Assistant
+import { AssistantShell } from "@/components/assistant/AssistantShell";
+
+import {
+  getTodayDayKey,
+  getEnglishGroupForToday
 } from '@/lib/dayUtils';
 import { ensureTodayQuote } from "@/app/actions/quoteActions";
 import { ensureWeekTEDRecommendations } from "@/app/actions/tedActions";
 import { calculateTodayEnergy } from "@/lib/todayEnergy";
 import { DuaPanel } from "@/components/daily/DuaPanel";
 import { EndDayButton } from "@/components/daily/EndDayButton";
+
+// DayKey → JS dayIndex helper
+const DAY_KEY_MAP: Record<string, string> = {
+  sun: "sunday", mon: "monday", tue: "tuesday",
+  wed: "wednesday", thu: "thursday", fri: "friday", sat: "saturday",
+};
 
 export default async function Page({
   searchParams,
@@ -65,7 +80,7 @@ export default async function Page({
   const today = format(new Date(), "yyyy-MM-dd");
   const todayDayKey = getTodayDayKey();
 
-  // Tab routing
+  // ── SPOR ─────────────────────────────────────────────────────────────────
   if (tab === "SPOR") {
     const { start, end } = getCurrentWeekRange();
     const startStr = formatDateForDB(start);
@@ -112,6 +127,7 @@ export default async function Page({
     );
   }
 
+  // ── HAFTALIK ──────────────────────────────────────────────────────────────
   if (tab === "HAFTALIK") {
     const { start, end, days: weekDays } = getCurrentWeekRange();
     const startStr = formatDateForDB(start);
@@ -163,30 +179,14 @@ export default async function Page({
         <div className="pt-8">
           <WeeklyShell>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <WeeklyMetricCard
-                label="TAMAMLANAN GÜN"
-                value={completedDays}
-                total={7}
-              />
-              <WeeklyMetricCard
-                label="HAFTALIK TOPLAM PUAN"
-                value={weeklyTotal}
-              />
-              <WeeklyMetricCard
-                label="TUTARLILIK"
-                value={`%${weeklyConsistency}`}
-              />
+              <WeeklyMetricCard label="TAMAMLANAN GÜN" value={completedDays} total={7} />
+              <WeeklyMetricCard label="HAFTALIK TOPLAM PUAN" value={weeklyTotal} />
+              <WeeklyMetricCard label="TUTARLILIK" value={`%${weeklyConsistency}`} />
             </div>
             <WeeklyHeatmap weekDays={weekDays} scoresByDate={scoresByDate} />
             <div className="mt-10 grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-8">
-              <MinimumGainsCard
-                gains={gainsWithStatus}
-                completedCount={gainsCompleted}
-                totalCount={totalGains}
-              />
-              <ChargeDayCard
-                isTodayCharge={isTodayCharge}
-              />
+              <MinimumGainsCard gains={gainsWithStatus} completedCount={gainsCompleted} totalCount={totalGains} />
+              <ChargeDayCard isTodayCharge={isTodayCharge} />
             </div>
           </WeeklyShell>
         </div>
@@ -194,7 +194,8 @@ export default async function Page({
     );
   }
 
-  if (tab === "KARIYER") {
+  // ── GELİŞİM YOLU (Kariyer) ────────────────────────────────────────────────
+  if (tab === "GELISIM" || tab === "KARIYER") {
     const [
       { data: phases },
       { data: skills },
@@ -232,7 +233,6 @@ export default async function Page({
                 <p className="text-xs text-[#555555] mt-1">Aktif görev yok</p>
               )}
             </div>
-
             <div className="space-y-3">
               {sortedPhases.map(phase => (
                 <CareerPhaseCard key={phase.id} phase={phase} />
@@ -244,6 +244,7 @@ export default async function Page({
     );
   }
 
+  // ── BESLENME ──────────────────────────────────────────────────────────────
   if (tab === "BESLENME") {
     return (
       <div className="min-h-screen bg-[#000000]">
@@ -256,6 +257,7 @@ export default async function Page({
     );
   }
 
+  // ── FINANS ────────────────────────────────────────────────────────────────
   if (tab === "FINANS") {
     const currentMonth = format(new Date(), "yyyy-MM");
     const [
@@ -272,10 +274,7 @@ export default async function Page({
     const expenseItems = (transactions || []).filter((t) => t.type === "expense");
     const sumIncome = incomeItems.reduce((acc, t) => acc + (t.amount || 0), 0);
     const sumExpense = expenseItems.reduce((acc, t) => acc + (t.amount || 0), 0);
-    const sumSubs = (subscriptions || []).reduce(
-      (acc, s) => acc + (s.amount || 0),
-      0
-    );
+    const sumSubs = (subscriptions || []).reduce((acc, s) => acc + (s.amount || 0), 0);
     const summary = computeFinanceSummary(sumIncome, sumExpense, sumSubs);
     const safeState = financeState || {
       net_balance: 0,
@@ -303,7 +302,112 @@ export default async function Page({
     );
   }
 
-  // Daily Tab (Default)
+  // ── RİTİMLER ──────────────────────────────────────────────────────────────
+  if (tab === "RITIMLER") {
+    // Map todayDayKey (PZT/SAL etc.) to DayKey (monday/tuesday etc.)
+    const dayIndexMap: Record<number, string> = {
+      0: "sunday", 1: "monday", 2: "tuesday", 3: "wednesday",
+      4: "thursday", 5: "friday", 6: "saturday",
+    };
+    const todayDayKeyFull = dayIndexMap[new Date().getDay()];
+
+    return (
+      <div className="min-h-screen bg-[#000000]">
+        <div className="pt-8">
+          <RhythmsShell todayDayKey={todayDayKeyFull} />
+        </div>
+      </div>
+    );
+  }
+
+  // ── ANALİZ ────────────────────────────────────────────────────────────────
+  if (tab === "ANALIZ") {
+    const sevenDaysAgo = format(subDays(new Date(), 6), "yyyy-MM-dd");
+
+    const [
+      { data: last7Scores },
+      { data: peakLogs },
+      { data: waitingTasks },
+    ] = await Promise.all([
+      supabase.from("daily_scores").select("date, total_score, completion_rate, finalized").gte("date", sevenDaysAgo).lte("date", today).order("date"),
+      supabase.from("bad_habit_logs").select("log_date, success").gte("log_date", sevenDaysAgo).lte("log_date", today),
+      supabase.from("active_tasks").select("id").eq("category", "waiting"),
+    ]);
+
+    // Ensure 7 days array (fill missing days)
+    const scoreMap: Record<string, { date: string; total_score: number; completion_rate: number; finalized: boolean }> = {};
+    last7Scores?.forEach(s => { scoreMap[s.date] = s as { date: string; total_score: number; completion_rate: number; finalized: boolean }; });
+
+    const filledScores = Array.from({ length: 7 }, (_, i) => {
+      const d = format(subDays(new Date(), 6 - i), "yyyy-MM-dd");
+      return scoreMap[d] ?? { date: d, total_score: 0, completion_rate: 0, finalized: false };
+    });
+
+    return (
+      <div className="min-h-screen bg-[#000000]">
+        <div className="pt-8">
+          <AnalysisShell
+            last7Scores={filledScores}
+            peakLogs={peakLogs ?? []}
+            waitingTasksCount={waitingTasks?.length ?? 0}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // ── ASİSTAN ───────────────────────────────────────────────────────────────
+  if (tab === "ASISTAN") {
+    const yesterday = format(subDays(new Date(), 1), "yyyy-MM-dd");
+
+    const [
+      { data: templates },
+      { data: completions },
+      { data: rawActiveTasks },
+      { data: yesterdayCompletions },
+      { data: yesterdayPeakLogs },
+    ] = await Promise.all([
+      supabase.from("task_templates").select("*").order("sort_order"),
+      supabase.from("daily_completions").select("template_id").eq("date", today),
+      supabase.from("active_tasks").select("*").order("is_priority", { ascending: false }).order("sort_order"),
+      supabase.from("daily_completions").select("template_id").eq("date", yesterday),
+      supabase.from("bad_habit_logs").select("success").eq("log_date", yesterday),
+    ]);
+
+    const allTemplates = templates ?? [];
+    const completedIds = new Set(completions?.map(c => c.template_id) ?? []);
+    const kritikTasks = allTemplates.filter(t => t.section === 'kritik');
+    const kritikCompletedCount = kritikTasks.filter(t => completedIds.has(t.id)).length;
+    const criticalRoutineCompletionRate = kritikTasks.length > 0 ? kritikCompletedCount / kritikTasks.length : 0;
+
+    const activeTasks = rawActiveTasks ?? [];
+    const activeOnlyCount = activeTasks.filter(t => t.category === 'active' && !t.is_done).length;
+    const waitingCount = activeTasks.filter(t => t.category === 'waiting').length;
+
+    const dailyPeakClean: boolean | null =
+      yesterdayPeakLogs && yesterdayPeakLogs.length > 0
+        ? yesterdayPeakLogs.every(l => l.success)
+        : null;
+
+    const energyInput = {
+      completedTasksYesterday: yesterdayCompletions?.length ?? 0,
+      criticalRoutineCompletionRate,
+      dailyPeakClean,
+      activeTasksCount: activeOnlyCount,
+      waitingTasksCount: waitingCount,
+      rhythmCountToday: 0,
+    };
+
+    return (
+      <div className="min-h-screen bg-[#000000]">
+        <div className="pt-8">
+          <AssistantShell energyInput={energyInput} today={today} />
+        </div>
+      </div>
+    );
+  }
+
+  // ── GÜNLÜK (Default) ──────────────────────────────────────────────────────
   const englishGroupKey = getEnglishGroupForToday();
   const yesterday = format(subDays(new Date(), 1), "yyyy-MM-dd");
 
@@ -347,7 +451,6 @@ export default async function Page({
   }
 
   const todayDate = new Date();
-  const dayOfWeekCheck = todayDate.getDay();
   const isTreadmillActive = isRhythmActiveToday('treadmill', todayDate);
 
   const takenVitaminSet = new Set(vitaminCompletions?.map(c => c.package_id) ?? []);
@@ -367,7 +470,6 @@ export default async function Page({
   const activeTasks = rawActiveTasks ?? [];
   const kritikTasks = allTemplates.filter(t => t.section === 'kritik');
 
-  // dailyPeakClean: dünkü 4 alışkanlığın tümü success ise true
   const dailyPeakClean: boolean | null =
     yesterdayPeakLogs && yesterdayPeakLogs.length > 0
       ? yesterdayPeakLogs.every(l => l.success)
@@ -408,7 +510,6 @@ export default async function Page({
       return t;
     });
 
-  // Inject virtual tasks for sport/saz when active but no DB record exists
   const sportVariant = getRhythmVariantForDay('sport', todayDate);
   if (isRhythmActiveToday('sport', todayDate) && !sistemTasks.some((t: any) => t.system_type === 'sport')) {
     sistemTasks.push({
@@ -501,26 +602,23 @@ export default async function Page({
           }}
         />
 
-        {/* 5. KRİTİK RUTİNLER */}
+        {/* 5. BUGÜNÜN KİLİDİ */}
+        <TodayLockCard activeTasks={activeTasks} />
+
+        {/* 6. KRİTİK RUTİNLER */}
         <CriticalRoutinesSection {...sharedTaskProps} />
 
-        {/* 6. GÜNLÜK PEAK */}
+        {/* 7. GÜNLÜK PEAK */}
         <DailyPeakCard />
 
-        {/* 7. AKTİF GÖREVLER */}
+        {/* 8. AKTİF GÖREVLER */}
         <TodayTasksSection {...sharedTaskProps} />
 
-        {/* 8. RİTİMLER */}
+        {/* 9. RİTİMLER */}
         <RhythmSummarySection {...sharedTaskProps} />
-
-        {/* 9. BESLENME */}
-        <NutritionCard />
 
         {/* 10. GÜNÜ BİTİR */}
         <EndDayButton score={initialTotalScore} isAlreadyFinalized={isAlreadyFinalized} />
-
-        {/* FİNANS WİDGET (sabit sağ alt) */}
-        <FinanceWidget />
       </DailyShell>
     </div>
   );
