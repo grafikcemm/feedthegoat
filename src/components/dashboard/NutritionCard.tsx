@@ -5,8 +5,8 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import { createBrowserSupabase } from '@/lib/supabaseClient';
 import { MealPlanSection } from '@/components/sport/MealPlanSection';
 
-export function NutritionCard() {
-  const [isOpen, setIsOpen] = useState(false);
+export function NutritionCard({ defaultOpen = false }: { defaultOpen?: boolean }) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
   const [meals, setMeals] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 

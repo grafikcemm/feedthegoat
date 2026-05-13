@@ -6,11 +6,11 @@ export function getTodayDayKey(): DayKey {
   return DAY_MAP[new Date().getDay()];
 }
 
+// İngilizce ritim: Salı (mikro), Perşembe (ana), Pazar (tekrar+konuşma)
 export const ENGLISH_GROUP_BY_DAY: Partial<Record<DayKey, string>> = {
-  PZT: 'english_monday',
-  CAR: 'english_wednesday',
-  CUM: 'english_friday',
-  CMT: 'english_saturday',
+  SAL: 'english_tuesday',
+  PER: 'english_thursday',
+  PAZ: 'english_sunday',
 };
 
 export function getEnglishGroupForToday(): string | null {

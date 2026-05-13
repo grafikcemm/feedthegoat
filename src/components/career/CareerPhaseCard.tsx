@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ChevronDown, Lock } from 'lucide-react';
+import { ChevronDown, Check } from 'lucide-react';
 import { SkillItem } from './SkillItem';
+import { GELISIM_CONFIG } from '@/data/gelisimConfig';
 
 interface Skill {
   id: number;
@@ -27,109 +28,152 @@ interface Phase {
   skills: Skill[];
 }
 
-interface CareerPhaseCardProps {
-  phase: Phase;
-}
-
-export function CareerPhaseCard({ phase }: CareerPhaseCardProps) {
+export function CareerPhaseCard({ phase }: { phase: Phase }) {
   const [isOpen, setIsOpen] = useState(phase.is_active);
 
-  const toggleAccordion = () => {
-    if (!phase.is_active) {
-      setIsOpen(!isOpen);
-    }
-  };
+  const allSkills = [...phase.skills].sort((a, b) => a.sort_order - b.sort_order);
+  const totalSkills = allSkills.length;
+  const completedCount = allSkills.filter(s => s.is_completed).length;
+  const progressPct = totalSkills > 0 ? Math.round((completedCount / totalSkills) * 100) : 0;
+  const isAllDone = totalSkills > 0 && completedCount === totalSkills;
 
-  const technicalSkills = phase.skills.filter(s => s.skill_type === 'teknik').sort((a, b) => a.sort_order - b.sort_order);
-  const personalSkills = phase.skills.filter(s => s.skill_type === 'kisisel').sort((a, b) => a.sort_order - b.sort_order);
+  const remaining = allSkills.filter(s => !s.is_completed);
+  const activeTask = remaining[0] ?? null;
+  const nextTask = remaining[1] ?? null;
 
-  const cardClasses = `
-    w-full transition-all duration-300 rounded-xl overflow-hidden mb-4
-    ${phase.is_active 
-      ? 'bg-[#111111] border border-[#F5C518]' 
-      : `bg-[#111111] border border-[#1E1E1E] ${isOpen ? 'opacity-100' : 'opacity-70'}`
-    }
-  `;
+  const technicalSkills = allSkills.filter(s => s.skill_type === 'teknik');
+  const personalSkills = allSkills.filter(s => s.skill_type === 'kisisel');
+
+  const fallback = GELISIM_CONFIG[phase.phase_number];
+  const description = phase.subtitle || fallback?.description || '';
 
   return (
-    <div className={cardClasses}>
-      {/* Header */}
-      <div 
-        onClick={toggleAccordion}
-        className={`p-4 flex items-center justify-between ${!phase.is_active ? 'cursor-pointer' : ''}`}
+    <div
+      className={`rounded-xl border overflow-hidden transition-all ${
+        phase.is_active
+          ? 'bg-[#111111] border-[#F5C518]/25'
+          : 'bg-[#0D0D0D] border-[#1a1a1a]'
+      }`}
+    >
+      {/* ── Header ── */}
+      <div
+        className={`p-4 flex items-center gap-3 ${!phase.is_active ? 'cursor-pointer' : ''}`}
+        onClick={() => { if (!phase.is_active) setIsOpen(o => !o); }}
       >
-        <div className="flex items-center gap-3">
-          {phase.is_active ? (
-            <span className="bg-[#F5C518] text-black text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
-              AKTİF FAZ
-            </span>
-          ) : (
-            <Lock className="w-4 h-4 text-[#444444]" />
-          )}
-          <div>
-            <span className="text-[#444444] text-[10px] uppercase tracking-widest block font-medium">
-              FAZ {phase.phase_number}
-            </span>
-            <h3 className="text-white font-bold text-lg leading-tight">
-              {phase.title}
-            </h3>
-            <p className="text-[#888888] text-sm">
-              {phase.subtitle}
-            </p>
-          </div>
+        {/* Step circle */}
+        <div
+          className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 font-mono text-xs font-bold ${
+            phase.is_active
+              ? 'bg-[#F5C518] text-black'
+              : isAllDone
+              ? 'bg-[#22c55e]/15 border border-[#22c55e] text-[#22c55e]'
+              : 'bg-[#1a1a1a] border border-[#252525] text-[#444444]'
+          }`}
+        >
+          {isAllDone ? <Check size={12} strokeWidth={3} /> : phase.phase_number}
         </div>
-        
-        {!phase.is_active && (
-          <ChevronDown 
-            className={`w-5 h-5 text-[#444444] transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} 
-          />
-        )}
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-0.5">
+            <span className="text-[10px] uppercase tracking-widest text-[#444444] font-medium">
+              SEVİYE {phase.phase_number}
+            </span>
+            {phase.is_active && (
+              <span className="text-[10px] bg-[#F5C518]/10 text-[#F5C518] px-1.5 py-px rounded font-bold tracking-wide">
+                AKTİF
+              </span>
+            )}
+          </div>
+          <h3 className={`font-bold text-base leading-tight ${phase.is_active ? 'text-white' : 'text-[#555555]'}`}>
+            {phase.title}
+          </h3>
+          {description && (
+            <p className="text-[#444444] text-xs mt-0.5 truncate">{description}</p>
+          )}
+        </div>
+
+        <div className="shrink-0 flex items-center gap-2">
+          {totalSkills > 0 && (
+            <span className="text-[10px] font-mono text-[#444444]">
+              {completedCount}/{totalSkills}
+            </span>
+          )}
+          {!phase.is_active && (
+            <ChevronDown
+              size={16}
+              className={`text-[#333333] transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+            />
+          )}
+        </div>
       </div>
 
-      {/* Content */}
-      {isOpen && (
-        <div className="px-4 pb-4 border-t border-[#1E1E1E]/50 pt-4">
-          <div className="space-y-6">
-            {/* Technical Skills */}
-            {technicalSkills.length > 0 && (
-              <div>
-                <h5 className="text-[#F5C518] text-[10px] uppercase tracking-widest font-bold mb-3">
-                  TEKNİK BECERİLER
-                </h5>
-                <div className="space-y-1">
-                  {technicalSkills.map(skill => (
-                    <SkillItem 
-                      key={skill.id} 
-                      skill={skill} 
-                      disabled={!phase.is_active} 
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Personal Skills */}
-            {personalSkills.length > 0 && (
-              <div>
-                <h5 className="text-[#888888] text-[10px] uppercase tracking-widest font-bold mb-3">
-                  KİŞİSEL BECERİLER
-                </h5>
-                <div className="space-y-1">
-                  {personalSkills.map(skill => (
-                    <SkillItem 
-                      key={skill.id} 
-                      skill={skill} 
-                      disabled={!phase.is_active} 
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
+      {/* ── Progress bar (always visible when open) ── */}
+      {isOpen && totalSkills > 0 && (
+        <div className="px-4 pb-3">
+          <div className="h-px bg-[#1a1a1a] rounded-full overflow-hidden">
+            <div
+              className="h-full bg-[#F5C518] transition-all duration-500"
+              style={{ width: `${progressPct}%` }}
+            />
           </div>
+          <span className="text-[10px] text-[#333333] mt-1 block font-mono">
+            {progressPct}% tamamlandı
+          </span>
+        </div>
+      )}
 
+      {/* ── Active task + next step (only when active and has remaining) ── */}
+      {isOpen && phase.is_active && (activeTask || nextTask) && (
+        <div className="px-4 pb-3 pt-2 border-t border-[#1a1a1a] flex flex-col gap-1.5">
+          {activeTask && (
+            <div className="flex items-baseline gap-2">
+              <span className="text-[10px] text-[#444444] uppercase tracking-wider shrink-0 w-24">
+                Aktif görev
+              </span>
+              <span className="text-xs text-[#888888]">{activeTask.title}</span>
+            </div>
+          )}
+          {nextTask && (
+            <div className="flex items-baseline gap-2">
+              <span className="text-[10px] text-[#333333] uppercase tracking-wider shrink-0 w-24">
+                Sonraki adım
+              </span>
+              <span className="text-xs text-[#555555]">{nextTask.title}</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── Skills list ── */}
+      {isOpen && (technicalSkills.length > 0 || personalSkills.length > 0) && (
+        <div className="px-4 pb-4 pt-3 border-t border-[#1a1a1a] space-y-5">
+          {technicalSkills.length > 0 && (
+            <div>
+              <h5 className="text-[#444444] text-[10px] uppercase tracking-widest font-bold mb-2">
+                Teknik Beceriler
+              </h5>
+              <div className="space-y-0.5">
+                {technicalSkills.map(skill => (
+                  <SkillItem key={skill.id} skill={skill} disabled={!phase.is_active} />
+                ))}
+              </div>
+            </div>
+          )}
+          {personalSkills.length > 0 && (
+            <div>
+              <h5 className="text-[#333333] text-[10px] uppercase tracking-widest font-bold mb-2">
+                Kişisel Beceriler
+              </h5>
+              <div className="space-y-0.5">
+                {personalSkills.map(skill => (
+                  <SkillItem key={skill.id} skill={skill} disabled={!phase.is_active} />
+                ))}
+              </div>
+            </div>
+          )}
           {!phase.is_active && (
-            <p className="text-[#444444] text-[10px] italic mt-6 border-t border-[#1E1E1E] pt-3">
-              Bu fazı açmak için Faz {phase.phase_number - 1}'i tamamla
+            <p className="text-[#333333] text-[10px] italic border-t border-[#1a1a1a] pt-3">
+              Bu seviyeye geçmek için Seviye {phase.phase_number - 1}&#39;i tamamla
             </p>
           )}
         </div>

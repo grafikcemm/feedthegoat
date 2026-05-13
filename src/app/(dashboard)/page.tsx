@@ -1,25 +1,19 @@
 export const dynamic = 'force-dynamic';
 import React from "react";
 import { format, subDays } from "date-fns";
+import { isRhythmActiveToday, getRhythmVariantForDay } from "@/data/rhythmSchedule";
 
 import { DailyShell } from "@/components/daily/DailyShell";
-import { TaskGroup } from "@/components/daily/TaskGroup";
-import { EnergyCheckIn } from "@/components/daily/EnergyCheckIn";
-import { ScoringBars } from "@/components/daily/ScoringBars";
 import { FinanceShell } from "@/components/finance/FinanceShell";
 import { getEnergy } from "@/app/actions/setEnergy";
-import { DashboardClient } from "@/components/dashboard/DashboardClient";
 
-import { Card } from "@/components/dashboard/Card";
 import { Greeting } from "@/components/daily/Greeting";
 import { DailyMotto } from "@/components/dashboard/DailyMotto";
-import { ActionReminderBanner } from "@/components/dashboard/ActionReminderBanner";
-import { GoatEvolution } from "@/components/dashboard/GoatEvolution";
-import { WaterTracker } from "@/components/dashboard/WaterTracker";
-import { BadHabitFire } from "@/components/dashboard/BadHabitFire";
-import { DayModule } from "@/components/dashboard/DayModule";
-import { NutritionCard } from "@/components/dashboard/NutritionCard";
-import { FinanceWidget } from "@/components/dashboard/FinanceWidget";
+import { TodayEnergyCard } from "@/components/daily/TodayEnergyCard";
+import { CriticalRoutinesSection } from "@/components/daily/CriticalRoutinesSection";
+import { DailyPeakCard } from "@/components/daily/DailyPeakCard";
+import { TodayTasksSection } from "@/components/daily/TodayTasksSection";
+import { RhythmSummarySection } from "@/components/daily/RhythmSummarySection";
 
 import { createServerSupabase } from "@/lib/supabaseServer";
 import { computeFinanceSummary } from "@/lib/financeCalc";
@@ -37,9 +31,13 @@ import { SportShell } from "@/components/sport/SportShell";
 import { WorkoutPlanColumn } from "@/components/sport/WorkoutPlanColumn";
 import { MealPlanSection } from "@/components/sport/MealPlanSection";
 
+// Nutrition Components
+import { NutritionShell } from "@/components/nutrition/NutritionShell";
+import { NutritionCard } from "@/components/dashboard/NutritionCard";
+import { FinanceWidget } from "@/components/dashboard/FinanceWidget";
+
 // New Career Components
 import { CareerShell } from "@/components/career/CareerShell";
-import { CareerTargetBanner } from "@/components/career/CareerTargetBanner";
 import { CareerPhaseCard } from "@/components/career/CareerPhaseCard";
 
 import { 
@@ -48,10 +46,9 @@ import {
 } from '@/lib/dayUtils';
 import { ensureTodayQuote } from "@/app/actions/quoteActions";
 import { ensureWeekTEDRecommendations } from "@/app/actions/tedActions";
-import { getWeekStart } from "@/lib/dates";
+import { calculateTodayEnergy } from "@/lib/todayEnergy";
 import { DuaPanel } from "@/components/daily/DuaPanel";
 import { EndDayButton } from "@/components/daily/EndDayButton";
-import { TEDCard } from "@/components/daily/TEDCard";
 
 export default async function Page({
   searchParams,
@@ -213,37 +210,47 @@ export default async function Page({
 
     const activePhase = phasesWithSkills.find(p => p.is_active);
     const sortedPhases = [...phasesWithSkills].sort((a, b) => a.sort_order - b.sort_order);
-    
-    const totalSkills = skills?.length || 0;
-    const completedSkills = skills?.filter(s => s.is_completed).length || 0;
-    const activePhaseNumber = activePhase?.phase_number || 0;
+
+    const todayDevStep = activePhase
+      ? [...(activePhase.skills ?? [])].sort((a, b) => a.sort_order - b.sort_order).find(s => !s.is_completed)?.title ?? null
+      : null;
 
     return (
       <div className="min-h-screen bg-[#000000]">
         <div className="pt-8">
           <CareerShell>
-            <div className="mb-6">
+            <div className="mb-2">
               <span className="text-[#444444] text-[10px] uppercase tracking-widest block font-medium">
-                KARİYER ROTASI
+                GELİŞİM YOLU
               </span>
-              <h1 className="text-white font-bold text-xl">
-                AI-Native Creative Director & Motion Strategist
-              </h1>
+              {todayDevStep ? (
+                <p className="text-xs text-[#555555] mt-1">
+                  Bugünkü adım:{" "}
+                  <span className="text-[#888888]">{todayDevStep}</span>
+                </p>
+              ) : (
+                <p className="text-xs text-[#555555] mt-1">Aktif görev yok</p>
+              )}
             </div>
 
-            <CareerTargetBanner 
-              totalPhases={phases?.length || 0}
-              activePhaseNumber={activePhaseNumber}
-              completedSkills={completedSkills}
-              totalSkills={totalSkills}
-            />
-
-            <div className="space-y-4">
+            <div className="space-y-3">
               {sortedPhases.map(phase => (
                 <CareerPhaseCard key={phase.id} phase={phase} />
               ))}
             </div>
           </CareerShell>
+        </div>
+      </div>
+    );
+  }
+
+  if (tab === "BESLENME") {
+    return (
+      <div className="min-h-screen bg-[#000000]">
+        <div className="pt-8">
+          <NutritionShell>
+            <NutritionCard defaultOpen />
+          </NutritionShell>
         </div>
       </div>
     );
@@ -298,27 +305,31 @@ export default async function Page({
 
   // Daily Tab (Default)
   const englishGroupKey = getEnglishGroupForToday();
+  const yesterday = format(subDays(new Date(), 1), "yyyy-MM-dd");
+
   const [
     { data: goatState },
     { data: templates },
     { data: completions },
     { data: rawActiveTasks },
-    { data: energyCheckIn },
     { data: quote },
     { data: vitaminPackagesData },
     { data: vitaminCompletions },
     { data: skincareCompletions },
+    { data: yesterdayCompletions },
+    { data: yesterdayPeakLogs },
     initialEnergy
   ] = await Promise.all([
-    supabase.from("goat_state").select("*").eq("id", 1).single(),
+    supabase.from("goat_state").select("last_finalized, current_streak").eq("id", 1).single(),
     supabase.from("task_templates").select("*").order("sort_order"),
     supabase.from("daily_completions").select("template_id").eq("date", today),
     supabase.from("active_tasks").select("*").order("is_priority", { ascending: false }).order("sort_order"),
-    supabase.from("energy_checkins").select("*").eq("date", today).maybeSingle(),
     supabase.from("daily_quotes").select("*").eq("date", today).maybeSingle(),
     supabase.from('vitamin_packages').select('*').eq('is_active', true).order('sort_order'),
     supabase.from('vitamin_package_completions').select('*').eq('date', today),
     supabase.from('skincare_completions').select('package_id').eq('date', today),
+    supabase.from("daily_completions").select("template_id").eq("date", yesterday),
+    supabase.from("bad_habit_logs").select("success").eq("log_date", yesterday),
     getEnergy()
   ]);
 
@@ -335,8 +346,9 @@ export default async function Page({
     englishSubtasks = subtasks?.map((s: any) => ({ ...s, isCompleted: completedSet.has(s.id) })) ?? [];
   }
 
-  const dayOfWeekCheck = new Date().getDay();
-  const isTreadmillActive = dayOfWeekCheck !== 0 && dayOfWeekCheck !== 3;
+  const todayDate = new Date();
+  const dayOfWeekCheck = todayDate.getDay();
+  const isTreadmillActive = isRhythmActiveToday('treadmill', todayDate);
 
   const takenVitaminSet = new Set(vitaminCompletions?.map(c => c.package_id) ?? []);
   const vitaminPackages = vitaminPackagesData?.map(p => ({
@@ -346,72 +358,121 @@ export default async function Page({
 
   const completedSkincareIds = skincareCompletions?.map(c => c.package_id) ?? [];
 
-  const todayDate = new Date();
-  const dayOfWeek = todayDate.getDay(); 
-  const isSaturday = dayOfWeek === 6;
-  const isSunday = dayOfWeek === 0;
-  const isWeekend = isSaturday || isSunday;
-
-  let tedRecommendation: { title: string; speaker: string; description: string; url: string | null; language: 'tr' | 'en'; day: 'saturday' | 'sunday' } | null = null;
-  if (isWeekend) {
-    const weekStartStr = getWeekStart(todayDate);
-    const tedDay = isSaturday ? 'saturday' : 'sunday';
-    const { data } = await supabase
-      .from('ted_recommendations')
-      .select('*')
-      .eq('week_start', weekStartStr)
-      .eq('day', tedDay)
-      .maybeSingle();
-    tedRecommendation = data;
-  }
-
   const completedIds = new Set(completions?.map(c => c.template_id) ?? []);
   const allTemplates = templates ?? [];
   const baseScore = allTemplates
     .filter(t => completedIds.has(t.id))
     .reduce((sum, t) => sum + (t.points ?? 0), 0);
 
-  const disciplineMax = allTemplates.filter(t => t.category === 'discipline').reduce((sum, t) => sum + (t.points ?? 0), 0);
-  const healthMax = allTemplates.filter(t => t.category === 'health').reduce((sum, t) => sum + (t.points ?? 0), 0);
-  const disciplineScore = allTemplates.filter(t => t.category === 'discipline' && completedIds.has(t.id)).reduce((sum, t) => sum + (t.points ?? 0), 0);
-  const healthScore = allTemplates.filter(t => t.category === 'health' && completedIds.has(t.id)).reduce((sum, t) => sum + (t.points ?? 0), 0);
-
   const activeTasks = rawActiveTasks ?? [];
-  const activeOnlyTasks = activeTasks.filter(t => t.category === 'active');
-  const productionDone = activeOnlyTasks.filter(t => t.is_done).length;
-  const productionTotal = activeOnlyTasks.length;
-
   const kritikTasks = allTemplates.filter(t => t.section === 'kritik');
-  
+
+  // dailyPeakClean: dünkü 4 alışkanlığın tümü success ise true
+  const dailyPeakClean: boolean | null =
+    yesterdayPeakLogs && yesterdayPeakLogs.length > 0
+      ? yesterdayPeakLogs.every(l => l.success)
+      : null;
+
   const dayMap: Record<number, string> = {
     0: 'sun', 1: 'mon', 2: 'tue', 3: 'wed',
     4: 'thu', 5: 'fri', 6: 'sat'
   };
   const currentDayKey = dayMap[new Date().getDay()];
 
-  const sistemTasks = allTemplates.filter(t => {
-    if (t.section !== 'sistem') return false;
-    // active_days ARRAY olarak geldiği için .includes() kullanıyoruz
-    if (!t.active_days || t.active_days.length === 0) return true;
-    return t.active_days.includes(currentDayKey);
+  const englishVariant = getRhythmVariantForDay('english', todayDate);
+  const treadmillVariant = getRhythmVariantForDay('treadmill', todayDate);
+  const sazVariant = getRhythmVariantForDay('saz', todayDate);
+
+  const sistemTasks = allTemplates
+    .filter(t => {
+      if (t.section !== 'sistem') return false;
+      if (!t.active_days || t.active_days.length === 0) return true;
+      return t.active_days.includes(currentDayKey);
+    })
+    .map(t => {
+      if (t.system_type === 'english' && englishVariant) {
+        return { ...t, title: englishVariant.optional
+          ? `${englishVariant.label} (Opsiyonel)`
+          : englishVariant.label };
+      }
+      if (t.system_type === 'treadmill' && treadmillVariant) {
+        return { ...t, title: treadmillVariant.optional
+          ? `${treadmillVariant.label} (Opsiyonel)`
+          : treadmillVariant.label };
+      }
+      if (t.system_type === 'saz' && sazVariant) {
+        return { ...t, title: sazVariant.optional
+          ? `${sazVariant.label} (Opsiyonel)`
+          : sazVariant.label };
+      }
+      return t;
+    });
+
+  // Inject virtual tasks for sport/saz when active but no DB record exists
+  const sportVariant = getRhythmVariantForDay('sport', todayDate);
+  if (isRhythmActiveToday('sport', todayDate) && !sistemTasks.some((t: any) => t.system_type === 'sport')) {
+    sistemTasks.push({
+      id: '__virtual_sport__',
+      title: sportVariant?.label ?? 'Spor',
+      section: 'sistem',
+      system_type: 'sport',
+      category: 'health',
+      points: 20,
+      active_days: ['mon', 'wed', 'fri', 'sat'],
+      sort_order: 99,
+    } as any);
+  }
+  if (isRhythmActiveToday('saz', todayDate) && !sistemTasks.some((t: any) => t.system_type === 'saz')) {
+    sistemTasks.push({
+      id: '__virtual_saz__',
+      title: sazVariant?.optional
+        ? `${sazVariant.label} (Opsiyonel)`
+        : (sazVariant?.label ?? 'Saz'),
+      section: 'sistem',
+      system_type: 'saz',
+      category: 'health',
+      points: 5,
+      active_days: ['sat', 'sun'],
+      sort_order: 100,
+    } as any);
+  }
+
+  const kritikCompletedCount = kritikTasks.filter(t => completedIds.has(t.id)).length;
+  const criticalRoutineCompletionRate =
+    kritikTasks.length > 0 ? kritikCompletedCount / kritikTasks.length : 0;
+
+  const activeOnlyCount = activeTasks.filter(t => t.category === 'active' && !t.is_done).length;
+  const waitingCount = activeTasks.filter(t => t.category === 'waiting').length;
+
+  const energyData = calculateTodayEnergy({
+    completedTasksYesterday: yesterdayCompletions?.length ?? 0,
+    criticalRoutineCompletionRate,
+    dailyPeakClean,
+    activeTasksCount: activeOnlyCount,
+    waitingTasksCount: waitingCount,
+    rhythmCountToday: sistemTasks.length,
   });
 
-  const safeGoatState = goatState || {
-    current_stage: "OGLAK" as const,
-    current_streak: 0,
-    consistency_days: 0,
-    current_mood: "AC" as const,
-    weekly_consistency: 0,
-    last_finalized: null,
-  };
+  const safeGoatState = goatState || { last_finalized: null };
 
-  const initialEnergyBonus = 
+  const initialEnergyBonus =
     initialEnergy === 'HIGH' ? 10 :
     initialEnergy === 'MID'  ? 5  : 0;
-  
+
   const initialTotalScore = Math.min(baseScore + initialEnergyBonus, 70);
 
   const isAlreadyFinalized = safeGoatState.last_finalized === today;
+
+  const sharedTaskProps = {
+    kritikTasks,
+    sistemTasks,
+    activeTasks,
+    completedIds,
+    englishSubtasks,
+    isTreadmillActive,
+    vitaminPackages,
+    completedSkincareIds,
+  };
 
   return (
     <div className="min-h-screen font-sans">
@@ -419,102 +480,47 @@ export default async function Page({
         {/* 1. GREETING */}
         <Greeting />
 
-        {/* 2. GECE DUASI (with Integrated Quote) */}
+        {/* 2. GECE DUASI + ALINTI */}
         <DuaPanel quote={quote?.quote} author={quote?.author} />
 
-        {/* 2.1 TED CARD (Weekend Only - Below DuaPanel) */}
-        {isWeekend && tedRecommendation && (
-          <TEDCard
-            title={tedRecommendation.title}
-            speaker={tedRecommendation.speaker}
-            description={tedRecommendation.description}
-            url={tedRecommendation.url}
-            language={tedRecommendation.language}
-            day={tedRecommendation.day}
-          />
-        )}
-
-        {/* 3. MOTTO */}
+        {/* 3. GÜNLÜK MOTTO */}
         <DailyMotto />
 
-        {/* 4. BANNER */}
-        <ActionReminderBanner />
-
-        {/* 5. SKOR KARTI & ENERJİ (Reactive) */}
-        <DashboardClient
+        {/* 4. ENERJİ SEVİYESİ */}
+        <TodayEnergyCard
           initialEnergy={initialEnergy}
-          bestStreak={safeGoatState.current_streak ?? 0}
-          dailyScore={baseScore}
-        />
-        
-        <Card>
-          <ScoringBars 
-            disciplineScore={disciplineScore}
-            disciplineMax={disciplineMax}
-            healthScore={healthScore}
-            healthMax={healthMax}
-            productionDone={productionDone}
-            productionTotal={productionTotal}
-          />
-        </Card>
-
-        {/* 6. KRİTİK RUTİNLER */}
-        <TaskGroup
-          showOnly="kritik"
-          kritikTasks={kritikTasks}
-          sistemTasks={sistemTasks}
-          activeTasks={activeTasks}
-          completedIds={completedIds}
-          englishSubtasks={englishSubtasks}
-          isTreadmillActive={isTreadmillActive}
-          vitaminPackages={vitaminPackages}
-          completedSkincareIds={completedSkincareIds}
+          energyData={energyData}
+          today={today}
+          energyInput={{
+            completedTasksYesterday: yesterdayCompletions?.length ?? 0,
+            criticalRoutineCompletionRate,
+            dailyPeakClean,
+            activeTasksCount: activeOnlyCount,
+            waitingTasksCount: waitingCount,
+            rhythmCountToday: sistemTasks.length,
+          }}
         />
 
-        {/* 7. SU TAKİBİ + BESLENME (1:2) */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "16px" }}>
-          <WaterTracker />
-          <NutritionCard />
-        </div>
+        {/* 5. KRİTİK RUTİNLER */}
+        <CriticalRoutinesSection {...sharedTaskProps} />
 
-        {/* 8. KÖTÜ ALIŞKANLIKLAR */}
-        <BadHabitFire />
+        {/* 6. GÜNLÜK PEAK */}
+        <DailyPeakCard />
 
-        {/* 9. BUGÜNÜN MODÜLLERİ (Training, Exercise etc) */}
-        <DayModule />
+        {/* 7. AKTİF GÖREVLER */}
+        <TodayTasksSection {...sharedTaskProps} />
 
-        {/* 10. AKTİF GÖREVLER */}
-        <TaskGroup
-          showOnly="active"
-          kritikTasks={kritikTasks}
-          sistemTasks={sistemTasks}
-          activeTasks={activeTasks}
-          completedIds={completedIds}
-          englishSubtasks={englishSubtasks}
-          isTreadmillActive={isTreadmillActive}
-          vitaminPackages={vitaminPackages}
-          completedSkincareIds={completedSkincareIds}
-        />
+        {/* 8. RİTİMLER */}
+        <RhythmSummarySection {...sharedTaskProps} />
 
-        {/* 10.1 SİSTEM GÖREVLERİ (Opsiyonel, Active Görevler altına) */}
-        <TaskGroup
-          showOnly="sistem"
-          kritikTasks={kritikTasks}
-          sistemTasks={sistemTasks}
-          activeTasks={activeTasks}
-          completedIds={completedIds}
-          englishSubtasks={englishSubtasks}
-          isTreadmillActive={isTreadmillActive}
-          vitaminPackages={vitaminPackages}
-          completedSkincareIds={completedSkincareIds}
-        />
+        {/* 9. BESLENME */}
+        <NutritionCard />
 
-        {/* 11. GÜNÜ BİTİR */}
+        {/* 10. GÜNÜ BİTİR */}
         <EndDayButton score={initialTotalScore} isAlreadyFinalized={isAlreadyFinalized} />
 
-        {/* 12. FİNANS WIDGET */}
+        {/* FİNANS WİDGET (sabit sağ alt) */}
         <FinanceWidget />
-
       </DailyShell>
     </div>
   );

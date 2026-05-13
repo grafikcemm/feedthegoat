@@ -127,7 +127,7 @@ export default function Nutrition() {
 
          <div>
              <h4 style={{ fontFamily: "var(--font-mono)", fontSize: "var(--size-xs)", color: "var(--text-2)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "12px" }}>
-              Günlük Sistemler
+              Günlük Ritimler
              </h4>
              <div 
                onClick={toggleBreakfast}

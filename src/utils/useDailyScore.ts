@@ -14,8 +14,8 @@ export function useDailyScore() {
       const todayIso = new Date().toISOString().split("T")[0];
       const day = new Date().getDay();
 
-      // Active days for workout: Pzt(1), Sal(2), Prş(4), Cmt(6)
-      const hasWorkout = [1, 2, 4, 6].includes(day);
+      // Active days for workout: Pzt(1), Çrş(3), Cum(5), Cmt(6)
+      const hasWorkout = [1, 3, 5, 6].includes(day);
       const computedMaxPuan = hasWorkout ? 100 : 80;
       setMaxPuan(computedMaxPuan);
 

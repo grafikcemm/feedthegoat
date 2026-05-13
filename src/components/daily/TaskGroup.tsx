@@ -50,6 +50,7 @@ export function TaskGroup({
   const [isAdding, startAddTransition] = useTransition();
 
   const handleComplete = (templateId: string) => {
+    if (templateId.startsWith("__virtual_")) return;
     const isCompleted = optimisticIds.has(templateId);
     startTransition(() => {
       toggleOptimistic(templateId);
@@ -182,7 +183,7 @@ export function TaskGroup({
     sistemTasks.length > 0 && (
       <Card noPadding>
         <div className="p-6">
-          <SectionLabel>Sistemler</SectionLabel>
+          <SectionLabel>Ritimler</SectionLabel>
         <div className="flex flex-col gap-3">
           {sistemTasks.map((t) => (
             <TaskCard

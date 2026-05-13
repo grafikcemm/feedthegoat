@@ -121,7 +121,7 @@ export function TaskCard({
 
   const getPassiveLabel = () => {
     if (isEnglish && !englishActive) return "BUGÜN PASİF";
-    if (isTreadmill && !treadmillActive) return "BUGÜN SALON GÜNÜ";
+    if (isTreadmill && !treadmillActive) return "BUGÜN PASİF";
     return null;
   };
 
