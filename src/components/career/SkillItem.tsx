@@ -14,9 +14,10 @@ interface SkillItemProps {
     wef_tag?: string | null;
   };
   disabled?: boolean;
+  turkishTitle?: string;
 }
 
-export function SkillItem({ skill, disabled = false }: SkillItemProps) {
+export function SkillItem({ skill, disabled = false, turkishTitle }: SkillItemProps) {
   const router = useRouter();
 
   const handleToggle = async () => {
@@ -49,7 +50,7 @@ export function SkillItem({ skill, disabled = false }: SkillItemProps) {
       <button 
         onClick={handleToggle}
         disabled={disabled}
-        className={`mt-0.5 w-4 h-4 rounded border flex-shrink-0 transition-all duration-200 flex items-center justify-center
+        className={`mt-0.5 w-4 h-4 rounded border shrink-0 transition-all duration-200 flex items-center justify-center
           ${skill.is_completed 
             ? 'bg-[#22C55E]/20 border-[#22C55E]' 
             : 'border-[#1E1E1E] bg-transparent group-hover:border-[#444444]'
@@ -66,8 +67,13 @@ export function SkillItem({ skill, disabled = false }: SkillItemProps) {
 
       <div className="flex-1">
         <h4 className={`text-sm font-medium transition-colors ${skill.is_completed ? 'text-[#888888]' : 'text-white'}`}>
-          {skill.title}
+          {turkishTitle || skill.title}
         </h4>
+        {turkishTitle && (
+          <p className="text-[10px] text-[#2a2a2a] font-mono leading-tight mt-px">
+            {skill.title}
+          </p>
+        )}
         {skill.description && (
           <p className="text-[#888888] text-xs mt-0.5 leading-relaxed">
             {skill.description}

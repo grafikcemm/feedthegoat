@@ -4,7 +4,7 @@ import { format, subDays } from "date-fns";
 import { isRhythmActiveToday, getRhythmVariantForDay } from "@/data/rhythmSchedule";
 
 import { DailyShell } from "@/components/daily/DailyShell";
-import { FinanceShell } from "@/components/finance/FinanceShell";
+import { FinanceCommandCenter } from "@/components/finance/FinanceCommandCenter";
 import { getEnergy } from "@/app/actions/setEnergy";
 
 import { Greeting } from "@/components/daily/Greeting";
@@ -36,9 +36,11 @@ import { MealPlanSection } from "@/components/sport/MealPlanSection";
 import { NutritionShell } from "@/components/nutrition/NutritionShell";
 import { NutritionCard } from "@/components/dashboard/NutritionCard";
 
-// Career / Gelişim Yolu
+// Career / Gelişim Merdiveni
 import { CareerShell } from "@/components/career/CareerShell";
 import { CareerPhaseCard } from "@/components/career/CareerPhaseCard";
+import { CareerLadderHero } from "@/components/career/CareerLadderHero";
+import { ActiveStepCard } from "@/components/career/ActiveStepCard";
 
 // Rhythms
 import { RhythmsShell } from "@/components/rhythms/RhythmsShell";
@@ -194,7 +196,7 @@ export default async function Page({
     );
   }
 
-  // ── GELİŞİM YOLU (Kariyer) ────────────────────────────────────────────────
+  // ── GELİŞİM MERDİVENİ ─────────────────────────────────────────────────────
   if (tab === "GELISIM" || tab === "KARIYER") {
     const [
       { data: phases },
@@ -204,39 +206,73 @@ export default async function Page({
       supabase.from('career_skills').select('*').order('sort_order'),
     ]);
 
+    const ARCHIVED_TITLES = [
+      "AgencyOS'u Tamamla ve Aktif Et",
+      "Grafikcem Detaylı Branding Planlaması",
+    ];
+
     const phasesWithSkills = phases?.map(phase => ({
       ...phase,
-      skills: skills?.filter(s => s.phase_id === phase.id) ?? [],
+      skills: (skills?.filter(s => s.phase_id === phase.id) ?? []),
     })) || [];
 
     const activePhase = phasesWithSkills.find(p => p.is_active);
     const sortedPhases = [...phasesWithSkills].sort((a, b) => a.sort_order - b.sort_order);
 
-    const todayDevStep = activePhase
-      ? [...(activePhase.skills ?? [])].sort((a, b) => a.sort_order - b.sort_order).find(s => !s.is_completed)?.title ?? null
-      : null;
+    // For hero stats — exclude archived skills
+    type RawSkill = { title: string; is_completed: boolean; sort_order: number };
+    const activeSkillsFiltered: RawSkill[] = ((activePhase?.skills ?? []) as RawSkill[])
+      .filter((s: RawSkill) => !ARCHIVED_TITLES.includes(s.title))
+      .sort((a: RawSkill, b: RawSkill) => a.sort_order - b.sort_order);
+
+    const activeSkillTitle = activeSkillsFiltered.find((s: RawSkill) => !s.is_completed)?.title ?? null;
+    const nextSkillTitle = activeSkillsFiltered.filter((s: RawSkill) => !s.is_completed)[1]?.title ?? null;
+
+    const completedLevels = sortedPhases.filter(p => {
+      const phaseSkills = p.skills.filter((s: { title: string; is_completed: boolean }) => !ARCHIVED_TITLES.includes(s.title));
+      return phaseSkills.length > 0 && phaseSkills.every((s: { is_completed: boolean }) => s.is_completed);
+    }).length;
+
+    const currentLevel = activePhase?.phase_number ?? 1;
+    const totalLevels = sortedPhases.length;
+
+    const activeProgressPct = activeSkillsFiltered.length > 0
+      ? Math.round(activeSkillsFiltered.filter((s: RawSkill) => s.is_completed).length / activeSkillsFiltered.length * 100)
+      : 0;
 
     return (
       <div className="min-h-screen bg-[#000000]">
         <div className="pt-8">
           <CareerShell>
-            <div className="mb-2">
-              <span className="text-[#444444] text-[10px] uppercase tracking-widest block font-medium">
-                GELİŞİM YOLU
+            {/* 1. Ladder Hero */}
+            <CareerLadderHero
+              currentLevel={currentLevel}
+              totalLevels={totalLevels}
+              completedLevels={completedLevels}
+              activeLevelTitle={activePhase?.title ?? ""}
+              progressPercent={activeProgressPct}
+            />
+
+            {/* 2. Active Step Card */}
+            {activePhase && (
+              <ActiveStepCard
+                phaseTitle={activePhase.title}
+                activeSkillTitle={activeSkillTitle}
+                nextSkillTitle={nextSkillTitle}
+                phaseNumber={currentLevel}
+              />
+            )}
+
+            {/* 3. All Levels Accordion */}
+            <div>
+              <span className="text-[10px] uppercase tracking-widest text-[#333] font-bold block mb-3">
+                Tüm Seviyeler
               </span>
-              {todayDevStep ? (
-                <p className="text-xs text-[#555555] mt-1">
-                  Bugünkü adım:{" "}
-                  <span className="text-[#888888]">{todayDevStep}</span>
-                </p>
-              ) : (
-                <p className="text-xs text-[#555555] mt-1">Aktif görev yok</p>
-              )}
-            </div>
-            <div className="space-y-3">
-              {sortedPhases.map(phase => (
-                <CareerPhaseCard key={phase.id} phase={phase} />
-              ))}
+              <div className="space-y-3">
+                {sortedPhases.map(phase => (
+                  <CareerPhaseCard key={phase.id} phase={phase} />
+                ))}
+              </div>
             </div>
           </CareerShell>
         </div>
@@ -257,15 +293,13 @@ export default async function Page({
     );
   }
 
-  // ── FINANS ────────────────────────────────────────────────────────────────
+  // ── FİNANS KOMUTA MERKEZİ ────────────────────────────────────────────────
   if (tab === "FINANS") {
     const currentMonth = format(new Date(), "yyyy-MM");
     const [
-      { data: financeState },
       { data: transactions = [] },
       { data: subscriptions = [] }
     ] = await Promise.all([
-      supabase.from("finance_state").select("net_balance, status_label, status_description, severity").eq("id", 1).single(),
       supabase.from("finance_transactions").select("id, amount, type, title, created_at, month").eq("month", currentMonth).order("created_at", { ascending: false }),
       supabase.from("finance_subscriptions").select("id, title, amount, currency, is_active, notes, created_at").eq("is_active", true).order("amount", { ascending: false })
     ]);
@@ -276,23 +310,12 @@ export default async function Page({
     const sumExpense = expenseItems.reduce((acc, t) => acc + (t.amount || 0), 0);
     const sumSubs = (subscriptions || []).reduce((acc, s) => acc + (s.amount || 0), 0);
     const summary = computeFinanceSummary(sumIncome, sumExpense, sumSubs);
-    const safeState = financeState || {
-      net_balance: 0,
-      status_label: "VERİ BEKLENİYOR",
-      status_description: "Henüz bir finansal veri girişi yapılmadı.",
-      severity: "neutral",
-    };
 
     return (
       <div className="min-h-screen bg-[#000000]">
         <div className="pt-8">
-          <FinanceShell
+          <FinanceCommandCenter
             summary={summary}
-            status={{
-              label: safeState.status_label,
-              description: safeState.status_description,
-              severity: safeState.severity as "neutral" | "warning" | "danger" | "positive",
-            }}
             incomeItems={incomeItems}
             expenseItems={expenseItems}
             subscriptionItems={subscriptions || []}

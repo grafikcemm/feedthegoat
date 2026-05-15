@@ -57,7 +57,7 @@ export const USER_CONTEXT = {
       "Salı mikro temas 15-20 dk, Perşembe ana çalışma 30-40 dk, Pazar tekrar + konuşma 40-45 dk",
     saz: "Cumartesi temas 20-30 dk, Pazar opsiyonel 20 dk",
     treadmill:
-      "Salı sabah 20 dk, Perşembe sabah 20 dk, Pazar opsiyonel hafif yürüyüş. Koşu bandı spor değil, aktif toparlanmadır.",
+      "Koşu bandı: Salı sabah 20 dk, Perşembe sabah 20 dk, Pazar opsiyonel hafif yürüyüş. Spor değildir, aktif toparlanmadır.",
   },
 } as const;
 

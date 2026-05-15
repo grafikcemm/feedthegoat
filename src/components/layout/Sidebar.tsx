@@ -7,19 +7,15 @@ import {
   Wallet,
   GraduationCap,
   Layers,
-  BarChart3,
   Rocket,
-  Bot,
 } from 'lucide-react'
 
 const navItems = [
-  { href: '/?tab=GUNLUK',   icon: CalendarDays, label: 'Günlük'       },
-  { href: '/?tab=RITIMLER', icon: Layers,        label: 'Ritimler'     },
-  { href: '/?tab=BESLENME', icon: GraduationCap, label: 'Beslenme'     },
-  { href: '/?tab=GELISIM',  icon: Rocket,        label: 'Gelişim Yolu' },
-  { href: '/?tab=ANALIZ',   icon: BarChart3,     label: 'Analiz'       },
-  { href: '/?tab=ASISTAN',  icon: Bot,           label: 'Asistan'      },
-  { href: '/?tab=FINANS',   icon: Wallet,        label: 'Finans'       },
+  { href: '/?tab=GUNLUK',   icon: CalendarDays, label: 'Günlük'            },
+  { href: '/?tab=RITIMLER', icon: Layers,        label: 'Ritimler'          },
+  { href: '/?tab=BESLENME', icon: GraduationCap, label: 'Beslenme'          },
+  { href: '/?tab=GELISIM',  icon: Rocket,        label: 'Gelişim Merdiveni' },
+  { href: '/?tab=FINANS',   icon: Wallet,        label: 'Finans Komuta'     },
 ]
 
 function SidebarInner() {
