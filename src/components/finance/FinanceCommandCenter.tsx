@@ -3,58 +3,60 @@
 import React, { useState } from 'react';
 import {
   AlertTriangle, Loader2, Plus, Pencil, Trash2, X, Check,
-  BookOpen, Dumbbell, Wallet,
+  BookOpen, Dumbbell, Wallet, Trash,
 } from 'lucide-react';
-import {
-  HAZIRAN_TOTAL_INCOME,
-  HAZIRAN_TOTAL_EXPENSE,
-  HAZIRAN_NET,
-  HAZIRAN_MODE,
-  HAZIRAN_RULE,
-} from '@/data/financeSeed';
+import { HAZIRAN_RULE } from '@/data/financeSeed';
 import { useSubscriptions } from '@/hooks/useSubscriptions';
 import { useDebtService } from '@/hooks/useDebtService';
-import { usePlannedExpenses, calcMonthlyExpense, type PlannedExpense, type NewExpenseInput, type ExpenseCategory, type ExpenseFrequency, type ExpenseStatus } from '@/hooks/usePlannedExpenses';
+import {
+  useCurrentExpenses,
+  calcMonthlyEquivalent,
+  type CurrentExpense,
+  type NewCurrentExpenseInput,
+  type CurrentExpenseCategory,
+  type CurrentExpenseFrequency,
+  type CurrentExpenseStatus,
+} from '@/hooks/useCurrentExpenses';
+import { useFinanceTransactions } from '@/hooks/useFinanceTransactions';
 import { SubscriptionManager } from './SubscriptionManager';
 import { DebtServiceCompact } from './DebtServiceCompact';
 import { BleedingCategoriesPanel } from './BleedingCategoriesPanel';
-import { FinancePeakCard } from './FinancePeakCard';
-import { CashFlowSimulator } from './CashFlowSimulator';
-import { PurchaseCheckCard } from './PurchaseCheckCard';
 import { AddTransactionForm } from './AddTransactionForm';
 
-// ── Planned Expense helpers ───────────────────────────────────────────────────
+// ── Category / Frequency / Status labels ─────────────────────────────────────
 
-const CATEGORY_LABELS: Record<ExpenseCategory, string> = {
+const CATEGORY_LABELS: Record<CurrentExpenseCategory, string> = {
   education: 'Eğitim',
   sport: 'Spor',
   subscription: 'Abonelik',
+  food: 'Yemek',
+  market: 'Market',
   debt: 'Borç',
   personal: 'Kişisel',
   other: 'Diğer',
 };
-const FREQUENCY_LABELS: Record<ExpenseFrequency, string> = {
+
+const FREQUENCY_LABELS: Record<CurrentExpenseFrequency, string> = {
   monthly: 'Aylık',
   one_time: 'Tek seferlik',
   quarterly: '3 Aylık',
   unknown: 'Bilinmiyor',
 };
-const STATUS_LABELS: Record<ExpenseStatus, string> = {
-  planned: 'Planlanan',
+
+const STATUS_LABELS: Record<CurrentExpenseStatus, string> = {
   active: 'Aktif',
   paid: 'Ödendi',
   archived: 'Arşiv',
 };
 
-const categoryIcon = (cat: ExpenseCategory) => {
+const categoryIcon = (cat: CurrentExpenseCategory) => {
   if (cat === 'education') return <BookOpen size={14} className="text-[#3b82f6]" />;
   if (cat === 'sport') return <Dumbbell size={14} className="text-[#22c55e]" />;
   return <Wallet size={14} className="text-[#888]" />;
 };
 
-const statusChip = (status: ExpenseStatus) => {
-  const map: Record<ExpenseStatus, React.ReactElement> = {
-    planned: <span className="text-[9px] bg-[#3b82f6]/10 text-[#3b82f6] px-1.5 py-px rounded font-bold tracking-wide uppercase">Planlanan</span>,
+const statusChip = (status: CurrentExpenseStatus) => {
+  const map: Record<CurrentExpenseStatus, React.ReactElement> = {
     active: <span className="text-[9px] bg-[#22c55e]/10 text-[#22c55e] px-1.5 py-px rounded font-bold tracking-wide uppercase">Aktif</span>,
     paid: <span className="text-[9px] bg-[#888]/10 text-[#888] px-1.5 py-px rounded font-bold tracking-wide uppercase">Ödendi</span>,
     archived: <span className="text-[9px] bg-[#444]/10 text-[#444] px-1.5 py-px rounded font-bold tracking-wide uppercase">Arşiv</span>,
@@ -62,23 +64,28 @@ const statusChip = (status: ExpenseStatus) => {
   return map[status] ?? null;
 };
 
-const EMPTY_EXPENSE: Omit<NewExpenseInput, 'currency'> = {
+// ── Expense form ──────────────────────────────────────────────────────────────
+
+const EMPTY_EXPENSE: Omit<NewCurrentExpenseInput, 'currency'> = {
   title: '',
   amount: 0,
   category: 'other',
   frequency: 'monthly',
-  status: 'planned',
+  status: 'active',
   note: '',
 };
 
-interface ExpenseFormProps {
-  initial?: Omit<NewExpenseInput, 'currency'>;
-  onSave: (data: NewExpenseInput) => void;
+function ExpenseForm({
+  initial = EMPTY_EXPENSE,
+  onSave,
+  onCancel,
+  formTitle,
+}: {
+  initial?: Omit<NewCurrentExpenseInput, 'currency'>;
+  onSave: (data: NewCurrentExpenseInput) => void;
   onCancel: () => void;
-  title: string;
-}
-
-function ExpenseForm({ initial = EMPTY_EXPENSE, onSave, onCancel, title }: ExpenseFormProps) {
+  formTitle: string;
+}) {
   const [form, setForm] = useState(initial);
   const set = <K extends keyof typeof EMPTY_EXPENSE>(k: K, v: typeof EMPTY_EXPENSE[K]) =>
     setForm(f => ({ ...f, [k]: v }));
@@ -95,7 +102,7 @@ function ExpenseForm({ initial = EMPTY_EXPENSE, onSave, onCancel, title }: Expen
   return (
     <form onSubmit={handleSubmit} className="bg-[#0d0d0d] border border-[#1f1f1f] rounded-xl p-4 space-y-3">
       <div className="flex items-center justify-between mb-1">
-        <span className="text-[11px] text-white font-medium">{title}</span>
+        <span className="text-[11px] text-white font-medium">{formTitle}</span>
         <button type="button" onClick={onCancel} className="text-[#444] hover:text-white transition-colors"><X size={14} /></button>
       </div>
       <div>
@@ -109,8 +116,8 @@ function ExpenseForm({ initial = EMPTY_EXPENSE, onSave, onCancel, title }: Expen
         </div>
         <div>
           <label className={labelClass}>Kategori</label>
-          <select className={inputClass} value={form.category} onChange={e => set('category', e.target.value as ExpenseCategory)}>
-            {(Object.keys(CATEGORY_LABELS) as ExpenseCategory[]).map(k => (
+          <select className={inputClass} value={form.category} onChange={e => set('category', e.target.value as CurrentExpenseCategory)}>
+            {(Object.keys(CATEGORY_LABELS) as CurrentExpenseCategory[]).map(k => (
               <option key={k} value={k}>{CATEGORY_LABELS[k]}</option>
             ))}
           </select>
@@ -119,16 +126,16 @@ function ExpenseForm({ initial = EMPTY_EXPENSE, onSave, onCancel, title }: Expen
       <div className="grid grid-cols-2 gap-2">
         <div>
           <label className={labelClass}>Frekans</label>
-          <select className={inputClass} value={form.frequency} onChange={e => set('frequency', e.target.value as ExpenseFrequency)}>
-            {(Object.keys(FREQUENCY_LABELS) as ExpenseFrequency[]).map(k => (
+          <select className={inputClass} value={form.frequency} onChange={e => set('frequency', e.target.value as CurrentExpenseFrequency)}>
+            {(Object.keys(FREQUENCY_LABELS) as CurrentExpenseFrequency[]).map(k => (
               <option key={k} value={k}>{FREQUENCY_LABELS[k]}</option>
             ))}
           </select>
         </div>
         <div>
           <label className={labelClass}>Durum</label>
-          <select className={inputClass} value={form.status} onChange={e => set('status', e.target.value as ExpenseStatus)}>
-            {(Object.keys(STATUS_LABELS) as ExpenseStatus[]).map(k => (
+          <select className={inputClass} value={form.status} onChange={e => set('status', e.target.value as CurrentExpenseStatus)}>
+            {(Object.keys(STATUS_LABELS) as CurrentExpenseStatus[]).map(k => (
               <option key={k} value={k}>{STATUS_LABELS[k]}</option>
             ))}
           </select>
@@ -150,13 +157,26 @@ function ExpenseForm({ initial = EMPTY_EXPENSE, onSave, onCancel, title }: Expen
   );
 }
 
-function PlannedExpenseCard({ item, onEdit, onDelete }: { item: PlannedExpense; onEdit: (i: PlannedExpense) => void; onDelete: (id: string) => void }) {
+// ── Current expense card ──────────────────────────────────────────────────────
+
+function CurrentExpenseCard({
+  item,
+  onEdit,
+  onDelete,
+  onMarkPaid,
+}: {
+  item: CurrentExpense;
+  onEdit: (i: CurrentExpense) => void;
+  onDelete: (id: string) => void;
+  onMarkPaid: (id: string) => void;
+}) {
   const [expanded, setExpanded] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const monthly = calcMonthlyExpense(item);
+  const monthly = calcMonthlyEquivalent(item);
+  const isPaid = item.status === 'paid';
 
   return (
-    <div className="bg-[#111111] border border-[#1f1f1f] rounded-lg overflow-hidden">
+    <div className={`bg-[#111111] border border-[#1f1f1f] rounded-lg overflow-hidden ${isPaid ? 'opacity-60' : ''}`}>
       <div className="p-3 flex items-center gap-3">
         <div className="shrink-0 cursor-pointer" onClick={() => setExpanded(v => !v)}>{categoryIcon(item.category)}</div>
         <div className="flex-1 min-w-0 cursor-pointer" onClick={() => setExpanded(v => !v)}>
@@ -165,7 +185,7 @@ function PlannedExpenseCard({ item, onEdit, onDelete }: { item: PlannedExpense; 
             {statusChip(item.status)}
           </div>
           <div className="flex items-center gap-3 mt-0.5">
-            <span className="text-xs font-mono text-[#f59e0b]">
+            <span className={`text-xs font-mono ${isPaid ? 'text-[#22c55e] line-through' : 'text-[#f59e0b]'}`}>
               {item.amount.toLocaleString('tr-TR')} TL
               {item.durationMonths && <span className="text-[#555] text-[10px] ml-1">/ {item.durationMonths} ay</span>}
             </span>
@@ -175,6 +195,15 @@ function PlannedExpenseCard({ item, onEdit, onDelete }: { item: PlannedExpense; 
           </div>
         </div>
         <div className="flex items-center gap-1 shrink-0">
+          {!isPaid && (
+            <button
+              onClick={() => onMarkPaid(item.id)}
+              className="w-6 h-6 flex items-center justify-center text-[#2a2a2a] hover:text-[#22c55e] transition-colors"
+              title="Ödendi işaretle"
+            >
+              <Check size={11} />
+            </button>
+          )}
           <button onClick={() => onEdit(item)} className="w-6 h-6 flex items-center justify-center text-[#2a2a2a] hover:text-[#666] transition-colors"><Pencil size={11} /></button>
           {confirmDelete ? (
             <div className="flex items-center gap-1">
@@ -187,8 +216,8 @@ function PlannedExpenseCard({ item, onEdit, onDelete }: { item: PlannedExpense; 
         </div>
       </div>
       {expanded && (
-        <div className="px-3 pb-3 pt-0 border-t border-[#1a1a1a] space-y-1 mt-0">
-          <div className="flex flex-wrap gap-3 mt-2">
+        <div className="px-3 pb-3 border-t border-[#1a1a1a] space-y-1 pt-2">
+          <div className="flex flex-wrap gap-3">
             <div>
               <span className="text-[9px] text-[#333] uppercase tracking-wider block">Kategori</span>
               <span className="text-[11px] text-[#555]">{CATEGORY_LABELS[item.category]}</span>
@@ -199,7 +228,6 @@ function PlannedExpenseCard({ item, onEdit, onDelete }: { item: PlannedExpense; 
             </div>
           </div>
           {item.note && <p className="text-xs text-[#666] leading-relaxed">{item.note}</p>}
-          {item.startNote && <p className="text-[10px] text-[#555]">{item.startNote}</p>}
         </div>
       )}
     </div>
@@ -212,7 +240,6 @@ interface AIFinanceInsight {
   status: 'safe' | 'attention' | 'critical';
   summary: string;
   recommendedActions: string[];
-  avoidThisMonth: string[];
   subscriptionActions: string[];
   debtServiceNotes: string[];
   bleedingWarnings: string[];
@@ -220,13 +247,17 @@ interface AIFinanceInsight {
 }
 
 function AIFinancePanel({
+  totalIncome,
+  totalExpense,
   subscriptionTotal,
   debtServiceTotal,
-  plannedTotal,
+  currentExpensesTotal,
 }: {
+  totalIncome: number;
+  totalExpense: number;
   subscriptionTotal: number;
   debtServiceTotal: number;
-  plannedTotal: number;
+  currentExpensesTotal: number;
 }) {
   const [insight, setInsight] = useState<AIFinanceInsight | null>(null);
   const [loading, setLoading] = useState(false);
@@ -240,14 +271,12 @@ function AIFinancePanel({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          totalIncome: HAZIRAN_TOTAL_INCOME,
-          totalExpense: HAZIRAN_TOTAL_EXPENSE,
-          net: HAZIRAN_NET,
+          totalIncome,
+          totalExpense,
+          net: totalIncome - totalExpense,
           subscriptionTotal,
           debtServiceTotal,
-          plannedTotal,
-          mode: HAZIRAN_MODE,
-          rule: HAZIRAN_RULE,
+          currentExpensesTotal,
         }),
       });
       if (!res.ok) throw new Error('api error');
@@ -268,7 +297,7 @@ function AIFinancePanel({
         <div className="flex items-center justify-between mb-3">
           <div>
             <span className="text-[10px] uppercase tracking-widest text-[#444] font-bold block">AI Finans Yorumu</span>
-            <p className="text-xs text-[#555] mt-0.5">Haziran verileri üzerinden kısa analiz</p>
+            <p className="text-xs text-[#555] mt-0.5">Güncel veriler üzerinden kısa analiz</p>
           </div>
           <button onClick={loadInsight} className="text-[11px] bg-[#1a1a1a] border border-[#2a2a2a] text-[#888] hover:text-white hover:border-[#f59e0b]/30 px-3 py-1.5 rounded-lg transition-all">
             Analiz et
@@ -283,7 +312,7 @@ function AIFinancePanel({
     return (
       <div className="bg-[#111111] border border-[#1f1f1f] rounded-lg p-4 flex items-center gap-3">
         <Loader2 size={16} className="text-[#f59e0b] animate-spin" />
-        <span className="text-xs text-[#555]">AI finans verileri analiz ediyor...</span>
+        <span className="text-xs text-[#555]">Finans verileri analiz ediliyor...</span>
       </div>
     );
   }
@@ -310,17 +339,6 @@ function AIFinancePanel({
             <ul className="space-y-1">
               {insight.recommendedActions.map((a, i) => (
                 <li key={i} className="text-[11px] text-[#666] flex gap-1.5"><span className="text-[#22c55e] shrink-0">→</span>{a}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {insight.avoidThisMonth?.length > 0 && (
-          <div>
-            <span className="text-[9px] uppercase tracking-wider text-[#ef4444] font-bold block mb-1.5">Bu Ay Kaçın</span>
-            <ul className="space-y-1">
-              {insight.avoidThisMonth.map((a, i) => (
-                <li key={i} className="text-[11px] text-[#666] flex gap-1.5"><span className="text-[#ef4444] shrink-0">✕</span>{a}</li>
               ))}
             </ul>
           </div>
@@ -370,27 +388,87 @@ function AIFinancePanel({
   );
 }
 
+// ── Recent Transactions ───────────────────────────────────────────────────────
+
+function RecentTransactions() {
+  const { transactions, deleteTransaction } = useFinanceTransactions();
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+
+  const recent = [...transactions]
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 8);
+
+  if (recent.length === 0) {
+    return (
+      <div className="bg-[#111111] border border-[#1f1f1f] rounded-lg p-4 text-center">
+        <p className="text-[11px] text-[#333] italic">Henüz işlem yok.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-[#111111] border border-[#1f1f1f] rounded-lg overflow-hidden">
+      <div className="px-3 py-2.5 border-b border-[#1a1a1a]">
+        <span className="text-[9px] uppercase tracking-widest text-[#333] font-bold">Son İşlemler</span>
+      </div>
+      <div className="divide-y divide-[#1a1a1a]">
+        {recent.map(tx => (
+          <div key={tx.id} className="flex items-center gap-3 px-3 py-2.5">
+            <div
+              className="w-1.5 h-1.5 rounded-full shrink-0"
+              style={{ background: tx.type === 'income' ? '#22c55e' : '#ef4444' }}
+            />
+            <div className="flex-1 min-w-0">
+              <span className="text-[11px] text-[#888] block truncate">{tx.title}</span>
+              <span className="text-[9px] text-[#444]">{tx.date} · {tx.category}</span>
+            </div>
+            <span
+              className="text-[11px] font-mono shrink-0"
+              style={{ color: tx.type === 'income' ? '#22c55e' : '#ef4444' }}
+            >
+              {tx.type === 'income' ? '+' : '−'}{tx.amount.toLocaleString('tr-TR')} TL
+            </span>
+            {confirmDelete === tx.id ? (
+              <div className="flex items-center gap-1 shrink-0">
+                <button onClick={() => deleteTransaction(tx.id)} className="text-[9px] text-[#ef4444] border border-[#ef4444]/30 px-1.5 py-px rounded">Sil</button>
+                <button onClick={() => setConfirmDelete(null)} className="text-[9px] text-[#444] border border-[#1f1f1f] px-1.5 py-px rounded">İptal</button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setConfirmDelete(tx.id)}
+                className="text-[#2a2a2a] hover:text-[#ef4444] transition-colors shrink-0"
+                title="Sil"
+              >
+                <Trash size={10} />
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── Main Component ────────────────────────────────────────────────────────────
 
 export function FinanceCommandCenter() {
-  const { expenses, addExpense, updateExpense, deleteExpense } = usePlannedExpenses();
+  const { expenses, addExpense, updateExpense, deleteExpense, markPaid: markExpensePaid, activeTotal: currentExpensesTotal } = useCurrentExpenses();
   const { monthlyTotal: subTotal } = useSubscriptions();
   const { totalDebt } = useDebtService();
+  const { totalIncome, totalExpense } = useFinanceTransactions();
+
   const [showAddExpense, setShowAddExpense] = useState(false);
-  const [editingExpense, setEditingExpense] = useState<PlannedExpense | null>(null);
+  const [editingExpense, setEditingExpense] = useState<CurrentExpense | null>(null);
 
-  const plannedTotal = expenses
-    .filter(e => e.status === 'planned' || e.status === 'active')
-    .reduce((sum, e) => sum + calcMonthlyExpense(e), 0);
-
-  const netColor = HAZIRAN_NET >= 0 ? '#22c55e' : '#ef4444';
-  const netSign = HAZIRAN_NET >= 0 ? '+' : '';
+  const net = totalIncome - totalExpense;
+  const netColor = net >= 0 ? '#22c55e' : '#ef4444';
+  const netSign = net >= 0 ? '+' : '';
 
   const metrics = [
-    { label: 'Toplam Gelir', value: `${HAZIRAN_TOTAL_INCOME.toLocaleString('tr-TR')} TL`, color: '#22c55e' },
-    { label: 'Toplam Gider', value: `${HAZIRAN_TOTAL_EXPENSE.toLocaleString('tr-TR')} TL`, color: '#ef4444' },
+    { label: 'Toplam Gelir', value: `${totalIncome.toLocaleString('tr-TR')} TL`, color: '#22c55e' },
+    { label: 'Toplam Gider', value: `${totalExpense.toLocaleString('tr-TR')} TL`, color: '#ef4444' },
     { label: 'Borç Servisi', value: `${totalDebt.toLocaleString('tr-TR')} TL`, color: '#f59e0b' },
-    { label: 'Planlanan', value: `~${plannedTotal.toLocaleString('tr-TR')} TL`, color: '#888' },
+    { label: 'Güncel Giderler', value: `${currentExpensesTotal.toLocaleString('tr-TR')} TL`, color: '#888' },
     { label: 'Abonelikler', value: `${subTotal.toLocaleString('tr-TR')} TL`, color: '#888' },
   ];
 
@@ -399,24 +477,19 @@ export function FinanceCommandCenter() {
 
       {/* ── Header ── */}
       <div className="mb-6">
-        <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div className="flex items-start gap-4 flex-wrap">
           <div>
             <span className="text-[10px] uppercase tracking-widest text-[#444] font-bold block mb-1">Finans Komuta Merkezi</span>
             <div className="flex items-baseline gap-3">
               <span className="text-4xl font-mono font-bold" style={{ color: netColor }}>
-                {netSign}{HAZIRAN_NET.toLocaleString('tr-TR')} TL
+                {netSign}{net.toLocaleString('tr-TR')} TL
               </span>
               <span className="text-[10px] text-[#444]">Net Bakiye</span>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-[9px] bg-[#ef4444]/10 border border-[#ef4444]/20 text-[#ef4444] px-2.5 py-1 rounded font-bold uppercase tracking-widest">
-              {HAZIRAN_MODE}
-            </span>
-          </div>
         </div>
 
-        {/* Haziran kuralı */}
+        {/* Haziran kuralı / uyarı bandı */}
         <div className="mt-3 bg-[#ef4444]/5 border border-[#ef4444]/15 rounded-lg px-3 py-2">
           <p className="text-[10px] text-[#ef4444] font-medium tracking-wide">{HAZIRAN_RULE}</p>
         </div>
@@ -437,22 +510,22 @@ export function FinanceCommandCenter() {
 
         {/* ── Left column ── */}
         <div className="space-y-5">
-          {/* Finans Peak */}
-          <FinancePeakCard />
-
           {/* Borç Servis Takvimi */}
           <DebtServiceCompact />
 
           {/* Kanayan Yaralar */}
           <BleedingCategoriesPanel />
 
-          {/* Haziran Simülatörü */}
-          <CashFlowSimulator />
-
           {/* İşlem Ekle */}
           <div>
             <span className="text-[10px] uppercase tracking-widest text-[#333] font-bold block mb-3">İşlem Ekle</span>
             <AddTransactionForm />
+          </div>
+
+          {/* Son İşlemler */}
+          <div>
+            <span className="text-[10px] uppercase tracking-widest text-[#333] font-bold block mb-3">Son İşlemler</span>
+            <RecentTransactions />
           </div>
         </div>
 
@@ -461,13 +534,15 @@ export function FinanceCommandCenter() {
           {/* Abonelikler */}
           <SubscriptionManager />
 
-          {/* Planlanan Giderler */}
+          {/* Güncel Giderler */}
           <div>
             <div className="flex items-center justify-between mb-3">
               <div>
-                <span className="text-[10px] uppercase tracking-widest text-[#333] font-bold block">Planlanan Giderler</span>
-                {plannedTotal > 0 && (
-                  <span className="text-[10px] text-[#444] font-mono">Aylık yük: ~{plannedTotal.toLocaleString('tr-TR')} TL</span>
+                <span className="text-[10px] uppercase tracking-widest text-[#333] font-bold block">Güncel Giderler</span>
+                {currentExpensesTotal > 0 && (
+                  <span className="text-[10px] text-[#444] font-mono">
+                    Aktif toplam: {currentExpensesTotal.toLocaleString('tr-TR')} TL
+                  </span>
                 )}
               </div>
               <button
@@ -481,7 +556,7 @@ export function FinanceCommandCenter() {
             {showAddExpense && (
               <div className="mb-3">
                 <ExpenseForm
-                  title="Yeni Planlanan Gider"
+                  formTitle="Yeni Güncel Gider"
                   onSave={d => { addExpense(d); setShowAddExpense(false); }}
                   onCancel={() => setShowAddExpense(false)}
                 />
@@ -493,36 +568,43 @@ export function FinanceCommandCenter() {
                 editingExpense?.id === item.id ? (
                   <ExpenseForm
                     key={item.id}
-                    title="Gideri Düzenle"
-                    initial={{ title: item.title, amount: item.amount, category: item.category, frequency: item.frequency, status: item.status, note: item.note || '' }}
+                    formTitle="Gideri Düzenle"
+                    initial={{
+                      title: item.title,
+                      amount: item.amount,
+                      category: item.category,
+                      frequency: item.frequency,
+                      status: item.status,
+                      note: item.note || '',
+                    }}
                     onSave={d => { updateExpense(item.id, d); setEditingExpense(null); }}
                     onCancel={() => setEditingExpense(null)}
                   />
                 ) : (
-                  <PlannedExpenseCard
+                  <CurrentExpenseCard
                     key={item.id}
                     item={item}
                     onEdit={i => { setEditingExpense(i); setShowAddExpense(false); }}
                     onDelete={deleteExpense}
+                    onMarkPaid={markExpensePaid}
                   />
                 )
               )}
               {expenses.filter(e => e.status !== 'archived').length === 0 && !showAddExpense && (
                 <div className="bg-[#0d0d0d] border border-[#1a1a1a] rounded-lg p-4 text-center">
-                  <p className="text-[11px] text-[#333] italic">Planlanan gider yok.</p>
+                  <p className="text-[11px] text-[#333] italic">Güncel gider yok.</p>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Satın Alma Öncesi Kontrol */}
-          <PurchaseCheckCard />
-
           {/* AI Finans Yorumu */}
           <AIFinancePanel
+            totalIncome={totalIncome}
+            totalExpense={totalExpense}
             subscriptionTotal={subTotal}
             debtServiceTotal={totalDebt}
-            plannedTotal={plannedTotal}
+            currentExpensesTotal={currentExpensesTotal}
           />
         </div>
       </div>
