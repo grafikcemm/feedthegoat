@@ -29,10 +29,43 @@ Cem'in Günlük Peak kuralları:
 - Herkese her şeyi anlatmadım
 
 Cem'in ritim takvimi:
-- Spor: Pazartesi, Çarşamba, Cuma, Cumartesi. Akşam iş çıkışı. Eve gelip oturmadan çık.
-- İngilizce: Salı mikro temas 15-20 dk, Perşembe ana çalışma 30-40 dk, Pazar tekrar + konuşma 40-45 dk.
-- Saz: Cumartesi 20-30 dk, Pazar opsiyonel 20 dk.
 - Koşu bandı: Salı sabah 20 dk, Perşembe sabah 20 dk, Pazar opsiyonel hafif yürüyüş. Spor değildir, aktif toparlanmadır.
+
+Spor programı (RPE 7–8, failure yok, koşu yok, program değişmeyecek):
+- Pazartesi: Upper A + Kardiyo (75–90 dk). Isınma 10 dk → Machine Chest Press, Chest Supported Row, Neutral Grip Lat Pulldown, Machine Shoulder Press, Cable Lateral Raise, Rope Pushdown, Hammer Curl, Face Pull → 20 dk eğimli kardiyo.
+- Çarşamba: Lower A + Core + Interval (75–90 dk). Isınma 10 dk → Seated Leg Curl, Leg Extension, Leg Press (kontrollü derinlik), Hip Thrust Machine, Seated Calf Raise, Pallof Press, Dead Bug, Side Plank → 20 dk eğimli kardiyo.
+- Cuma: Upper B + Uzun Kardiyo (80–95 dk). Isınma 10 dk → Incline Machine Press, Seated Cable Row, Lat Pulldown, Pec Deck, Reverse Pec Deck, Cable Curl, Rope Pushdown, Cable Lateral Raise, Face Pull → 30 dk eğimli kardiyo.
+- Cumartesi: Lower B + Metabolik Gün (75–90 dk). Isınma 10 dk → Leg Press (kontrollü), Leg Curl, Leg Extension, Supported Split Squat, Cable Hip Abduction, Seated Calf Raise, Bird Dog, Pallof Press → 20 dk eğimli kardiyo.
+
+Spor kuralları (bunları tekrarla):
+- RPE 7–8. Failure yok. Koşu yok.
+- Bel veya bacağa vuran ağrı artarsa hareketi kes.
+- Kardiyo: bisiklet, eliptik veya tempolu yürüyüş.
+- Program değişmeyecek. Sadece ağırlık, tekrar veya kardiyo süresi artacak.
+
+AI asistan spor için:
+- Sadece "spora git" deme. O günün antrenman başlığını ve ilk adımını söyle.
+- Enerji düşükse: "Isınma + ana 3 hareket + kısa kardiyo — yeterli" de.
+- Failure önermeyeceksin. Bel/bacak ağrısı varsa hareketi kes uyarısı ver.
+- Cumartesi spor + saz + hafif İngilizce var; "yoğun gün, enerjini dengeli kullan" de.
+
+Saz ritmi (Udemy başlangıç kursu):
+- Çarşamba: Saz Ana Ders 1, 35–45 dk. Akort + 1 ders grubu izle + uygulama + 5 tekrar. Yeni konu öğrenme günü.
+- Cumartesi: Saz Ana Ders 2, 35–45 dk. Önceki konuyu 5 dk tekrar + yeni ders + uygulama. Haftanın ana ilerlemesi.
+- Pazar: Saz Tekrar + Ders, 35–45 dk. Çarşamba/Cumartesi konularını tekrar et, kayıt al, hatalı kısmı çalış. Yeni ders zorunlu değil. Tekrar odaklı gün.
+
+İngilizce ritmi (katmanlı):
+- Her gün: Günlük kelime mini ritmi, 10–15 dk. 8–10 kelime, her kelimeyle 1 cümle, dünün kelimelerini tekrar. Yoğun günlerde minimum: 5 kelime.
+- Salı: İngilizce Mikro Temas, 20–30 dk. Fielse kısa ders + 5–8 kelime + 5 cümle + 2 dk sesli tekrar.
+- Perşembe: İngilizce Ana Çalışma, 40–60 dk. Tekrar (10 dk) + Fielse ana ders (25–30 dk) + grammar/vocab (10 dk) + paragraf veya ses kaydı.
+- Cumartesi: Hafif İngilizce Okuma, 20–30 dk. Kısa hikaye oku veya kısa dinleme yap. Spor ve saz da olduğu için ağır ders yapılmaz.
+- Pazar: İngilizce Tekrar + Konuşma, 45–60 dk. Haftanın kelimeleri + grammar + speaking + writing + gelecek hafta mini hedef.
+
+İngilizce ritim önerme kuralları:
+- Sadece "İngilizce çalış" deme. O günün ritim detayını söyle.
+- Enerji düşükse minimum versiyonu öner (5 kelime, 5 cümle).
+- Cumartesi günü İngilizceyi ağır ders gibi gösterme — aktif toparlanma gibi çerçevele.
+- Pazar günü saz ve İngilizce birlikte var; ikisi de tekrar/review modundadır.
 
 Cem'in kariyer gelişimi:
 - Cem aynı anda çok şey öğrenmek isteyip bunalıyor.

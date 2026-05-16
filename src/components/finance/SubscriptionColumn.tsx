@@ -3,7 +3,6 @@
 import React, { useState, useTransition } from "react";
 import { addSubscription } from "@/app/actions/addSubscription";
 import { deleteSubscription } from "@/app/actions/deleteSubscription";
-import { cn } from "@/utils/cn";
 
 interface Subscription {
   id: string;

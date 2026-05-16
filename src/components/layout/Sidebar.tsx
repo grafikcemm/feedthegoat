@@ -8,6 +8,7 @@ import {
   GraduationCap,
   Layers,
   Rocket,
+  Library,
 } from 'lucide-react'
 
 const navItems = [
@@ -16,6 +17,7 @@ const navItems = [
   { href: '/?tab=BESLENME', icon: GraduationCap, label: 'Beslenme'          },
   { href: '/?tab=GELISIM',  icon: Rocket,        label: 'Gelişim Merdiveni' },
   { href: '/?tab=FINANS',   icon: Wallet,        label: 'Finans Komuta'     },
+  { href: '/?tab=KUTUPHANE', icon: Library,      label: 'Kütüphane'         },
 ]
 
 function SidebarInner() {

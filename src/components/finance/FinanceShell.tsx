@@ -10,8 +10,11 @@ import { FinanceSummary, StatusInfo } from "@/lib/financeCalc";
 interface FinanceShellProps {
   summary: FinanceSummary;
   status: StatusInfo;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   incomeItems: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   expenseItems: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   subscriptionItems: any[];
 }
 

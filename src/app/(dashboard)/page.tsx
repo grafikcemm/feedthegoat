@@ -17,7 +17,6 @@ import { TodayTasksSection } from "@/components/daily/TodayTasksSection";
 import { RhythmSummarySection } from "@/components/daily/RhythmSummarySection";
 
 import { createServerSupabase } from "@/lib/supabaseServer";
-import { computeFinanceSummary } from "@/lib/financeCalc";
 import { getCurrentISOWeekKey, getCurrentWeekRange, formatDateForDB } from '@/lib/weekUtils';
 
 // Weekly Components
@@ -50,6 +49,10 @@ import { AnalysisShell } from "@/components/analysis/AnalysisShell";
 
 // Assistant
 import { AssistantShell } from "@/components/assistant/AssistantShell";
+
+// Library
+import { LibraryShell } from "@/components/library/LibraryShell";
+import { LibraryTodayCard } from "@/components/daily/LibraryTodayCard";
 
 import {
   getTodayDayKey,
@@ -295,31 +298,10 @@ export default async function Page({
 
   // ── FİNANS KOMUTA MERKEZİ ────────────────────────────────────────────────
   if (tab === "FINANS") {
-    const currentMonth = format(new Date(), "yyyy-MM");
-    const [
-      { data: transactions = [] },
-      { data: subscriptions = [] }
-    ] = await Promise.all([
-      supabase.from("finance_transactions").select("id, amount, type, title, created_at, month").eq("month", currentMonth).order("created_at", { ascending: false }),
-      supabase.from("finance_subscriptions").select("id, title, amount, currency, is_active, notes, created_at").eq("is_active", true).order("amount", { ascending: false })
-    ]);
-
-    const incomeItems = (transactions || []).filter((t) => t.type === "income");
-    const expenseItems = (transactions || []).filter((t) => t.type === "expense");
-    const sumIncome = incomeItems.reduce((acc, t) => acc + (t.amount || 0), 0);
-    const sumExpense = expenseItems.reduce((acc, t) => acc + (t.amount || 0), 0);
-    const sumSubs = (subscriptions || []).reduce((acc, s) => acc + (s.amount || 0), 0);
-    const summary = computeFinanceSummary(sumIncome, sumExpense, sumSubs);
-
     return (
       <div className="min-h-screen bg-[#000000]">
         <div className="pt-8">
-          <FinanceCommandCenter
-            summary={summary}
-            incomeItems={incomeItems}
-            expenseItems={expenseItems}
-            subscriptionItems={subscriptions || []}
-          />
+          <FinanceCommandCenter />
         </div>
       </div>
     );
@@ -374,6 +356,17 @@ export default async function Page({
             peakLogs={peakLogs ?? []}
             waitingTasksCount={waitingTasks?.length ?? 0}
           />
+        </div>
+      </div>
+    );
+  }
+
+  // ── KÜTÜPHANE ────────────────────────────────────────────────────────────
+  if (tab === "KUTUPHANE") {
+    return (
+      <div className="min-h-screen bg-[#000000]">
+        <div className="pt-8">
+          <LibraryShell />
         </div>
       </div>
     );
@@ -556,7 +549,7 @@ export default async function Page({
       system_type: 'saz',
       category: 'health',
       points: 5,
-      active_days: ['sat', 'sun'],
+      active_days: ['wed', 'sat', 'sun'],
       sort_order: 100,
     } as any);
   }
@@ -633,6 +626,9 @@ export default async function Page({
 
         {/* 7. GÜNLÜK PEAK */}
         <DailyPeakCard />
+
+        {/* 7.5. BUGÜNKÜ OKUMA */}
+        <LibraryTodayCard />
 
         {/* 8. AKTİF GÖREVLER */}
         <TodayTasksSection {...sharedTaskProps} />

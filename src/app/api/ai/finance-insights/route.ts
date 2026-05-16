@@ -1,117 +1,122 @@
-import { NextRequest, NextResponse } from "next/server";
-import { callOpenRouter, extractJSON } from "@/lib/openrouter";
+import { NextRequest, NextResponse } from 'next/server';
+import { callOpenRouter, extractJSON } from '@/lib/openrouter';
 
-const FINANCE_SYSTEM_PROMPT = `Sen Feed The Goat uygulamasında Cem'in kişisel finans danışmanısın.
+const SYSTEM_PROMPT = `Sen Feed The Goat uygulamasında Cem'in finans koçusun.
 
-Cem'in finans durumunu analiz et. Kısa, net ve baskısız öneriler ver.
+Cem: DEHB uyumlu, freelance + maaşlı çalışan, Haziran'da ciddi nakit açığı var.
 
-Kurallar:
-- Uzun finans dersi verme.
-- Kısa ve net öneriler üret.
-- Kullanıcıyı suçlama.
-- Gereksiz harcama baskısı kurma.
-- Borç bilgisi eksikse tahmin yapma.
-- Denizbank bilgileri eksikse "bilgi bekleniyor" de.
-- Spor salonu 5000 TL / 3 ay = aylık ~1667 TL olarak hesapla.
-- Saz kursu 800 TL ve Digital Academy 1800 TL'yi eğitim yatırımı olarak değerlendir.
-- Aynı ay içinde çok fazla eğitim/spor harcaması varsa uyar.
-- Finansal tavsiye olarak kesin yatırım/borç yönlendirmesi yapma; bütçe farkındalığı sağla.
-- Cevabın Türkçe olsun.
+Haziran kuralları:
+- Yeni borç yok. Yeni taksit yok. Yeni araç aboneliği yok.
+- Denizbank yapılandırma sadece borç servisidir, planlanan gider değil.
+- Borç servislerini geciktirme.
+- Yemek siparişi Haziran hedefi: 1.750 TL.
+- AI/SaaS araçlarını azalt.
+- Spor ödemesi nakit akışı netleşince.
+- Kısa ve net konuş. Finans dersi verme. Suçlama. Finansal tavsiye değil, bütçe farkındalığı.
+- Türkçe yanıt ver.
 
 SADECE geçerli JSON döndür:
 {
   "status": "safe" | "attention" | "critical",
-  "summary": "kısa durum özeti (max 120 karakter)",
-  "recommendedActions": ["aksiyon 1", "aksiyon 2"],
-  "avoidThisMonth": ["kaçınılacak şey 1"],
-  "plannedPayments": ["planlanan ödeme 1"],
-  "missingInfo": ["eksik bilgi 1"],
-  "assistantNote": "Cem'e kısa not (max 100 karakter)"
+  "summary": "kısa durum özeti (max 130 karakter)",
+  "recommendedActions": ["aksiyon 1", "aksiyon 2", "aksiyon 3"],
+  "avoidThisMonth": ["kaçınılacak 1", "kaçınılacak 2"],
+  "subscriptionActions": ["abonelik önerisi 1", "abonelik önerisi 2"],
+  "debtServiceNotes": ["borç servisi notu 1"],
+  "bleedingWarnings": ["kanama uyarısı 1"],
+  "assistantNote": "Cem'e kısa not (max 110 karakter)"
 }`;
 
-interface PlannedExpenseInput {
-  title: string;
-  amount?: number;
-  monthlyAmount: number;
-  status: string;
-  category: string;
+interface FinanceInsightRequest {
+  totalIncome: number;
+  totalExpense: number;
+  net: number;
+  subscriptionTotal: number;
+  debtServiceTotal: number;
+  plannedTotal: number;
+  mode: string;
+  rule: string;
 }
+
+const FALLBACK: Record<string, unknown> = {
+  status: 'critical',
+  summary: 'Haziran tahmini açık -14.378 TL. Kanama durdurma modu aktif.',
+  recommendedActions: [
+    'Borç servislerini geciktirme.',
+    'Yemek siparişini 1.750 TL altında tut.',
+    'Spor ödemesini nakit akışı netleşince yap.',
+  ],
+  avoidThisMonth: [
+    'Yeni taksit açma.',
+    'Nakit avans / hazır limit kullanma.',
+    'Yeni abonelik başlatma.',
+  ],
+  subscriptionActions: [
+    'AI/SaaS araçlarını gözden geçir, 1-2 ana araca indir.',
+    'Bu ay yeni araç aboneliği yok.',
+  ],
+  debtServiceNotes: [
+    'Denizbank yapılandırma ilk taksit 10.700 TL borç servisidir.',
+    'Kredi 1 son taksit ödenince Temmuz\'dan itibaren ~10.757 TL rahatlama.',
+  ],
+  bleedingWarnings: [
+    'Taksitli e-ticaret kanalları bu ay kapalı.',
+    'Yemek siparişi hedef: 1.750 TL.',
+  ],
+  assistantNote: 'Haziran kanama durdurma ayı. Çizgide kal, Temmuz\'da nefes alırsın.',
+};
 
 export async function POST(req: NextRequest) {
   try {
-    const { totalIncome, totalExpense, plannedExpenses } = await req.json() as {
-      totalIncome: number;
-      totalExpense: number;
-      plannedExpenses: PlannedExpenseInput[];
-    };
+    const body = await req.json() as FinanceInsightRequest;
+    const { totalIncome, totalExpense, net, subscriptionTotal, debtServiceTotal, plannedTotal } = body;
 
-    const plannedMonthlyTotal = plannedExpenses
-      .filter(e => e.status !== "waiting_info")
-      .reduce((sum, e) => sum + (e.monthlyAmount || 0), 0);
+    const userMessage = `Cem'in Haziran 2025 finansal durumu:
 
-    const hasMissingInfo = plannedExpenses.some(e => e.status === "waiting_info");
+Gelir: ${totalIncome.toLocaleString('tr-TR')} TL
+Toplam tahmini gider: ${totalExpense.toLocaleString('tr-TR')} TL
+Net: ${net.toLocaleString('tr-TR')} TL
+Mod: Kanama Durdurma Modu
 
-    const userMessage = `Cem'in mevcut aylık finansal durumu:
-- Toplam gelir: ${totalIncome.toLocaleString("tr-TR")} TL
-- Mevcut gider: ${totalExpense.toLocaleString("tr-TR")} TL
-- Net: ${(totalIncome - totalExpense).toLocaleString("tr-TR")} TL
+Borç servis toplamı: ${debtServiceTotal.toLocaleString('tr-TR')} TL
+(Enpara kredi kartı 30.000 TL + Denizbank yapılandırma ilk taksit 10.700 TL + Kredi 1 son taksit 10.757 TL + Kredi 2 9.121 TL)
 
-Planlanan ek giderler:
-${plannedExpenses.map(e =>
-  `- ${e.title}: ${e.amount ? e.amount.toLocaleString("tr-TR") + " TL" : "tutar bilinmiyor"} (aylık karşılık: ~${e.monthlyAmount.toLocaleString("tr-TR")} TL) [${e.status}]`
-).join("\n")}
+Abonelik aylık toplam: ${subscriptionTotal.toLocaleString('tr-TR')} TL
+Planlanan giderler aylık yük: ~${plannedTotal.toLocaleString('tr-TR')} TL
+(Saz kursu 800 TL + Digital Academy 1.800 TL + Spor salonu 3 aylık 5.000 TL)
 
-Planlanan giderlerin toplam aylık karşılığı: ~${plannedMonthlyTotal.toLocaleString("tr-TR")} TL
-${hasMissingInfo ? "NOT: Bazı kalemler için bilgi eksik (örn. Denizbank yapılandırma)." : ""}
+Kanama alanları: taksitli e-ticaret ~35.700 TL+, AI/SaaS ~11.200 TL, yemek siparişi ~4.900 TL.
 
-Bu duruma göre kısa finans analizi yap.`;
+Haziran kuralı: Yeni borç yok. Yeni taksit yok. Yeni araç aboneliği yok.
 
-    const response = await callOpenRouter([
-      { role: "system", content: FINANCE_SYSTEM_PROMPT },
-      { role: "user", content: userMessage },
-    ], {
-      temperature: 0.2,
-      maxTokens: 600,
-    });
+Bu duruma göre kısa finans analizi yap. Denizbank'tan sadece borç servisi olarak bahset.`;
 
-    if (!response) {
-      return NextResponse.json(getFallbackInsight(totalIncome, totalExpense, plannedMonthlyTotal, hasMissingInfo));
-    }
+    const response = await callOpenRouter(
+      [
+        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'user', content: userMessage },
+      ],
+      { temperature: 0.2, maxTokens: 700 }
+    );
+
+    if (!response) return NextResponse.json(FALLBACK);
 
     const parsed = extractJSON(response);
-    if (!parsed) {
-      return NextResponse.json(getFallbackInsight(totalIncome, totalExpense, plannedMonthlyTotal, hasMissingInfo));
-    }
+    if (!parsed) return NextResponse.json(FALLBACK);
 
-    return NextResponse.json(parsed);
+    const result = parsed as Record<string, unknown>;
+
+    return NextResponse.json({
+      status: String(result.status ?? 'critical'),
+      summary: String(result.summary ?? FALLBACK.summary),
+      recommendedActions: Array.isArray(result.recommendedActions) ? (result.recommendedActions as unknown[]).map(String) : [],
+      avoidThisMonth: Array.isArray(result.avoidThisMonth) ? (result.avoidThisMonth as unknown[]).map(String) : [],
+      subscriptionActions: Array.isArray(result.subscriptionActions) ? (result.subscriptionActions as unknown[]).map(String) : [],
+      debtServiceNotes: Array.isArray(result.debtServiceNotes) ? (result.debtServiceNotes as unknown[]).map(String) : [],
+      bleedingWarnings: Array.isArray(result.bleedingWarnings) ? (result.bleedingWarnings as unknown[]).map(String) : [],
+      assistantNote: String(result.assistantNote ?? FALLBACK.assistantNote),
+    });
   } catch {
-    return NextResponse.json(
-      getFallbackInsight(0, 0, 0, false),
-      { status: 200 }
-    );
+    return NextResponse.json(FALLBACK, { status: 200 });
   }
-}
-
-function getFallbackInsight(income: number, expense: number, plannedMonthly: number, hasMissingInfo: boolean) {
-  const net = income - expense;
-  const projectedNet = net - plannedMonthly;
-
-  return {
-    status: projectedNet < 0 ? "critical" : projectedNet < income * 0.2 ? "attention" : "safe",
-    summary: "Mevcut verilere göre planlanan giderler değerlendiriliyor.",
-    recommendedActions: [
-      "Denizbank yapılandırma detaylarını gir.",
-      "Spor salonu kaydını tatil sonrası yap.",
-    ],
-    avoidThisMonth: [
-      "Aynı ay içinde spor + iki eğitim harcamasını sıkıştırma.",
-    ],
-    plannedPayments: [
-      "Spor salonu: 5.000 TL / 3 ay",
-      "Saz kursu: 800 TL/ay",
-      "Digital Academy: 1.800 TL",
-    ],
-    missingInfo: hasMissingInfo ? ["Denizbank yapılandırma tutarı ve ödeme günü"] : [],
-    assistantNote: "Önce sabit giderlerini sabitle, sonra ek harcamalara geç.",
-  };
 }
