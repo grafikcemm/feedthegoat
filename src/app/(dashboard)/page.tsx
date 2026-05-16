@@ -52,6 +52,7 @@ import { AnalysisShell } from "@/components/analysis/AnalysisShell";
 
 // Assistant
 import { AssistantShell } from "@/components/assistant/AssistantShell";
+import { OrchestratorPage } from "@/components/assistant/OrchestratorPage";
 
 // Library
 import { LibraryShell } from "@/components/library/LibraryShell";
@@ -418,7 +419,10 @@ export default async function Page({
     return (
       <div className="min-h-screen bg-[#000000]">
         <div className="pt-8">
-          <AssistantShell energyInput={energyInput} today={today} />
+          <OrchestratorPage />
+          <div className="mt-6 max-w-[920px] mx-auto px-4 sm:px-6">
+            <AssistantShell energyInput={energyInput} today={today} />
+          </div>
         </div>
       </div>
     );

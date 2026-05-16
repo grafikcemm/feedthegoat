@@ -9,6 +9,7 @@ import {
   Layers,
   Rocket,
   Library,
+  Bot,
 } from 'lucide-react'
 
 const navItems = [
@@ -18,6 +19,7 @@ const navItems = [
   { href: '/?tab=GELISIM',  icon: Rocket,        label: 'Gelişim Merdiveni' },
   { href: '/?tab=FINANS',   icon: Wallet,        label: 'Finans Komuta'     },
   { href: '/?tab=KUTUPHANE', icon: Library,      label: 'Kütüphane'         },
+  { href: '/?tab=ASISTAN',  icon: Bot,           label: 'Asistan'           },
 ]
 
 function SidebarInner() {
