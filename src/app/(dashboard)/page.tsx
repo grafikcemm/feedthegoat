@@ -31,9 +31,12 @@ import { SportShell } from "@/components/sport/SportShell";
 import { WorkoutPlanColumn } from "@/components/sport/WorkoutPlanColumn";
 import { MealPlanSection } from "@/components/sport/MealPlanSection";
 
-// Nutrition
+// Nutrition (legacy — kept for BESLENME route alias)
 import { NutritionShell } from "@/components/nutrition/NutritionShell";
 import { NutritionCard } from "@/components/dashboard/NutritionCard";
+
+// Health
+import { HealthPage } from "@/components/health/HealthPage";
 
 // Career / Gelişim Merdiveni
 import { CareerShell } from "@/components/career/CareerShell";
@@ -283,14 +286,12 @@ export default async function Page({
     );
   }
 
-  // ── BESLENME ──────────────────────────────────────────────────────────────
-  if (tab === "BESLENME") {
+  // ── SAĞLIK ────────────────────────────────────────────────────────────────
+  if (tab === "SAGLIK" || tab === "BESLENME") {
     return (
       <div className="min-h-screen bg-[#000000]">
         <div className="pt-8">
-          <NutritionShell>
-            <NutritionCard defaultOpen />
-          </NutritionShell>
+          <HealthPage />
         </div>
       </div>
     );

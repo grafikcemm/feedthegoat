@@ -5,7 +5,7 @@ import React from 'react'
 import {
   CalendarDays,
   Wallet,
-  GraduationCap,
+  Heart,
   Layers,
   Rocket,
   Library,
@@ -14,7 +14,7 @@ import {
 const navItems = [
   { href: '/?tab=GUNLUK',   icon: CalendarDays, label: 'Günlük'            },
   { href: '/?tab=RITIMLER', icon: Layers,        label: 'Ritimler'          },
-  { href: '/?tab=BESLENME', icon: GraduationCap, label: 'Beslenme'          },
+  { href: '/?tab=SAGLIK',   icon: Heart,         label: 'Sağlık'            },
   { href: '/?tab=GELISIM',  icon: Rocket,        label: 'Gelişim Merdiveni' },
   { href: '/?tab=FINANS',   icon: Wallet,        label: 'Finans Komuta'     },
   { href: '/?tab=KUTUPHANE', icon: Library,      label: 'Kütüphane'         },
