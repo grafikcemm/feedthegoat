@@ -648,12 +648,6 @@ export function HealthPage() {
         PROTOCOL_START_DATE={protocol.PROTOCOL_START_DATE}
       />
 
-      {/* 2. Daily Checklist */}
-      <TodayHealthProtocolCard
-        todayCompletion={protocol.todayCompletion}
-        toggle={protocol.toggle}
-      />
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* 3. Nutrition */}
         <NutritionProtocolCard
